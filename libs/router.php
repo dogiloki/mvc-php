@@ -3,7 +3,7 @@
 class Router{
 
 	private $url=[];
-	public $config=null;
+	private $config=null;
 
 	public function __construct(){
 		$this->config=Config::singleton();
@@ -93,6 +93,9 @@ class Router{
 			$action=$this->url[$key]['action'];
 			function view($path){
 				Router::view($path);
+			}
+			function config($key){
+				return Config::singleton()->get($key);
 			}
 			$this->action($action,$params);
 			return 0;

@@ -12,6 +12,7 @@ $config->set('db','');
 $config->set('key','75e36d4ef6f1172c8a2c61a8792e57e957dee9a7d03db1ebe750c3a0bcd650ee');
 
 // Directorios
-$config->set('url',str_replace("\\","/","http://".$_SERVER["HTTP_HOST"]));
+$config->set('url',str_replace("\\","/","http://".$_SERVER["HTTP_HOST"])."/");
+$config->set('public',$config->get('url')."mvc-php/public/");
 
 ?>
