@@ -1,0 +1,14 @@
+#Options -Indexes
+
+RewriteEngine On
+
+#RewriteCond %{REQUEST_FILENAME}/public !-d
+#RewriteCond %{REQUEST_FILENAME}/public !-f
+#RewriteCond %{REQUEST_FILENAME}/public !-l
+
+RewriteCond %{REQUEST_URI} !(public) [NC]
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
+
+#RewriteRule ^(.*)/$ index.php?url=$1 [L,QSA]
+#RewriteRule ^(.*).*$ index.php?url=$1 [L,QSA]
+#RewriteRule ^$ index.php?url=$1 [L,QSA]
