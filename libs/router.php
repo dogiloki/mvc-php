@@ -95,7 +95,7 @@ class Router{
 				Router::view($path);
 			}
 			function config($key){
-				return Config::singleton()->get($key);
+				echo Config::singleton()->get($key);
 			}
 			$this->action($action,$params);
 			return 0;
