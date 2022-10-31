@@ -27,7 +27,7 @@ class Router{
 	public function put($url,$action=null,$private=false){
 		$this->add('PUT',$url,$action,$private);
 	}
-	public function delte($url,$action=null,$private=false){
+	public function delete($url,$action=null,$private=false){
 		$this->add('DELETE',$url,$action,$private);
 	}
 	public const EXT_VIEWS=["html","php"];
