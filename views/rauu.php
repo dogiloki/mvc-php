@@ -4,9 +4,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>RAUU</title>
+	<link rel="stylesheet" type="text/css" href="<?php echo config('public').'hola.css' ?>">
 </head>
 <body>
-	
+
 	<h1>Hola mundo</h1>
 
 </body>

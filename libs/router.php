@@ -3,6 +3,7 @@
 class Router{
 
 	private $url=[];
+	private $http_response_code=[];
 	private $config=null;
 
 	public function __construct(){
@@ -30,8 +31,11 @@ class Router{
 	public function delete($url,$action=null,$private=false){
 		$this->add('DELETE',$url,$action,$private);
 	}
+	public function error($code,$action=null){
+		$this->http_response_code[$code]=$action;
+	}
 	public const EXT_VIEWS=["html","php"];
-	public static function view($path){
+	public static function view($path,$params=[]){
 		foreach(Router::EXT_VIEWS as $value){
 			$require_path="views/".$path.".".$value;
 			if(file_exists($require_path)){
@@ -54,32 +58,33 @@ class Router{
 	}
 
 	public function controller(){
-		$base_url="/".trim(isset($_GET['url'])?'/'.$_GET['url']:'/',"/")."/";
+		$base_url="/".trim(isset($_GET['url'])?'/'.$_GET['url'].'/':'/',"/");
 		//echo trim($base_url,"/");
 		//header("location:../".trim($base_url,"/"));
+		$params=[];
 		for($key=0; $key<sizeof($this->url); $key++){
 			if(implode('/',array_slice(explode('/',$base_url),0,$this->url[$key]['index_param']))."/"!=$this->url[$key]['url']){
 				continue;
 			}
 			if($_SERVER['REQUEST_METHOD']!=$this->url[$key]['method']){
-				return http_response_code(404);
+				return $this->http_response_code(404);
 			}
 			if($this->url[$key]['private']){
 				if(isset(getallheaders()['key'])){
 					if(getallheaders()['key']!=$this->config->get('key')){
-						return http_response_code(404);
+						return $this->http_response_code(404);
 					}
 				}else{
-					return http_response_code(404);
+					return $this->http_response_code(404);
 				}
 			}
 			$urls=array_slice(explode("/",$base_url),$this->url[$key]['index_param']);
 			$params=$this->url[$key]['params'];
 			$count=0;
 			/*echo "router: ".sizeof($params??[])."<br>";
-			echo "url: ".(sizeof($urls)-1);*/
-			if(sizeof($params??[])!=(sizeof($urls)-1)){
-				return http_response_code(404);
+			echo "url: ".(sizeof($urls));*/
+			if(sizeof($params??[])!=(sizeof($urls))){
+				return $this->http_response_code(404,$params);
 			}
 			// Agregar valor en las variables en la url
 			foreach($params??[] as $param=>$value){
@@ -91,8 +96,8 @@ class Router{
 				$params[$key_request]=$value_request;
 			}
 			$action=$this->url[$key]['action'];
-			function view($path){
-				Router::view($path);
+			function view($path,$params=[]){
+				Router::view($path,$params);
 			}
 			function config($key){
 				echo Config::singleton()->get($key);
@@ -100,10 +105,30 @@ class Router{
 			$this->action($action,$params);
 			return 0;
 		}
-		return http_response_code(404);
+		return $this->http_response_code(404,$params);
 	}
 
-	private function action($action,$params){
+	private function http_response_code($code,$params=[]){
+		if($params==null || sizeof($params)<=0){
+			// Agregar request NO USE KEY 'url'
+			foreach($_REQUEST as $key_request=>$value_request){
+				$params[$key_request]=$value_request;
+			}
+		}
+		if($action=$this->http_response_code[$code]??null){
+			function view($path,$request=[]){
+				Router::view($path,$request);
+			}
+			function config($key){
+				echo Config::singleton()->get($key);
+			}
+			$this->action($action,$params);
+			return 0;
+		}
+		http_response_code(404);
+	}
+
+	private function action($action,$params=[]){
 		if($action instanceof \Closure){
 			$action($params);
 		}else{

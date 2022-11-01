@@ -1,12 +1,12 @@
 <?php
 
-require_once "models/prueba.php";
+require "models/prueba.php";
 
 class ControllerPrueba{
 
     public $model;
 	public $config;
-	public $json=[];
+	public $params=[];
 
 	public function __construct(){
 		$this->config=Config::singleton();
@@ -14,15 +14,11 @@ class ControllerPrueba{
 	}
 
 	public function metodo($params){
-		$this->json=[
+		$params['json']=[
 			"status"=>true,
 			"data"=>$this->model->metodo()
 		];
-		$this->render();
-	}
-
-	public function render(){
-		require 'views/json.php';
+		view('json',$params);
 	}
 
 }

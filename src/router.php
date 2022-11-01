@@ -8,8 +8,11 @@ require "src/config.php";
 
 $router=new Router();
 $router->get('/prueba','ControllerPrueba@metodo');
-$router->get('/',function(){
-	view('rauu');
+$router->get('/',function($request){
+	view('rauu',$request);
+});
+$router->error(404,function(){
+	view('json');
 });
 
 $router->controller();
