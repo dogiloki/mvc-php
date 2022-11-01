@@ -123,7 +123,6 @@ class Router{
 				echo Config::singleton()->get($key);
 			}
 			$this->action($action,$params);
-			return 0;
 		}
 		http_response_code($code);
 	}
