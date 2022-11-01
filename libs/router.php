@@ -125,7 +125,7 @@ class Router{
 			$this->action($action,$params);
 			return 0;
 		}
-		http_response_code(404);
+		http_response_code($code);
 	}
 
 	private function action($action,$params=[]){
