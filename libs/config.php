@@ -1,6 +1,7 @@
 <?php
 
 // Implementa el patrón singleton para mantener una única instancia y acceder a sus valores desde cuaquier sitio
+namespace libs;
 
 class Config{
 

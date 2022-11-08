@@ -1,5 +1,7 @@
 <?php
 
+namespace util;
+
 class Secure{
 
 	public static function encodePassword($password){

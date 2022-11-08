@@ -1,18 +1,21 @@
 <?php
 
 require "libs/config.php";
-require "libs/secure.php";
 require "libs/router.php";
 require "libs/database.php";
 require "src/config.php";
 
 $router=new Router();
-$router->get('/prueba','ControllerPrueba@metodo');
+
+$router->get('/prueba','Prueba@metodo');
 $router->get('/',function($request){
-	view('rauu',$request);
+	view('raau',$request);
 });
-$router->error(404,function(){
+$router->error(404,function($request){
 	view('json');
+});
+$router->get("/test",function(){
+
 });
 
 $router->controller();

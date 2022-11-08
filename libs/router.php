@@ -1,5 +1,15 @@
 <?php
 
+use libs\Config;
+
+spl_autoload_register(function($clase){
+	$path=str_replace("\\","/",$clase).".php";
+	//echo $path."<br>";
+	if(file_exists($path)){
+		require_once $path;
+	}
+});
+
 class Router{
 
 	private $url=[];
@@ -8,9 +18,9 @@ class Router{
 
 	public function __construct(){
 		$this->config=Config::singleton();
-		foreach(glob('controllers/*.php') as $file){
-			require $file;
-		}
+		/*foreach(glob('controllers/*.php') as $file){
+			require_once $file;
+		}*/
 	}
 
 	/*
@@ -39,7 +49,10 @@ class Router{
 		foreach(Router::EXT_VIEWS as $value){
 			$require_path="views/".$path.".".$value;
 			if(file_exists($require_path)){
-				require $require_path;
+				foreach($params as $key=>$param){
+					$$key=$param;
+				}
+				require_once $require_path;
 				return 0;
 			}
 		}
@@ -86,52 +99,49 @@ class Router{
 			if(sizeof($params??[])!=(sizeof($urls))){
 				return $this->http_response_code(404,$params);
 			}
+			$request=new Request();
 			// Agregar valor en las variables en la url
 			foreach($params??[] as $param=>$value){
-				$params[$param]=$urls[$count]??"";
+				$request->add('VAR',$param,$urls[$count]??"");
 				$count++;
 			}
-			// Agregar request NO USE KEY 'url'
+			// Agregar request
 			foreach($_REQUEST as $key_request=>$value_request){
-				$params[$key_request]=$value_request;
+				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 			}
 			$action=$this->url[$key]['action'];
-			function view($path,$params=[]){
-				Router::view($path,$params);
-			}
-			function config($key){
-				echo Config::singleton()->get($key);
-			}
-			$this->action($action,$params);
+			$this->action($action,$request);
 			return 0;
 		}
 		return $this->http_response_code(404,$params);
 	}
 
 	private function http_response_code($code,$params=[]){
+		$request=new Request();
 		if($params==null || sizeof($params)<=0){
-			// Agregar request NO USE KEY 'url'
+			// Agregar request
 			foreach($_REQUEST as $key_request=>$value_request){
-				$params[$key_request]=$value_request;
+				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 			}
 		}
 		if($action=$this->http_response_code[$code]??null){
-			function view($path,$request=[]){
-				Router::view($path,$request);
-			}
-			function config($key){
-				echo Config::singleton()->get($key);
-			}
-			$this->action($action,$params);
+			$this->action($action,$request);
 		}
 		http_response_code($code);
 	}
 
 	private function action($action,$params=[]){
+		function view($path,$params=[]){
+			Router::view($path,$params);
+		}
+		function config($key){
+			echo Config::singleton()->get($key);
+		}
 		if($action instanceof \Closure){
 			$action($params);
 		}else{
 			$controller=explode('@',$action);
+			$controller[0]="controllers\\".$controller[0];
 			$obj=new $controller[0];
 			$obj->{$controller[1]}($params);
 		}
@@ -179,6 +189,38 @@ class Router{
 	        $parametros[$trimmed] = "";
     	}
     	return $parametros;
+	}
+
+}
+
+class Request{
+
+	private $var=[];
+	private $get=[];
+	private $post=[];
+
+	public function __construct(){
+
+	}
+
+	public function add($type,$key,$value){
+		switch($type){
+			case 'VAR': $this->var[$key]=$value; break;
+			case 'GET': $this->get[$key]=$value; break;
+			case 'POST': $this->post[$key]=$value; break;
+		}
+	}
+
+	public function get($key){
+		return $this->get[$key]??null;
+	}
+
+	public function post($key){
+		return $this->post[$key]??null;
+	}
+
+	public function var($key){
+		return $this->var[$key]??null;
 	}
 
 }

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>RAUU</title>
+	<title>RAAU</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo config('public').'hola.css' ?>">
 </head>
 <body>

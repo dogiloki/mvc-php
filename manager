@@ -1,0 +1,106 @@
+<?php
+
+$command=$argv[1]??null;
+
+switch($command){
+	case 'migration':{
+		$argv[2]??=null;
+		$name_db=$argv[2];
+		require 'src/migration.php';
+		break;
+	}
+	case 'new':{
+		$argv[2]??=null;
+		$argv[3]??=null;
+		if($argv[2]=='controller'){
+			Raau::msg(Raau::newController($argv[3]));
+		}else
+		if($argv[2]=='model'){
+			Raau::msg(Raau::newModel($argv[3]));
+		}else
+		if($argv[2]=='cm'){
+			Raau::msg(Raau::newController($argv[3]));
+			Raau::msg(Raau::newModel($argv[3]));
+		}
+		break;
+	}
+	case null: Raau::msg("Se requieren parámetros"); break;
+	default: Raau::msg("No existe el parámetro ".$command); break;
+}
+
+class Raau{
+
+	public static function msg($msg){
+		echo "\n".$msg."\n";
+	}
+
+	public static function newController($name){
+		if($name==null){
+			$name=readline("Nombre del controlador: ");
+		}
+		if(file_exists("controllers/".$name.".php")){
+			return "El controlador ".$name." ya existe";
+		}
+		$file=fopen("controllers/".$name.".php","w+b");
+		if(!$file){
+			return "Error al abrir archivo";
+		}
+		fwrite($file,
+'<?php
+
+namespace controllers;
+
+use models;
+
+class '.$name.'{
+
+	/*
+	Ejemplo de acceder a modelos
+	public $model;
+
+	public function __construct(){
+		$this->model=new models\\'.$name.'();
+	}
+	*/
+
+}
+
+?>');
+		fclose($file);
+		return "Controlador creador. controllers/".$name.".php";
+	}
+
+	public static function newModel($name){
+		if($name==null){
+			$name=readline("Nombre del modelo: ");
+		}
+		if(file_exists("models/".$name.".php")){
+			return "El controlador ".$name." ya existe";
+		}
+		$file=fopen("models/".$name.".php","w+b");
+		if(!$file){
+			return "Error al abrir archivo";
+		}
+		fwrite($file,
+'<?php
+
+namespace models;
+
+use libs\DB;
+
+class '.$name.'{
+
+	public function modelar(){
+		return "Hola, soy una modelado de datos";
+	}
+
+}
+
+?>');
+		fclose($file);
+		return "Controlador creador. controllers/".$name.".php";
+	}
+
+}
+
+?>

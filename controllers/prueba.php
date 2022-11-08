@@ -1,28 +1,25 @@
 <?php
 
-require "models/prueba.php";
+namespace controllers;
 
-class ControllerPrueba{
+use models;
 
-    public $model;
-	public $config;
-	public $params=[];
+class Prueba{
+
+	public $model;
 
 	public function __construct(){
-		$this->config=Config::singleton();
-		$this->model=new ModelPrueba();
+		$this->model=new models\Prueba();
 	}
 
-	public function metodo($params){
-		$params['json']=[
-			"status"=>true,
-			"data"=>$this->model->metodo()
+	public function metodo($request){
+		$arreglo['json']=[
+			"data"=>"Esto es una prueba",
+			"metodo"=>$this->model->modelar()
 		];
-		view('json',$params);
+		view('json',$arreglo);
 	}
 
 }
-
-
 
 ?>

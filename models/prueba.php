@@ -1,16 +1,14 @@
 <?php
 
-class ModelPrueba{
+namespace models;
 
-    protected $db;
+use libs\DB;
+use util\Secure;
 
-	public function __construct(){
-		// Instancia única de PDO
-		$this->db=DB::singleton();
-	}
+class Prueba{
 
-	public function metodo(){
-		return "Esto es un resultado de prueba";
+	public function modelar(){
+		return Secure::encodePassword("HOla");
 	}
 
 }
