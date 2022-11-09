@@ -38,6 +38,21 @@ class DB{
 		return new Flat($value);
 	}
 
+	public static function transation($params=[]){
+		$db=DB::singleton();
+		$query=[];
+		$db->beginTransaction();
+		try{
+			foreach($params as $param){
+				$query[]=DB::execute($param['sql'],$param['params']);
+			}
+			$db->commit();
+		}catch(\Exception $ex){
+			$db->rollback();
+		}
+		return $query;
+	}
+
 	/*
 	@param: db -> Conexión de la base de datos
 	@param: type -> Tipo de query según las constantes de DB
@@ -45,10 +60,13 @@ class DB{
 	@param: params -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
 	*/
 	public static function execute($sql,$params=[]){
+		//echo "<pre>".print_r($params,"<br>")."</pre>";
 		$db=self::singleton();
 		$query=$db->prepare($sql);
-		$query->execute($params);
 		self::$sql=$sql;
+		if(!$query->execute($params)){
+			throw new \Exception($query->ErrorInfo()[2]);
+		}
 		return $query;
 	}
 
@@ -206,19 +224,23 @@ class Table{
 		$values="";
 		foreach($this->params as $column=>$value){
 			if(is_numeric($column)){
-				if($this->type_query==self::SELECT){
-					$columns.=$value.",";
-				}
 				if($value instanceof Flat){
 					$values.=$value->value.",";
+					$value=$value->value;
 				}else{
+					$params[]=$value;
 					$values.="?,";
+				}
+				if($this->type_query==self::SELECT){
+					$columns.=$value.",";
 				}
 			}else{
 				$columns.=$column.",";
 				if($value instanceof Flat){
 					$values.=$value->value.",";
+					$value=$value->value;
 				}else{
+					$params[]=$value;
 					$values.=":".$column.",";
 				}
 			}
@@ -227,7 +249,6 @@ class Table{
 		$values=trim($values,",");
 		switch($this->type_query){
 			case self::INSERT:{
-				$params=$this->params;
 				$columns=empty($columns)?"":"(".$columns.")";
 				$this->sql.=$columns." VALUES (".$values.")";
 				break;
@@ -278,7 +299,15 @@ class Table{
 			}
 		}
 		$this->sql=trim($this->sql,",");
-		return ($execute)?DB::execute($this->sql,$params):$this->sql;
+		if(!$execute){
+			return [
+				'sql'=>$this->sql,
+				'params'=>$params
+			];
+		}else{
+			$query=DB::execute($this->sql,$params);
+		}
+		return $query;
 	}
 
 }
