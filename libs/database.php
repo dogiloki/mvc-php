@@ -24,8 +24,8 @@ class DB{
 		$config=Config::singleton();
 		if(self::$instance==null){
 			try{
-				$connection="mysql:host=".$config->get('host').(self::$create_db?"":";dbname=".$config->get('db'));
-				self::$instance=new \PDO($connection,$config->get('user'),$config->get('password'));
+				$connection="mysql:host=".$config->get('db_host').(self::$create_db?"":";dbname=".$config->get('db_name'));
+				self::$instance=new \PDO($connection,$config->get('db_user'),$config->get('host_password'));
 				self::$instance->query('SET NAMES utf8');
 			}catch(PDOException $ex){
 				//echo $ex->getMessage();
@@ -278,9 +278,9 @@ class Table{
 						if(is_array($where)){
 							$this->sql.=$where['column'].$where['operator'];
 							if($where['value'] instanceof Flat){
-								$this->sql.=$where['value']->value.",";
+								$this->sql.=$where['value']->value;
 							}else{
-								$this->sql.="?,";
+								$this->sql.="?";
 								$params[]=$where['value'];
 							}
 						}else{

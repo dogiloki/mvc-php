@@ -6,15 +6,15 @@ $config=Config::singleton();
 
 // Base de datos
 if(true){
-	$config->set('host','localhost');
-	$config->set('user','root');
-	$config->set('password','');
-	$config->set('db','');
+	$config->set('db_host','localhost');
+	$config->set('db_user','root');
+	$config->set('db_password','');
+	$config->set('db_name','');
 }else{
-	$config->set('host','');
-	$config->set('user','');
-	$config->set('password','');
-	$config->set('db','');
+	$config->set('db_host','');
+	$config->set('db_user','');
+	$config->set('db_password','');
+	$config->set('db_name','');
 }
 
 // Encabezado
