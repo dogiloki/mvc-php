@@ -240,7 +240,7 @@ class Table{
 					$values.=$value->value.",";
 					$value=$value->value;
 				}else{
-					$params[]=$value;
+					$params[":".$column]=$value;
 					$values.=":".$column.",";
 				}
 			}
