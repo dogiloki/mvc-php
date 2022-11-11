@@ -25,7 +25,7 @@ class DB{
 		if(self::$instance==null){
 			try{
 				$connection="mysql:host=".$config->get('db_host').(self::$create_db?"":";dbname=".$config->get('db_name'));
-				self::$instance=new \PDO($connection,$config->get('db_user'),$config->get('host_password'));
+				self::$instance=new \PDO($connection,$config->get('db_user'),$config->get('db_name'));
 				self::$instance->query('SET NAMES utf8');
 			}catch(PDOException $ex){
 				//echo $ex->getMessage();
