@@ -47,10 +47,12 @@ class DB{
 				$query[]=DB::execute($param['sql'],$param['params']);
 			}
 			$db->commit();
+			return true;
 		}catch(\Exception $ex){
+			throw new \Exception($ex->getMessage());
 			$db->rollback();
+			return false;
 		}
-		return $query;
 	}
 
 	/*
@@ -315,6 +317,7 @@ class Table{
 class Create extends Column2{
 
 	protected static $engine=null;
+	protected static $charset=null;
 	private static $type=null;
 	private const TABLE=0;
 	private const DATABASE=1;
@@ -354,6 +357,9 @@ class Create extends Column2{
 			if(Create::$engine!=null){
 				DB::$sql.="ENGINE=".Create::$engine;
 			}
+			if(Create::$charset!=null){
+				DB::$sql.=" DEFAULT CHARSET=".Create::$charset;
+			}
 			$query=$db->prepare(DB::$sql);
 			$query->execute();
 		}
@@ -390,8 +396,16 @@ class Column2{
 		Column2::$total_indexes=0;
 	}
 
+	/* Motor de almacenimiento */
+
 	public static function engine($name){
 		Create::$engine=$name;
+	}
+
+	/* charset */
+
+	public static function charset($name){
+		Create::$charset=$name;
 	}
 
 	/* Nombre y tipo de dato */
