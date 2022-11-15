@@ -235,6 +235,8 @@ class Table{
 				}
 				if($this->type_query==self::SELECT){
 					$columns.=$value.",";
+					unset($params[$column]);
+					$params=array_merge($params);
 				}
 			}else{
 				$columns.=$column.",";
