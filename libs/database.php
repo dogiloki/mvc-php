@@ -105,7 +105,13 @@ class Table{
 	private $name_table="";
 
 	// Parametros de insert
-	private $params=[];
+	private $values_insert=[];
+
+	// Parametros de select
+	private $values_select=[];
+
+	// Columnas
+	private $values_update=[];
 
 	// Condicionales - WHERE y LIKE
 	private $wheres=[];
@@ -120,24 +126,35 @@ class Table{
 		$this->name_table=$name_table;
 	}
 
-	public function insert($params=[]){
+	public function insert($values_insert=[]){
 		$this->type_query=self::INSERT;
 		$this->sql="INSERT INTO ".$this->name_table;
-		if($params instanceof \Closure){
-			$params($this);
+		if($values_insert instanceof \Closure){
+			$values_insert($this);
 		}else{
-			$this->params=is_array($params)?$params:func_get_args();
+			$this->values_insert=is_array($values_insert)?$values_insert:func_get_args();
 		}
 		return $this;
 	}
 
-	public function select($params=[]){
+	public function select($values_select=[]){
 		$this->type_query=self::SELECT;
 		$this->sql="SELECT ";
-		if($params instanceof \Closure){
-			$params($this);
+		if($values_select instanceof \Closure){
+			$values_select($this);
 		}else{
-			$this->params=is_array($params)?$params:func_get_args();
+			$this->values_select=is_array($values_select)?$values_select:func_get_args();
+		}
+		return $this;
+	}
+
+	public function update($values_update=[]){
+		$this->type_query=self::UPDATE;
+		$this->sql="UPDATE ".$this->name_table;
+		if($values_update instanceof \Closure){
+			$values_update($this);
+		}else{
+			$this->values_update=is_array($values_update)?$values_update:func_get_args();
 		}
 		return $this;
 	}
@@ -171,6 +188,12 @@ class Table{
 	public function where(){
 		$args=func_get_args();
 		$column=$args[0]??null;
+		if($column instanceof \Closure){
+			$this->wheres[]="(";
+			$column($this);
+			$this->wheres[]=")";
+			return $this;
+		}
 		$operator=$args[1]??null;
 		$value=$args[2]??null;
 		if($value==null){
@@ -220,45 +243,71 @@ class Table{
 		return $this->execute(false);
 	}
 
+	public function get(){
+
+	}
+
 	public function execute($execute=true){
 		$params=[];
 		$columns="";
 		$values="";
-		foreach($this->params as $column=>$value){
-			if(is_numeric($column)){
-				if($value instanceof Flat){
-					$values.=$value->value.",";
-					$value=$value->value;
-				}else{
-					$params[]=$value;
-					$values.="?,";
-				}
-				if($this->type_query==self::SELECT){
-					$columns.=$value.",";
-					unset($params[$column]);
-					$params=array_merge($params);
-				}
-			}else{
-				$columns.=$column.",";
-				if($value instanceof Flat){
-					$values.=$value->value.",";
-					$value=$value->value;
-				}else{
-					$params[":".$column]=$value;
-					$values.=":".$column.",";
-				}
-			}
-		}
-		$columns=trim($columns,",");
-		$values=trim($values,",");
+		// foreach($this->params as $column=>$value){
+		// 	if(is_numeric($column)){
+		// 		if($value instanceof Flat){
+		// 			$values.=$value->value.",";
+		// 			$value=$value->value;
+		// 		}else{
+		// 			$params[]=$value;
+		// 			$values.="?,";
+		// 		}
+		// 		if($this->type_query==self::SELECT){
+		// 			$columns.=$value.",";
+		// 			unset($params[$column]);
+		// 			$params=array_merge($params);
+		// 		}
+		// 	}else{
+		// 		$columns.=$column.",";
+		// 		if($value instanceof Flat){
+		// 			$values.=$value->value.",";
+		// 			$value=$value->value;
+		// 		}else{
+		// 			$params[":".$column]=$value;
+		// 			$values.=":".$column.",";
+		// 		}
+		// 	}
+		// }
+		// $columns=trim($columns,",");
+		// $values=trim($values,",");
 		switch($this->type_query){
 			case self::INSERT:{
+				foreach($this->values_insert as $column=>$value){
+					if($value instanceof Flat){
+						$values.=$value->value.",";
+						if(!is_numeric($column)){
+							$columns.=$column.",";
+						}
+					}else{
+						if(is_numeric($column)){
+							$values.="?,";
+						}else{
+							$values.=":".$column.",";
+							$columns.=$column.",";
+						}
+						$params[$column]=$value;
+					}
+				}
+				$columns=trim($columns,",");
+				$values=trim($values,",");
 				$columns=empty($columns)?"":"(".$columns.")";
 				$this->sql.=$columns." VALUES (".$values.")";
 				break;
 			}
 			case self::SELECT:{
+				foreach($this->values_select as $value){
+					$columns.=$value.",";
+				}
 				$columns=empty($columns)?"*":$columns;
+				$columns=trim($columns,",");
 				$this->sql.=$columns." FROM ".$this->name_table;
 				// Join
 				foreach($this->joins as $join){
@@ -275,23 +324,6 @@ class Table{
 						$params[]=$on['value'];
 					}
 				}
-				// Where
-				if(sizeof($this->wheres)>0){
-					$this->sql.=" WHERE ";
-					foreach($this->wheres as $where){
-						if(is_array($where)){
-							$this->sql.=$where['column'].$where['operator'];
-							if($where['value'] instanceof Flat){
-								$this->sql.=$where['value']->value;
-							}else{
-								$this->sql.="?";
-								$params[]=$where['value'];
-							}
-						}else{
-							$this->sql.=$where;
-						}
-					}
-				}
 				// Order by
 				if(sizeof($this->orders)>0){
 					$this->sql.=" ORDER BY ";
@@ -301,7 +333,39 @@ class Table{
 				}
 				break;
 			}
+			case self::UPDATE:{
+				$this->sql.=" SET ";
+				foreach($this->values_update as $column=>$value){
+					if(!is_numeric($column)){
+						if($value instanceof Flat){
+							$this->sql.=$column."=".$value->value;
+						}else{
+							$this->sql.=$column."=:".$column;
+						}
+						$params[$column]=$value;
+					}
+				}
+				break;
+			}
 		}
+		// Where
+		if(sizeof($this->wheres)>0){
+			$this->sql.=" WHERE ";
+			foreach($this->wheres as $where){
+				if(is_array($where)){
+					$this->sql.=$where['column'].$where['operator'];
+					if($where['value'] instanceof Flat){
+						$this->sql.=$where['value']->value;
+					}else{
+						$this->sql.=":where_".$column;
+						$params["where_".$column]=$where['value'];
+					}
+				}else{
+					$this->sql.=$where;
+				}
+			}
+		}
+		$params=array_merge($params);
 		$this->sql=trim($this->sql,",");
 		if(!$execute){
 			return [
