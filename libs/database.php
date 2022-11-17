@@ -357,8 +357,8 @@ class Table{
 					if($where['value'] instanceof Flat){
 						$this->sql.=$where['value']->value;
 					}else{
-						$this->sql.=":where_".$column;
-						$params["where_".$column]=$where['value'];
+						$this->sql.=":where_".$where['column'];
+						$params["where_".$where['column']]=$where['value'];
 					}
 				}else{
 					$this->sql.=$where;
