@@ -10,12 +10,6 @@ class DB{
 
 	public static $create_db=false;
 
-	public const SELECT=0;
-	public const INSERT=1;
-	public const UPDATE=2;
-	public const ALTER=3;
-	public const DELETE=4;
-
 	private function __construct(){
 		
 	}
@@ -27,7 +21,7 @@ class DB{
 				$connection="mysql:host=".$config->get('db_host').(self::$create_db?"":";dbname=".$config->get('db_name'));
 				self::$instance=new \PDO($connection,$config->get('db_user'),$config->get('db_password'));
 				self::$instance->query('SET NAMES utf8');
-			}catch(PDOException $ex){
+			}catch(\PDOException $ex){
 				//echo $ex->getMessage();
 			}
 		}
@@ -38,7 +32,7 @@ class DB{
 		return new Flat($value);
 	}
 
-	public static function transation($params=[]){
+	public static function transation($params=[],$autocommit=true){
 		$db=DB::singleton();
 		$query=[];
 		$db->beginTransaction();
@@ -46,24 +40,45 @@ class DB{
 			foreach($params as $param){
 				$query[]=DB::execute($param['sql'],$param['params']);
 			}
-			$db->commit();
+			if($autocommit){
+				$db->commit();
+			}
 			return true;
 		}catch(\Exception $ex){
-			throw new \Exception($ex->getMessage());
 			$db->rollback();
+			throw new \Exception($ex->getMessage());
 			return false;
 		}
 	}
 
+	public static function beginTransaction(){
+		Db::singleton()->beginTransaction();
+	}
+
+	public static function commit(){
+		DB::singleton()->commit();
+	}
+
+	public static function rollback(){
+		DB::singleton()->rollback();
+	}
+
+	public static function lastInsertId(){
+		return DB::singleton()->lastInsertId();
+	}
+
 	/*
-	@param: db -> Conexión de la base de datos
-	@param: type -> Tipo de query según las constantes de DB
-	@param: sql -> Código sql con 
-	@param: params -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
+	Ejecuta una sentencia sql, puede ser metida en un try-catch y obtener el error
+	una descripción del error al ejecutar la sentencia sql.
+	@param string $sql -> Código sql con 
+	@param array $params[] -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
 	*/
 	public static function execute($sql,$params=[]){
 		//echo "<pre>".print_r($params,"<br>")."</pre>";
 		$db=self::singleton();
+		if($db==null){
+			return null;
+		}
 		$query=$db->prepare($sql);
 		self::$sql=$sql;
 		if(!$query->execute($params)){
@@ -72,10 +87,19 @@ class DB{
 		return $query;
 	}
 
+	/*
+	Indicar crear una nueva table o base de datos
+	@return Instanciamiento de la clase Create
+	*/
 	public static function create(){
 		return new Create;
 	}
 
+	/*
+	Indicar crear una nueva table o base de datos
+	@param string $name_table Nombre de la tabla, sobre la que se construirá la sentencia sql.
+	@return Instanciamiento de la clase Table
+	*/
 	public static function table($name_table){
 		return new Table($name_table);
 	}
@@ -97,6 +121,7 @@ class Table{
 	private const INSERT=0;
 	private const SELECT=1;
 	private const UPDATE=2;
+	private const DELETE=3;
 
 	// Código sql
 	public $sql="";
@@ -122,10 +147,18 @@ class Table{
 	// Tablas y condicionales - JOIN
 	private $joins=[];
 
+	// Paginación de consulta - LIMIT
+	private $limit=null;
+
 	public function __construct($name_table=""){
 		$this->name_table=$name_table;
 	}
 
+	/*
+	Insertar registro en la table
+	@param array $values_insert Puede ser un array asociativo indicand el nombre de las columnas
+	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	*/
 	public function insert($values_insert=[]){
 		$this->type_query=self::INSERT;
 		$this->sql="INSERT INTO ".$this->name_table;
@@ -137,6 +170,11 @@ class Table{
 		return $this;
 	}
 
+	/*
+	Obtener registro de la tabla
+	@param array $values_select Array con el nombre de las columnas a mostra, si no es envía se mostrar todas las columnas de consulta
+	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	*/
 	public function select($values_select=[]){
 		$this->type_query=self::SELECT;
 		$this->sql="SELECT ";
@@ -148,6 +186,11 @@ class Table{
 		return $this;
 	}
 
+	/*
+	Obtener registro de la tabla
+	@param array $values_update Puede ser un array asociativo indicand el nombre de las columnas y el valor a cambiar en la columna
+	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	*/
 	public function update($values_update=[]){
 		$this->type_query=self::UPDATE;
 		$this->sql="UPDATE ".$this->name_table;
@@ -159,6 +202,20 @@ class Table{
 		return $this;
 	}
 
+	/*
+	Elimina registro de la tabla
+	*/
+	public function delete(){
+		$this->type_query=self::DELETE;
+		$this->sql="DELETE FROM ".$this->name_table;
+		return $this;
+	}
+
+	/*
+	Indica que se unirá una table en la consulta (select)
+	@param string $table Nombre de la tabla
+	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	*/
 	public function join($table){
 		$this->joins[]=[
 			"type"=>" JOIN ",
@@ -167,6 +224,38 @@ class Table{
 		];
 		return $this;
 	}
+	public function leftJoin($table){
+		$this->joins[]=[
+			"type"=>" LEFT JOIN ",
+			"table"=>$table,
+			"where"=>null
+		];
+		return $this;
+	}
+	public function rightJoin($table){
+		$this->joins[]=[
+			"type"=>" RIGHT JOIN ",
+			"table"=>$table,
+			"where"=>null
+		];
+		return $this;
+	}
+	public function innerJoin($table){
+		$this->joins[]=[
+			"type"=>" INNER JOIN ",
+			"table"=>$table,
+			"where"=>null
+		];
+		return $this;
+	}
+
+	/*
+	Indica la condición que debe cumplir después de unir [ join() ] una tabla
+	@param string Nombre de la columna
+	@param string operador Operación aritmética (opcional)
+	@param primitive Nombre del valor a comparar
+	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	*/
 	public function on(){
 		$args=func_get_args();
 		$column=$args[0]??null;
@@ -177,7 +266,7 @@ class Table{
 		if($value==null){
 			$value=$operator;
 		}
-		$this->joins[$index-1]['where']=[
+		$this->joins[$index-1]['where']=(sizeof($args)<=1)?$column:[
 			"column"=>$column,
 			"operator"=>($value_temp==null)?"=":$operator,
 			"value"=>$value
@@ -239,45 +328,22 @@ class Table{
 		return $this;
 	}
 
-	public function sql(){
-		return $this->execute(false);
+	public function pagination($max,$pag){
+		$index=$max*($pag-1);
+		$end=$index+$max;
+		$this->limit['index']=$index;
+		$this->limit['end']=$end;
+		return $this;
 	}
 
-	public function get(){
-
+	public function sql(){
+		return $this->execute(false);
 	}
 
 	public function execute($execute=true){
 		$params=[];
 		$columns="";
 		$values="";
-		// foreach($this->params as $column=>$value){
-		// 	if(is_numeric($column)){
-		// 		if($value instanceof Flat){
-		// 			$values.=$value->value.",";
-		// 			$value=$value->value;
-		// 		}else{
-		// 			$params[]=$value;
-		// 			$values.="?,";
-		// 		}
-		// 		if($this->type_query==self::SELECT){
-		// 			$columns.=$value.",";
-		// 			unset($params[$column]);
-		// 			$params=array_merge($params);
-		// 		}
-		// 	}else{
-		// 		$columns.=$column.",";
-		// 		if($value instanceof Flat){
-		// 			$values.=$value->value.",";
-		// 			$value=$value->value;
-		// 		}else{
-		// 			$params[":".$column]=$value;
-		// 			$values.=":".$column.",";
-		// 		}
-		// 	}
-		// }
-		// $columns=trim($columns,",");
-		// $values=trim($values,",");
 		switch($this->type_query){
 			case self::INSERT:{
 				foreach($this->values_insert as $column=>$value){
@@ -316,54 +382,67 @@ class Table{
 					if($on==null){
 						continue;
 					}
-					$this->sql.=" ON ".$on['column'].$on['operator'];
-					if($on['value'] instanceof Flat){
-						$this->sql.=$on['value']->value." ";
+					if(is_array($on)){
+						$this->sql.=" ON ".$on['column'].$on['operator'];
+						if($on['value'] instanceof Flat){
+							$this->sql.=$on['value']->value." ";
+						}else{
+							$this->sql.="? ";
+							$params[]=$on['value'];
+						}
 					}else{
-						$this->sql.="? ";
-						$params[]=$on['value'];
-					}
-				}
-				// Order by
-				if(sizeof($this->orders)>0){
-					$this->sql.=" ORDER BY ";
-					foreach($this->orders as $order){
-						$this->sql.=$order.",";
+						$this->sql.=" ON ".$on;
 					}
 				}
 				break;
 			}
 			case self::UPDATE:{
 				$this->sql.=" SET ";
+				$columns="";
 				foreach($this->values_update as $column=>$value){
 					if(!is_numeric($column)){
 						if($value instanceof Flat){
-							$this->sql.=$column."=".$value->value;
+							$columns.=$column."=".$value->value.",";
 						}else{
-							$this->sql.=$column."=:".$column;
+							$columns.=$column."=:".$column.",";
+							$params[$column]=$value;
 						}
-						$params[$column]=$value;
 					}
 				}
+				$this->sql.=trim($columns,",");
 				break;
 			}
 		}
 		// Where
 		if(sizeof($this->wheres)>0){
 			$this->sql.=" WHERE ";
-			foreach($this->wheres as $where){
+			foreach($this->wheres as $key=>$where){
 				if(is_array($where)){
 					$this->sql.=$where['column'].$where['operator'];
 					if($where['value'] instanceof Flat){
 						$this->sql.=$where['value']->value;
 					}else{
-						$this->sql.=":where_".$where['column'];
-						$params["where_".$where['column']]=$where['value'];
+						$this->sql.=":where_".$key;
+						$params["where_".$key]=$where['value'];
 					}
 				}else{
 					$this->sql.=$where;
 				}
 			}
+		}
+		// Order by
+		if(sizeof($this->orders)>0){
+			$this->sql.=" ORDER BY ";
+			$orders="";
+			foreach($this->orders as $order){
+				$orders.=$order.",";
+			}
+			$orders=trim($orders,",");
+			$this->sql.=$orders;
+		}
+		// Limit
+		if($this->limit!=null){
+			$this->sql.=" LIMIT ".$this->limit['index'].",".$this->limit['end'];
 		}
 		$params=array_merge($params);
 		$this->sql=trim($this->sql,",");

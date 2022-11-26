@@ -44,9 +44,9 @@ class Router{
 	public function error($code,$action=null){
 		$this->http_response_code[$code]=$action;
 	}
-	public const EXT_VIEWS=["html","php"];
+	public static $ext_views=["html","php"];
 	public static function view($path,$params=[]){
-		foreach(Router::EXT_VIEWS as $value){
+		foreach(Router::$ext_views as $value){
 			$require_path="views/".$path.".".$value;
 			if(file_exists($require_path)){
 				foreach($params as $key=>$param){
@@ -99,7 +99,7 @@ class Router{
 			if(sizeof($params??[])!=(sizeof($urls))){
 				return $this->http_response_code(404,$params);
 			}
-			$request=new Request();
+			$request=new Request(getallheaders());
 			// Agregar valor en las variables en la url
 			foreach($params??[] as $param=>$value){
 				$request->add('VAR',$param,$urls[$count]??"");
@@ -117,17 +117,17 @@ class Router{
 	}
 
 	private function http_response_code($code,$params=[]){
-		$request=new Request();
+		$request=new Request(getallheaders());
 		if($params==null || sizeof($params)<=0){
 			// Agregar request
 			foreach($_REQUEST as $key_request=>$value_request){
 				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 			}
 		}
+		http_response_code($code);
 		if($action=$this->http_response_code[$code]??null){
 			$this->action($action,$request);
 		}
-		http_response_code($code);
 	}
 
 	private function action($action,$params=[]){
@@ -198,9 +198,10 @@ class Request{
 	private $var=[];
 	private $get=[];
 	private $post=[];
+	private $header=null;
 
-	public function __construct(){
-
+	public function __construct($header){
+		$this->header=$header;
 	}
 
 	public function add($type,$key,$value){
@@ -211,15 +212,31 @@ class Request{
 		}
 	}
 
-	public function get($key){
+	public function header($key=null){
+		if($key==null){
+			return $this->header;
+		}
+		return $this->header[$key]??null;
+	}
+
+	public function get($key=null){
+		if($key==null){
+			return $this->get;
+		}
 		return $this->get[$key]??null;
 	}
 
-	public function post($key){
+	public function post($key=null){
+		if($key==null){
+			return $this->post;
+		}
 		return $this->post[$key]??null;
 	}
 
-	public function var($key){
+	public function var($key=null){
+		if($key==null){
+			return $this->var;
+		}
 		return $this->var[$key]??null;
 	}
 
