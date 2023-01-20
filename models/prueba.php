@@ -7,7 +7,7 @@ use libs\DB;
 class Prueba{
 
 	public function modelar(){
-		return "Souy un modelado de datos";
+		return "Soy un modelado de datos";
 	}
 
 }

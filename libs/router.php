@@ -59,12 +59,13 @@ class Router{
 	}
 
 	private function add($method,$url,$action=null,$private=false){
-		$base_url=$this->separarCadena($url);
+		$base_url=$this->splitUri($url);
+		//echo "<pre>".print_r($base_url,"<br>")."</pre>";
 		$this->url[]=[
 			'method'=>$method,
 			'url'=>$base_url['url'],
-			'index_param'=>$base_url['index_param'],
-			'params'=>$base_url['params'],
+			'index_param'=>$base_url['index_param']??2,
+			'params'=>$base_url['params']??[],
 			'action'=>$action,
 			'private'=>$private
 		];
@@ -147,48 +148,29 @@ class Router{
 		}
 	}
 
-	private function separarCadena($cadena){
-		$cadena="/".trim($cadena."/");
-		$separador = "/{";
-	    if($cadena == "/"){
-	        $estado = 0;
-	        $cade_separada = "/";
-	    }else{
-	        $estado = 1;
-	        $cade_separada = explode($separador, $cadena);
-	    }
-    	return $this->guardarValores($cade_separada, $estado);
-	}
-
-	private function guardarValores($cadena_separada, $estado){
-	    $parametros = null;
-	    if($estado == 0){
-	        $url = $cadena_separada;
-	    }else{
-	        $url = $cadena_separada[0];
-	        while((strpos($url,"//")) !== false){
-	            $url = str_replace("//", "/", $url);
-	        }
-	        if(count($cadena_separada) > 1){
-	            $parametros = $this->eliminarCorchetes($cadena_separada);
-	        }
-	    }
-	    $url="/".trim($url,"/")."/";
-		return[
-	    	'url'=>$url,
-	    	'index_param'=>sizeof(explode('/',$url))-1,
-	    	'params'=>$parametros,
-	    ];
-	}
-
-	private function eliminarCorchetes($cadena_separada){
-	    for($i=1; $i < count($cadena_separada); $i++){
-	        $trimmed = trim($cadena_separada[$i], "/");
-	        $trimmed = trim($trimmed, "{");
-	        $trimmed = trim($trimmed, "}");
-	        $parametros[$trimmed] = "";
-    	}
-    	return $parametros;
+	private function splitUri($uri){
+		$uri=explode("/","/".trim($uri,"/"));
+		$conta=0;
+		return array_reduce($uri,function($array,$value) use($conta){
+			if($value!=""){
+				$letter_index=substr($value,0,1);
+				$letter_end=substr($value,strlen($value)-1,strlen($value));
+				$conta++;
+				if($letter_index=="{" && $letter_end=="}"){
+					if(!isset($array['index_param'])){
+						$array['index_param']=$conta+2;
+					}
+					$value=substr($value,1,strlen($value)-2);
+					$array['params'][$value]="sa";
+				}else{
+					if(!isset($array['url'])){
+						$array['url']="/";
+					}
+					$array['url'].=$value."/";
+				}
+			}
+			return $array;
+		});
 	}
 
 }
