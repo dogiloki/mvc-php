@@ -73,11 +73,11 @@ class Router{
 
 	public function controller(){
 		$base_url="/".trim(isset($_GET['url'])?'/'.$_GET['url'].'/':'/',"/");
-		//echo trim($base_url,"/");
+		//echo trim($base_url);
 		//header("location:../".trim($base_url,"/"));
 		$params=[];
 		for($key=0; $key<sizeof($this->url); $key++){
-			if(implode('/',array_slice(explode('/',$base_url),0,$this->url[$key]['index_param']))."/"!=$this->url[$key]['url']){
+			if(implode('/',array_slice(explode('/',$base_url),0,$this->url[$key]['index_param'])).($base_url=="/"?"":"/")!=$this->url[$key]['url']){
 				continue;
 			}
 			if($_SERVER['REQUEST_METHOD']!=$this->url[$key]['method']){
@@ -150,6 +150,9 @@ class Router{
 
 	private function splitUri($uri){
 		$uri=explode("/","/".trim($uri,"/"));
+		if($uri[1]==""){
+			$uri[1]="/";
+		}
 		$conta=0;
 		return array_reduce($uri,function($array,$value) use($conta){
 			if($value!=""){
@@ -164,9 +167,9 @@ class Router{
 					$array['params'][$value]="sa";
 				}else{
 					if(!isset($array['url'])){
-						$array['url']="/";
+						$array['url']=$value=="/"?"":"/";
 					}
-					$array['url'].=$value."/";
+					$array['url'].=$value.($value=="/"?"":"/");
 				}
 			}
 			return $array;
