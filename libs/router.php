@@ -64,7 +64,7 @@ class Router{
 		$this->url[]=[
 			'method'=>$method,
 			'url'=>$base_url['url'],
-			'index_param'=>$base_url['index_param']??2,
+			'index_param'=>$base_url['index_param']??sizeof(explode($base_url['url'],"/"))+2,
 			'params'=>$base_url['params']??[],
 			'action'=>$action,
 			'private'=>$private
