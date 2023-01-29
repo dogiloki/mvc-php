@@ -1,14 +1,10 @@
 <?php
 
-use libs\Config;
+namespace libs;
 
-spl_autoload_register(function($clase){
-	$path=str_replace("\\","/",$clase).".php";
-	//echo $path."<br>";
-	if(file_exists($path)){
-		require_once $path;
-	}
-});
+use libs\Cofing;
+
+require_once("Functions.php");
 
 class Router{
 
@@ -18,6 +14,7 @@ class Router{
 
 	public function __construct(){
 		$this->config=Config::singleton();
+		
 		/*foreach(glob('controllers/*.php') as $file){
 			require_once $file;
 		}*/
@@ -64,7 +61,7 @@ class Router{
 		$this->url[]=[
 			'method'=>$method,
 			'url'=>$base_url['url'],
-			'index_param'=>$base_url['index_param']??sizeof(explode($base_url['url'],"/"))+2,
+			'index_params'=>$base_url['index_params']??[],
 			'params'=>$base_url['params']??[],
 			'action'=>$action,
 			'private'=>$private
@@ -73,26 +70,38 @@ class Router{
 
 	public function controller(){
 		$base_url="/".trim(isset($_GET['url'])?'/'.$_GET['url'].'/':'/',"/");
-		//echo trim($base_url);
+		if($base_url!="/"){
+			$base_url.="/";
+		}
 		//header("location:../".trim($base_url,"/"));
 		$params=[];
 		for($key=0; $key<sizeof($this->url); $key++){
-			if(implode('/',array_slice(explode('/',$base_url),0,$this->url[$key]['index_param'])).($base_url=="/"?"":"/")!=$this->url[$key]['url']){
+			$base_url_new=explode("/",$base_url);
+			foreach($this->url[$key]['index_params'] as $index){
+				unset($base_url_new[$index+1]);
+			}
+			$base_url_new=implode("/",$base_url_new);
+			if($base_url_new!=$this->url[$key]['url']){
 				continue;
 			}
+			//echo $base_url_new."<br>";
 			if($_SERVER['REQUEST_METHOD']!=$this->url[$key]['method']){
-				return $this->http_response_code(404);
+				continue;
 			}
 			if($this->url[$key]['private']){
 				if(isset(getallheaders()['key'])){
-					if(getallheaders()['key']!=$this->config->get('key')){
+					if(getallheaders()['key']!=$this->config->get('APP_KEY')){
 						return $this->http_response_code(404);
 					}
 				}else{
 					return $this->http_response_code(404);
 				}
 			}
-			$urls=array_slice(explode("/",$base_url),$this->url[$key]['index_param']);
+			$urls=[];
+			foreach($this->url[$key]['index_params'] as $index){
+				$array_url=explode("/",$base_url);
+				$urls[]=$array_url[$index+1];
+			}
 			$params=$this->url[$key]['params'];
 			$count=0;
 			/*echo "router: ".sizeof($params??[])."<br>";
@@ -132,19 +141,13 @@ class Router{
 	}
 
 	private function action($action,$params=[]){
-		function view($path,$params=[]){
-			Router::view($path,$params);
-		}
-		function config($key){
-			echo Config::singleton()->get($key);
-		}
 		if($action instanceof \Closure){
-			$action($params);
+			echo $action($params);
 		}else{
 			$controller=explode('@',$action);
 			$controller[0]="controllers\\".$controller[0];
 			$obj=new $controller[0];
-			$obj->{$controller[1]}($params);
+			echo $obj->{$controller[1]}($params);
 		}
 	}
 
@@ -153,18 +156,16 @@ class Router{
 		if($uri[1]==""){
 			$uri[1]="/";
 		}
-		$conta=0;
-		return array_reduce($uri,function($array,$value) use($conta){
+		return array_reduce($uri,function($array,$value)use($uri){
 			if($value!=""){
 				$letter_index=substr($value,0,1);
 				$letter_end=substr($value,strlen($value)-1,strlen($value));
-				$conta++;
 				if($letter_index=="{" && $letter_end=="}"){
-					if(!isset($array['index_param'])){
-						$array['index_param']=$conta+2;
+					if(!isset($array['index_params'])){
+						$array['index_params'][]=array_search($value,$uri)-1;
 					}
 					$value=substr($value,1,strlen($value)-2);
-					$array['params'][$value]="sa";
+					$array['params'][$value]="";
 				}else{
 					if(!isset($array['url'])){
 						$array['url']=$value=="/"?"":"/";
@@ -180,21 +181,28 @@ class Router{
 
 class Request{
 
-	private $var=[];
-	private $get=[];
-	private $post=[];
-	private $header=null;
+	public $var=[];
+	public $get=[];
+	public $post=[];
+	public $put=[];
+	public $header=null;
 
 	public function __construct($header){
 		$this->header=$header;
 	}
 
 	public function add($type,$key,$value){
+		$this->$key=$value;
 		switch($type){
 			case 'VAR': $this->var[$key]=$value; break;
 			case 'GET': $this->get[$key]=$value; break;
 			case 'POST': $this->post[$key]=$value; break;
+			case 'PUT': $this->put[$key]=$value; break;
 		}
+	}
+
+	public function session($key){
+		return $_SESSION[$key]??null;
 	}
 
 	public function header($key=null){
@@ -216,6 +224,13 @@ class Request{
 			return $this->post;
 		}
 		return $this->post[$key]??null;
+	}
+
+	public function put($key=null){
+		if($key==null){
+			return $this->put;
+		}
+		return $this->put[$key]??null;
 	}
 
 	public function var($key=null){

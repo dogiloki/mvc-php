@@ -6,28 +6,66 @@ namespace libs;
 class Config{
 
 	private $vars;
+	private $positions;
+	private $file;
 	private static $instance=null;
 
-	private function __construct(){
+	private function __construct($file=null){
 		$this->vars=[];
-	}
-
-	public function set($name,$value){
-		if(!isset($this->vars[$name])){
-			$this->vars[$name]=$value;
+		$this->positions=[];
+		$this->file=$file;
+		if($file==null){
+			return;
 		}
-	}
-
-	public function get($name){
-		if(isset($this->vars[$name])){
-			return $this->vars[$name];
+		$fp=fopen($file,"r");
+		$count=0;
+		while(!feof($fp)){
+			$line=fgets($fp);
+			$pos_key_index=0;
+			$pos_key_end=strrpos($line,"=");
+			$is_comment=substr(trim(strlen($line)<=0?"#":$line),0,1)=="#";
+			if($pos_key_end>=0 && !$is_comment){
+				$pos_value_index=$pos_key_end+1;
+				$pos_value_end=(strlen($line)-$pos_value_index)-1;
+				$key=substr($line,$pos_key_index,$pos_key_end);
+				$value=substr($line,$pos_value_index,$pos_value_end);
+				$this->positions[$count]=$key;
+				$this->vars[$key]=$value;
+			}
+			$count++;
 		}
+		fclose($fp);
 	}
 
-	public static function singleton(){
+	/**
+	 * PENDIENTE
+	**/
+	// private function save(){
+	// 	$fp=fopen($this->file,"w");
+	// 	$count=0;
+	// 	while(!feof($fp)){
+	// 		$key=$this->positions[$count];
+	// 		fputs($fp,$key."=".$this->get($key)??"")."\n";
+	// 		$count++;
+	// 	}
+	// 	fclose($fp);
+	// }
+
+	public function set($key,$value){
+		$this->vars[$key]=$value;
+	}
+
+	public function get($key){
+		if(isset($this->vars[$key])){
+			return $this->vars[$key];
+		}
+		return null;
+	}
+
+	public static function singleton($file=null){
 		if(!isset(self::$instance)){
 			$class=__CLASS__;
-			self::$instance=new $class;
+			self::$instance=new $class($file);
 		}
 		return self::$instance;
 	}

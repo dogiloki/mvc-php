@@ -1,11 +1,9 @@
 <?php
 
-require "libs/config.php";
-require "libs/database.php";
-require "src/config.php";
+require "libs/Config.php";
+require "libs/DB.php";
 
 use libs\DB;
-use libs\Config;
 
 // Sentencias SQL
 
