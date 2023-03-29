@@ -3,7 +3,7 @@
 // Permite aplicar el patrón Singleton para mantener una única instancia de PDO
 namespace libs;
 
-class DB{
+class DB extends \PDO{
 
 	private static $instance=null;
 	public static $sql=null;
@@ -23,9 +23,14 @@ class DB{
 				self::$instance->query('SET NAMES utf8');
 			}catch(\PDOException $ex){
 				echo $ex->getMessage();
+				return http_response_code(400);
 			}
 		}
 		return self::$instance;
+	}
+
+	public static function getConnection(){
+		return DB::singleton();
 	}
 
 	public static function flat($value){
@@ -37,34 +42,23 @@ class DB{
 		$query=[];
 		$db->beginTransaction();
 		try{
-			foreach($params as $param){
-				$query[]=DB::execute($param['sql'],$param['params']);
+			if($params instanceof \Closure){
+				$params($db);
+			}else{
+				foreach($params as $param){
+					$query[]=DB::execute($param['sql'],$param['params']);
+				}
 			}
-			if($autocommit){
+			if($autocommit && $db->inTransaction()){
 				$db->commit();
 			}
 			return true;
 		}catch(\Exception $ex){
-			$db->rollback();
-			throw new \Exception($ex->getMessage());
+			if($db->inTransaction()){
+				$db->rollback();
+			}
 			return false;
 		}
-	}
-
-	public static function beginTransaction(){
-		Db::singleton()->beginTransaction();
-	}
-
-	public static function commit(){
-		DB::singleton()->commit();
-	}
-
-	public static function rollback(){
-		DB::singleton()->rollback();
-	}
-
-	public static function lastInsertId(){
-		return DB::singleton()->lastInsertId();
 	}
 
 	/*
@@ -91,7 +85,7 @@ class DB{
 	Indicar crear una nueva table o base de datos
 	@return Instanciamiento de la clase Create
 	*/
-	public static function create(){
+	public static function DBcreate(){
 		return new Create;
 	}
 
@@ -140,6 +134,12 @@ class Table{
 
 	// Condicionales - WHERE y LIKE
 	private $wheres=[];
+
+	// Agrupación de columnas - GROUP BY
+	private $groups=[];
+
+	// Condicionales - HAVING
+	private $havings=[];
 
 	// Columnas de orders by y parametro
 	private $orders=[];
@@ -318,6 +318,39 @@ class Table{
 		return $this;
 	}
 
+	public function group($column){
+		$this->groups[]=$column;
+		return $this;
+	}
+
+	public function having($column,$value){
+		$args=func_get_args();
+		$column=$args[0]??null;
+		if($column instanceof \Closure){
+			$this->havings[]="(";
+			$column($this);
+			$this->havings[]=")";
+			return $this;
+		}
+		$operator=$args[1]??null;
+		$value=$args[2]??null;
+		if($value==null){
+			$value=$operator;
+			$this->havings[]=[
+				"column"=>$column,
+				"operator"=>"=",
+				"value"=>$value
+			];
+		}else{
+			$this->havings[]=[
+				"column"=>$column,
+				"operator"=>$operator,
+				"value"=>$value
+			];
+		}
+		return $this;
+	}
+
 	public function orderAsc($column){
 		$this->orders[]=$column." ASC ";
 		return $this;
@@ -330,7 +363,7 @@ class Table{
 
 	public function pagination($max,$pag){
 		$index=$max*($pag-1);
-		$end=$index+$max;
+		$end=$max;
 		$this->limit['index']=$index;
 		$this->limit['end']=$end;
 		return $this;
@@ -380,7 +413,7 @@ class Table{
 				$columns=trim($columns,",");
 				$this->sql.=$columns." FROM ".$this->name_table;
 				// Join
-				foreach($this->joins as $join){
+				foreach($this->joins as $key=>$join){
 					$on=$join['where'];
 					$this->sql.=$join['type'].$join['table'];
 					if($on==null){
@@ -391,8 +424,8 @@ class Table{
 						if($on['value'] instanceof Flat){
 							$this->sql.=$on['value']->value." ";
 						}else{
-							$this->sql.="? ";
-							$params[]=$on['value'];
+							$this->sql.=":on_".$key;
+							$params["on_".$key]=$on['value'];
 						}
 					}else{
 						$this->sql.=" ON ".$on;
@@ -431,6 +464,32 @@ class Table{
 					}
 				}else{
 					$this->sql.=$where;
+				}
+			}
+		}
+		// Group by
+		if(sizeof($this->groups)>0){
+			$group_by=" GROUP BY ";
+			foreach($this->groups as $group){
+				$group_by.=$group.",";
+			}
+			$group_by=substr($group_by,0,strlen($group_by)-1);
+			$this->sql.=$group_by;
+		}
+		// Having
+		if(sizeof($this->havings)>0){
+			$this->sql.=" HAVING ";
+			foreach($this->havings as $key=>$having){
+				if(is_array($having)){
+					$this->sql.=$having['column'].$having['operator'];
+					if($having['value'] instanceof Flat){
+						$this->sql.=$having['value']->value;
+					}else{
+						$this->sql.=":having_".$key;
+						$params["having_".$key]=$having['value'];
+					}
+				}else{
+					$this->sql.=$having;
 				}
 			}
 		}

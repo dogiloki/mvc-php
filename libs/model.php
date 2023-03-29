@@ -4,7 +4,7 @@ namespace libs;
 
 use libs\Annotation;
 
-class Model{
+class Model extends DB{
 
 	protected $table;
 	protected $class;
@@ -23,7 +23,12 @@ class Model{
 	private function getValues(){
 		foreach($this->class as $attrib=>$value){
 			$this->params['attributes'][$attrib]=$value;
-			$prop=new \ReflectionProperty(get_class($this->class),$attrib);
+			$prop=null;
+			try{
+				$prop=new \ReflectionProperty(get_class($this->class),$attrib);
+			}catch(\Exception $ex){
+				continue;
+			}
 			$annotation=new Annotation($prop->getDocComment());
 			$id=$annotation->get('ID');
 			if($id!=null){
@@ -49,7 +54,12 @@ class Model{
 		}
 		foreach($this->class as $attrib=>$value){
 			$value_original=$value;
-			$prop=new \ReflectionProperty(get_class($this->class),$attrib);
+			$prop=null;
+			try{
+				$prop=new \ReflectionProperty(get_class($this->class),$attrib);
+			}catch(\Exception $ex){
+				continue;
+			}
 			$annotation=new Annotation($prop->getDocComment());
 			$id=$annotation->get('ID');
 			$column=$annotation->get('Column');
@@ -57,12 +67,20 @@ class Model{
 				continue;
 			}
 			$value=$row[$id??$column]??null;
+			if($value!=null){
+				unset($row[$id??$column]);
+			}
 			$refert=$annotation->get('Reference');
 			if($refert!=null){
 				$attribute="models\\".explode(",",$refert)[0];
 				$value=$attribute::find($value);
 			}
 			$this->class->$attrib=$value??$value_original??null;
+		}
+		foreach($row as $column=>$value){
+			if(!is_numeric($column)){
+				$this->class->$column=$value;
+			}
 		}
 	}
 
@@ -74,13 +92,15 @@ class Model{
 		return $model->class;
 	}
 
-	public static function find($value,$column=null){
+	public static function find($value,$column=null,$type=null){
 		$self=self::class;
 		$static=static::class;
 		$model=new $self(new $static());
 		if($value instanceof \Closure){
 			$callback=$value;
-			$type=$column;
+			if(is_array($column)){
+				$type=$column;
+			}
 			$find=DB::table($model->table);
 			$callback($find);
 			$rs=$find->get();
@@ -124,9 +144,13 @@ class Model{
 				$model->setValues($row);
 				$class[]=$model->class;
 			}
-			return sizeof($rows)==1?$model->class:$class;
+			if(is_array($type)){
+				return $class;
+			}else{
+				return $model->class;
+			}
 		}catch(\Exception $ex){
-			echo $ex->getMessage();
+			//echo $ex->getMessage();
 			return null;
 		}
 	}
@@ -148,12 +172,13 @@ class Model{
 				$id=$this->class->$primary_key;
 			}
 			$primary_key=$this->primary_key;
-			$rs=DB::table($this->table)->select()->where($primary_key,$id??DB::lastInsertId())->execute();
+			$rs=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->execute();
 			$rows=$rs->fetchAll()[0];
 			$this->setValues($rows);
 			return true;
 		}catch(\Exception $ex){
-			echo $ex->getMessage();
+			//echo $ex->getMessage();
+			throw new \Exception($ex);
 			return false;
 		}
 	}
@@ -167,7 +192,7 @@ class Model{
 			->execute();
 			return true;
 		}catch(\Exception $ex){
-			echo $ex->getMessage();
+			//echo $ex->getMessage();
 			return false;
 		}
 	}

@@ -29,8 +29,8 @@ class Config{
 				$pos_value_end=(strlen($line)-$pos_value_index)-1;
 				$key=substr($line,$pos_key_index,$pos_key_end);
 				$value=substr($line,$pos_value_index,$pos_value_end);
-				$this->positions[$count]=$key;
-				$this->vars[$key]=$value;
+				$this->positions[$count]=trim($key);
+				$this->vars[$key]=trim($value);
 			}
 			$count++;
 		}
@@ -51,21 +51,19 @@ class Config{
 	// 	fclose($fp);
 	// }
 
-	public function set($key,$value){
-		$this->vars[$key]=$value;
+	public static function set($key,$value){
+		$config=Config::singleton();
+		$config->vars[$key]=$value;
 	}
 
-	public function get($key){
-		if(isset($this->vars[$key])){
-			return $this->vars[$key];
-		}
-		return null;
+	public static function get($key){
+		$config=Config::singleton();
+		return $config->vars[$key]??null;
 	}
 
 	public static function singleton($file=null){
-		if(!isset(self::$instance)){
-			$class=__CLASS__;
-			self::$instance=new $class($file);
+		if(self::$instance==null){
+			self::$instance=new Config($file);
 		}
 		return self::$instance;
 	}

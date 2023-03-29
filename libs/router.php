@@ -5,6 +5,7 @@ namespace libs;
 use libs\Cofing;
 
 require_once("Functions.php");
+session_start();
 
 class Router{
 
@@ -49,7 +50,7 @@ class Router{
 				foreach($params as $key=>$param){
 					$$key=$param;
 				}
-				require_once $require_path;
+				require_once($require_path);
 				return 0;
 			}
 		}
@@ -109,7 +110,7 @@ class Router{
 			if(sizeof($params??[])!=(sizeof($urls))){
 				return $this->http_response_code(404,$params);
 			}
-			$request=new Request(getallheaders());
+			$request=Request::singleton();
 			// Agregar valor en las variables en la url
 			foreach($params??[] as $param=>$value){
 				$request->add('VAR',$param,$urls[$count]??"");
@@ -127,7 +128,7 @@ class Router{
 	}
 
 	private function http_response_code($code,$params=[]){
-		$request=new Request(getallheaders());
+		$request=Request::singleton();
 		if($params==null || sizeof($params)<=0){
 			// Agregar request
 			foreach($_REQUEST as $key_request=>$value_request){
@@ -181,28 +182,45 @@ class Router{
 
 class Request{
 
-	public $var=[];
-	public $get=[];
-	public $post=[];
-	public $put=[];
+	private static $instance=null;
 	public $header=null;
 
-	public function __construct($header){
-		$this->header=$header;
+	private function __construct(){
+		$this->get=[];
+		$this->post=[];
+		$this->put=[];
+		$this->cookie=$_COOKIE;
+		$this->session=$_SESSION??[];
+		$this->files=$_FILES??[];
+		$this->header=getallheaders();
+	}
+
+	public static function singleton(){
+		if(self::$instance==null){
+			self::$instance=new Request();
+		}
+		return self::$instance;
 	}
 
 	public function add($type,$key,$value){
 		$this->$key=$value;
 		switch($type){
-			case 'VAR': $this->var[$key]=$value; break;
 			case 'GET': $this->get[$key]=$value; break;
 			case 'POST': $this->post[$key]=$value; break;
 			case 'PUT': $this->put[$key]=$value; break;
 		}
 	}
 
+	public function cookie($key){
+		return $this->cookie[$key]??null;
+	}
+
 	public function session($key){
-		return $_SESSION[$key]??null;
+		return $this->session[$key]??null;
+	}
+
+	public function files($key){
+		return $this->files[$key]??null;
 	}
 
 	public function header($key=null){
@@ -231,13 +249,6 @@ class Request{
 			return $this->put;
 		}
 		return $this->put[$key]??null;
-	}
-
-	public function var($key=null){
-		if($key==null){
-			return $this->var;
-		}
-		return $this->var[$key]??null;
 	}
 
 }
