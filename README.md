@@ -5,7 +5,7 @@ Usa el servidor de apache, con los .htaccess activados.
 - composer install
 
 # Migrar base de datos
-- php manager migration [nombre base de datos] -> En caso de no envíar base de datos, usará en nombre de la configuración src/config.php
+- php manager migration [nombre base de datos] -> En caso de no envíar base de datos, usará el nombre de la configuración src/config.php
 <br>
 Creará la base de datos y las tablas; en caso de ya existir las tablas no hará modificación.
 
