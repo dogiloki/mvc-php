@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Hola</title>
-	<link rel="stylesheet" type="text/css" href="<?php config('APP_PUBLIC') ?>hola.css">
+	<link rel="stylesheet" type="text/css" href="<?php urlPublic('hola.css') ?>">
 </head>
 <body>
 

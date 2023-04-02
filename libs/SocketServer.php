@@ -4,7 +4,7 @@ require_once 'libs/Config.php';
 
 use libs\Config;
 
-class Socket_{
+class SocketServer{
 
     public $sockets;
     public $host;
