@@ -11,8 +11,7 @@ spl_autoload_register(function($clase){
 // Configuración
 use libs\Config;
 $cfg=Config::singleton("src/config.cfg");
-$cfg->set('APP_HOST',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
-$cfg->set('APP_PUBLIC',$cfg->get('APP_HOST')."public/");
+//$cfg->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 
 require_once("src/router.php");
 

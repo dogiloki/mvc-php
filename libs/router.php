@@ -70,7 +70,7 @@ class Router{
 	}
 
 	public function controller(){
-		$base_url="/".trim(isset($_GET['url'])?'/'.$_GET['url'].'/':'/',"/");
+		$base_url="/".trim(isset($_SERVER['REQUEST_URI'])?'/'.$_SERVER['REQUEST_URI'].'/':'/',"/");
 		if($base_url!="/"){
 			$base_url.="/";
 		}

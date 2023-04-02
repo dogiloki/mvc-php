@@ -1,5 +1,15 @@
 <?php
 
+spl_autoload_register(function($clase){
+	$path=str_replace("\\","/",$clase).".php";
+	if(file_exists($path)){
+		require_once($path);
+	}
+});
+
+use libs\Config;
+$cfg=Config::singleton("src/config.cfg");
+
 $command=$argv[1]??null;
 
 switch($command){
@@ -22,6 +32,11 @@ switch($command){
 			Raau::msg(Raau::newController($argv[3]));
 			Raau::msg(Raau::newModel($argv[3]));
 		}
+		break;
+	}
+	case 'serve':{
+		$argv[2]??=8000;
+		exec('php -S '.Config::get('APP_URL').":".$argv[2]);
 		break;
 	}
 	case null: Raau::msg("Se requieren parámetros"); break;

@@ -14,13 +14,13 @@ function config($key){
 	return libs\Config::singleton()->get($key);
 }
 function url($text){
-	echo config('APP_HOST').$text;
+	echo config('APP_URL')."/".$text;
 }
 function urlPublic($text){
-	echo config('APP_PUBLIC').$text;
+	echo config('APP_PUBLIC')."/".$text;
 }
 function redirect($url){
-	return header("location:".config('APP_HOST').$url);
+	return header("location:".config('APP_URL')."/".$url);
 }
 
 ?>
