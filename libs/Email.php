@@ -20,12 +20,12 @@ class Email{
 			// Configuración del servidor
 			$mail->SMTPDebug=SMTP::DEBUG_SERVER;
 			$mail->isSMTP();
-			$mail->Host="smtp.gmail.com"; // Servidor de Gmail
+			$mail->Host=Config::get('EMAIL_HOST');
 			$mail->SMTPAuth=true;
 			$mail->Username=Config::get('EMAIL_ADDRESS');
 			$mail->Password=Config::get('EMAIL_PASSWORD');
 			$mail->SMTPSecure=PHPMailer::ENCRYPTION_STARTTLS;
-			$mail->Port=587;
+			$mail->Port=Config::get('EMAIL_PORT');
 
 			// Contenido
 			$mail->setFrom(Config::get('EMAIL_ADDRESS'),$title); // Título del remitente
