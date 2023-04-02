@@ -12,7 +12,7 @@ $router->get('/',function($request){
 $router->error(404,function($request){
 	view('json');
 });
-$router->get("/test",function(){
+$router->get("/test",function($request){
 
 });
 

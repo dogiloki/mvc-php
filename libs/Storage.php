@@ -2,7 +2,14 @@
 
 namespace libs;
 
+require 'vendor/autoload.php';
+
+use Intervention\Image\ImageManagerStatic as Image;
+
 class Storage{
+
+    public static $compress_image=true;
+    public static $compress_image_level=70;
 
     public static function upload($file){
         $dir=Config::singleton()->get('APP_STORAGE')."/";
@@ -27,6 +34,9 @@ class Storage{
             $file_name=$sha1.".".$name_exp;
             $folder=$dir.$folder."/".$file_name;
             if(move_uploaded_file($name_temp,$folder)){
+                if(self::$compress_image && explode("/",$type)[0]=="image"){
+                    self::compressImage($folder);
+                }
                 return ["path"=>$file_name,"mime"=>$type];
             }else{
                 return null;
@@ -35,6 +45,11 @@ class Storage{
             echo $ex->getMessage();
         }
         return null;
+    }
+
+    public static function compressImage(string $path){
+        $image=Image::make($path);
+        $image->save($path,self::$compress_image_level);
     }
 
     public static function get($file){
