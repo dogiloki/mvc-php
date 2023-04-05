@@ -1,8 +1,12 @@
 # mvc-php
-Usa el servidor de apache, con los .htaccess activados.
+Es un pequeño framework que cuenta con enrutamiento ORM (sencillo)
 
 # Instalar librerías
 - composer install
+
+# Iniciar servidor
+Utiliza el servidor web integrado de php para pruebas locales con:
+- php manager serve
 
 # Migrar base de datos
 - php manager migration [nombre base de datos] -> En caso de no envíar base de datos, usará el nombre de la configuración src/config.php
