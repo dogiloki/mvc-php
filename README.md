@@ -1,8 +1,14 @@
 # mvc-php
-Usa el servidor de apache, con los .htaccess activados.
+Es un pequeño prototipo de un Framework que cuenta con enrutamiento, ORM (sencillo inspirado en Hibernate y Eloquent), Modelos, Controladores, Vistas y una configuración global en un archivo llamado "config.cfg".
+Tiene librerías para almacenar archivos en servidor, hacer peticiones HTTP, Servidor de Socket (sencillo inspirado en Socket.io) y envío de correo electrónico.
+Implementa un básico sistema de migración que consiste en ejecutar setencias SQL de un archivo ubicado en "src/migration.php"
 
 # Instalar librerías
 - composer install
+
+# Iniciar servidor
+Utiliza el servidor web integrado de php para pruebas locales con:
+- php manager serve
 
 # Migrar base de datos
 - php manager migration [nombre base de datos] -> En caso de no envíar base de datos, usará el nombre de la configuración src/config.php
