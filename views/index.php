@@ -9,6 +9,7 @@
 <body>
 
 	<h1>Hola mundo</h1>
+	<p>arreglo: <?php print_r($json); ?></p>
 
 </body>
 </html>

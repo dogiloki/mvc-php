@@ -17,7 +17,7 @@ class PruebaController{
 			"data"=>"Esto es una prueba",
 			"metodo"=>$this->model->modelar()
 		];
-		view('json',$arreglo);
+		view('index',$arreglo);
 	}
 
 }
