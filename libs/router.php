@@ -6,7 +6,6 @@ use libs\Cofing;
 use libs\Request;
 
 require_once("Functions.php");
-session_start();
 
 class Router{
 

@@ -2,6 +2,8 @@
 
 namespace libs;
 
+use libs\Session;
+
 class Request{
 
 	private static $instance=null;
@@ -12,7 +14,7 @@ class Request{
 		$this->post=[];
 		$this->put=[];
 		$this->cookie=$_COOKIE;
-		$this->session=$_SESSION??[];
+		$this->session=Session::singleton();
 		$this->files=$_FILES??[];
 		$this->header=getallheaders();
 	}
