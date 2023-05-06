@@ -2,14 +2,14 @@
 
 namespace controllers;
 
-use models;
+use models\Prueba;
 
-class Prueba{
+class PruebaController{
 
 	public $model;
 
 	public function __construct(){
-		$this->model=new models\Prueba();
+		$this->model=new Prueba();
 	}
 
 	public function metodo($request){
