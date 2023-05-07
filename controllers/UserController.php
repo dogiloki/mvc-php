@@ -25,6 +25,15 @@ class UserController{
         return back();
     }
 
+    public function update($request){
+        $user=User::find($request->id);
+        if($user!=null){
+            $user->update($request->post());
+            $user->save();
+        }
+        return redirect('/');
+    }
+
     public function delete($request){
         User::find($request->id)->delete();
         return back();

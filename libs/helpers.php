@@ -5,7 +5,7 @@ use libs\Config;
 
 function route($name,$params=[]){
     $router=Router::singletong();
-    return url(trim($router->getUrls()[$name]['url'].implode("/",$params),"/"));
+    return url(trim(($router->getUrls()[$name]??"")['url']??"".implode("/",$params),"/"));
 }
 
 function view($path,$params=[]){
@@ -31,7 +31,7 @@ function urlPublic($text){
 }
 
 function redirect($url){
-    return header("location:".config('APP_URL')."/".$url);
+    return header("location:".$url);
 }
 
 function back(){

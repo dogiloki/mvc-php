@@ -8,18 +8,18 @@
 </head>
 <body>
 
-<form action="<?php route('user.store'); ?>" method="POST">
+<form action="<?php echo isset($user_found)?route("user.update")."/".$user_found->id:route("user.store"); ?>" method="POST">
 	<label>
 		Nombre
 		<input type="text" name="name" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
 	</label>
 	<label>
 		Email
-		<input type="email" name="email" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
+		<input type="email" name="email" value="<?php echo isset($user_found)?$user_found->email:''; ?>">
 	</label>
 	<label>
 		Contraseña
-		<input type="password" name="password" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
+		<input type="password" name="password" value="<?php echo isset($user_found)?"":null ?>">
 	</label>
 	<select name="id_group">
 		<?php

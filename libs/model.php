@@ -208,6 +208,12 @@ class Model extends DB{
 		}
 	}
 
+	public function update($row){
+		unset($row[$this->primary_key]);
+		$this->setValues($row);
+		return $this->class;
+	}
+
 	public function delete(){
 		try{
 			$primary_key=$this->primary_key;
