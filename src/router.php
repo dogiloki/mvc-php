@@ -11,20 +11,12 @@ $router=new Router();
 
 $router->get('/prueba','PruebaController@metodo');
 $router->get('/',function($request){
-	view('index',$request);
+	$user=User::find(1);
+	view('user.index',compact('user'));
 });
 $router->get("/test",function($request){
 	try{
-		$group=new Group();
-		$group->name="3623IS";
-		$group->description="Grupo de administradores";
-		$group->save();
-		$user=new User();
-		$user->name="Julio";
-		$user->email="villanueva";
-		$user->password=Secure::encodePassword("123");
-		$user->group=$group;
-		$user->save();
+		echo json_encode();
 	}catch(\Exception $ex){
 		echo $ex->getMessage();
 	}

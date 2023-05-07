@@ -5,16 +5,14 @@ namespace libs;
 use libs\Cofing;
 use libs\Request;
 
-require_once("Functions.php");
+require_once("helpers.php");
 
 class Router{
 
 	private $url=[];
 	private $http_response_code=[];
-	private $config=null;
 
 	public function __construct(){
-		$this->config=Config::singleton();
 		
 		/*foreach(glob('controllers/*.php') as $file){
 			require_once $file;
@@ -42,8 +40,10 @@ class Router{
 	public function error($code,$action=null){
 		$this->http_response_code[$code]=$action;
 	}
+
 	public static $ext_views=["html","php"];
 	public static function view($path,$params=[]){
+		$path=str_replace(".","/",$path);
 		foreach(Router::$ext_views as $value){
 			$require_path="views/".$path.".".$value;
 			if(file_exists($require_path)){
@@ -91,7 +91,7 @@ class Router{
 			}
 			if($this->url[$key]['private']){
 				if(isset(getallheaders()['key'])){
-					if(getallheaders()['key']!=$this->config->get('APP_KEY')){
+					if(getallheaders()['key']!=Config::get('APP_KEY')){
 						return $this->http_response_code(404);
 					}
 				}else{
