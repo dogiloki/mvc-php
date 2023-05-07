@@ -5,7 +5,9 @@ use libs\Config;
 
 function route($name,$params=[]){
     $router=Router::singletong();
-    return url(trim(($router->getUrls()[$name]??"")['url']??"".implode("/",$params),"/"));
+    $url=url(trim(($router->getUrls()[$name]??"")['url']??"","/"));
+    $url.="/".implode("/",$params);
+    return $url;
 }
 
 function view($path,$params=[]){

@@ -93,6 +93,8 @@ class Router{
 			$base_url.="/";
 		}
 		$params=[];
+		$base_url=preg_replace('#(/)+#','/',$base_url);
+		//echo $base_url."<br>";
 		foreach($this->url as $key=>$url_value){
 			if(!is_numeric($key)){
 				continue;
@@ -106,6 +108,7 @@ class Router{
 				$base_url_new="/";
 			}
 			if($base_url_new!=$this->url[$key]['url']){
+				//echo $base_url_new."     -        ".$this->url[$key]['url']."<br>";
 				continue;
 			}
 			//echo $base_url_new."<br>";
@@ -128,8 +131,8 @@ class Router{
 			}
 			$params=$this->url[$key]['params'];
 			$count=0;
-			/*echo "router: ".sizeof($params??[])."<br>";
-			echo "url: ".(sizeof($urls));*/
+			//echo "router: ".sizeof($params??[])."<br>";
+			//echo "url: ".(sizeof($urls));
 			if(sizeof($params??[])!=(sizeof($urls))){
 				return $this->http_response_code(404,$params);
 			}
