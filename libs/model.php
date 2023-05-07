@@ -156,6 +156,31 @@ class Model extends DB{
 		}
 	}
 
+	public static function all(){
+		$self=self::class;
+		$static=static::class;
+		$model=new $self(new $static());
+		try{
+			$rs=DB::table($model->table)->select()->execute();
+			$rows=$rs->fetchAll();
+			if($rs==null || sizeof($rows)<=0){
+				return [];
+			}
+			$model->setValues($rows[0]);
+			$class=[];
+			foreach($rows as $row){
+				$model=new $self(new $static());
+				$model->setValues($row);
+				$class[]=$model->class;
+			}
+			return $class;
+		}catch(\Exception $ex){
+			//echo $ex->getMessage();
+			throw new \Exception($ex);
+			return [];
+		}
+	}
+
 	public function save(){
 		try{
 			$this->getValues();
