@@ -524,7 +524,7 @@ class Table{
 
 class Create extends Column2{
 
-	protected static $engine=null;
+	protected static $engine='InnoDB';
 	protected static $charset=null;
 	private static $type=null;
 	private const TABLE=0;
