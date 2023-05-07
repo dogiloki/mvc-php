@@ -29,7 +29,8 @@ function config($key){
 
 function url($text){
     //\dirname($_SERVER['PHP_SELF'])
-    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).($text==''?'':'/'.$text);
+    $text=trim($text,"/");
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"])."/".$text;
 }
 
 function urlPublic($text){

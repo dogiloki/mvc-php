@@ -11,9 +11,9 @@
     <header>
         <nav>
             <ul>
-                <li><a href="<?php echo url('/') ?>">Inicio</a></li>
-                <li><a href="<?php echo url('/user') ?>">Usuarios</a></li>
-                <li><a href="<?php echo url('/group') ?>">Grupos</a></li>
+                <li><a href="<?php echo url('') ?>">Inicio</a></li>
+                <li><a href="<?php echo url('user') ?>">Usuarios</a></li>
+                <li><a href="<?php echo url('group') ?>">Grupos</a></li>
             </ul>
         </nav>
     </header>
