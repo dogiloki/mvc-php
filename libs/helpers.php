@@ -3,7 +3,11 @@
 use libs\Router;
 use libs\Config;
 
-function route($name,$params=[]){
+function response(){
+    return Router::singletong()->getResponse();
+}
+
+function route($name,...$params){
     $router=Router::singletong();
     $url=url(trim(($router->getUrls()[$name]??"")['url']??"","/"));
     $url.="/".implode("/",$params);
@@ -25,7 +29,7 @@ function config($key){
 
 function url($text){
     //\dirname($_SERVER['PHP_SELF'])
-    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"])."/".$text;
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).($text==''?'':'/'.$text);
 }
 
 function urlPublic($text){

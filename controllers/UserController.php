@@ -10,7 +10,7 @@ class UserController{
 
     public function index($request){
         $user_found=null;
-        if($request->id!=null){
+        if(isset($request->id)){
             $user_found=User::find($request->id);
         }
         $users=User::all();
@@ -31,7 +31,7 @@ class UserController{
             $user->update($request->post());
             $user->save();
         }
-        return redirect('/');
+        return redirect(route('user.index'));
     }
 
     public function delete($request){
