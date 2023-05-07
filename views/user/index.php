@@ -42,18 +42,18 @@
 			<th>Nombre</th>
 			<th>Descripción</th>
 		</tr>
-		<tr>
-			<?php
-				foreach($users as $user){
-					echo "<td>{$user->name}</td>";
-					echo "<td>{$user->email}</td>";
-					echo "<td>{$user->group->name}</td>";
-					echo "<td>{$user->group->description}</td>";
-				}
-			?>
-			<td><a href="">EDITAR</a></td>
-			<td><a href="">ELIMINAR</a></td>
-		</tr>
+		<?php
+			foreach($users as $user){
+				echo "<tr>";
+				echo "<td>{$user->name}</td>";
+				echo "<td>{$user->email}</td>";
+				echo "<td>{$user->group->name}</td>";
+				echo "<td>{$user->group->description}</td>";
+				echo "<td><a href=''>EDITAR</a></td>";
+				echo "<td><a href=''>ELIMINAR</a></td>";
+				echo "</tr>";
+			}
+		?>
 	</table>
 
 </body>

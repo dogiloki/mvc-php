@@ -119,7 +119,7 @@ class Model extends DB{
 					return $model->class;
 				}
 			}else{
-				return null;
+				return [];
 			}
 		}
 		if($column==null){
@@ -162,18 +162,17 @@ class Model extends DB{
 		$model=new $self(new $static());
 		try{
 			$rs=DB::table($model->table)->select()->execute();
-			$rows=$rs->fetchAll();
-			if($rs==null || sizeof($rows)<=0){
+			if($rs->rowCount()>0){
+				$rows=$rs->fetchAll();
+				foreach($rows as $row){
+					$model=new $self(new $static());
+					$model->setValues($row);
+					$class[]=$model->class;
+				}
+				return $class;
+			}else{
 				return [];
 			}
-			$model->setValues($rows[0]);
-			$class=[];
-			foreach($rows as $row){
-				$model=new $self(new $static());
-				$model->setValues($row);
-				$class[]=$model->class;
-			}
-			return $class;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
 			throw new \Exception($ex);
