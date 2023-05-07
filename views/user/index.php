@@ -8,6 +8,22 @@
 </head>
 <body>
 
+<form action="<?php route('user.store'); ?>" method="POST">
+	<label>
+		Nombre
+		<input type="text" name="name">
+	</label>
+	<label>
+		Email
+		<input type="email" name="email">
+	</label>
+	<label>
+		Contraseña
+		<input type="password" name="password">
+	</label>
+	<input type="submit">
+</form>
+
 	<table border=1>
 		<tr>
 			<th rowspan=2>Nombre</th>

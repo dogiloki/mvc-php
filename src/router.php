@@ -2,10 +2,10 @@
 
 use libs\Router;
 
-$router=new Router();
+$router=Router::singletong();
 
 $router->get('/','UserController@index');
-$router->post('/user','UserController@store');
+$router->post('/user','UserController@store')->name('user.store');
 
 $router->controller();
 

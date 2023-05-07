@@ -9,14 +9,26 @@ require_once("helpers.php");
 
 class Router{
 
+	private static $instance=null;
 	private $url=[];
 	private $http_response_code=[];
 
-	public function __construct(){
+	private function __construct(){
 		
 		/*foreach(glob('controllers/*.php') as $file){
 			require_once $file;
 		}*/
+	}
+	
+	public static function singletong(){
+		if(self::$instance==null){
+			self::$instance=new Router();
+		}
+		return self::$instance;
+	}
+
+	public function getUrls(){
+		return $this->url;
 	}
 
 	/*
@@ -26,19 +38,19 @@ class Router{
 	@return Function con paramtro Request de tipo GET, POST y variables de url amigable
 	*/
 	public function get($url,$action=null,$private=false){
-		$this->add('GET',$url,$action,$private);
+		return $this->add('GET',$url,$action,$private);
 	}
 	public function post($url,$action=null,$private=false){
-		$this->add('POST',$url,$action,$private);
+		return $this->add('POST',$url,$action,$private);
 	}
 	public function put($url,$action=null,$private=false){
-		$this->add('PUT',$url,$action,$private);
+		return $this->add('PUT',$url,$action,$private);
 	}
 	public function delete($url,$action=null,$private=false){
-		$this->add('DELETE',$url,$action,$private);
+		return $this->add('DELETE',$url,$action,$private);
 	}
 	public function error($code,$action=null){
-		$this->http_response_code[$code]=$action;
+		return $this->http_response_code[$code]=$action;
 	}
 
 	public static $ext_views=["html","php"];
@@ -67,6 +79,12 @@ class Router{
 			'action'=>$action,
 			'private'=>$private
 		];
+		return $this;
+	}
+
+	public function name(string $name){
+		$this->url[$name]=end($this->url);
+		return $this;
 	}
 
 	public function controller(){
