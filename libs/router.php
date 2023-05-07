@@ -73,7 +73,7 @@ class Router{
 		//echo "<pre>".print_r($base_url,"<br>")."</pre>";
 		$this->url[]=[
 			'method'=>$method,
-			'url'=>$base_url['url'],
+			'url'=>$base_url['url']??'/',
 			'index_params'=>$base_url['index_params']??[],
 			'params'=>$base_url['params']??[],
 			'action'=>$action,
@@ -92,14 +92,19 @@ class Router{
 		if($base_url!="/"){
 			$base_url.="/";
 		}
-		//header("location:../".trim($base_url,"/"));
 		$params=[];
-		for($key=0; $key<sizeof($this->url); $key++){
+		foreach($this->url as $key=>$url_value){
+			if(!is_numeric($key)){
+				continue;
+			}
 			$base_url_new=explode("/",$base_url);
 			foreach($this->url[$key]['index_params'] as $index){
 				unset($base_url_new[$index+1]);
 			}
 			$base_url_new=implode("/",$base_url_new);
+			if($base_url_new==""){
+				$base_url_new="/";
+			}
 			if($base_url_new!=$this->url[$key]['url']){
 				continue;
 			}

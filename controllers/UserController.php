@@ -8,10 +8,14 @@ use libs\Secure;
 
 class UserController{
 
-    public function index(){
+    public function index($id=null){
+        $user=null;
+        if($id==null){
+            $user=User::find($id);
+        }
         $users=User::all();
         $groups=Group::all();
-        return view("user.index",compact('users','groups'));
+        return view("user.index",compact('users','groups','user'));
     }
 
     public function store($request){

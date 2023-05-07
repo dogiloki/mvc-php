@@ -49,7 +49,7 @@
 				echo "<td>{$user->email}</td>";
 				echo "<td>{$user->group->name}</td>";
 				echo "<td>{$user->group->description}</td>";
-				echo "<td><a href=''>EDITAR</a></td>";
+				echo "<td><a href='{$user->id}'>EDITAR</a></td>";
 				echo "<td><a href=''>ELIMINAR</a></td>";
 				echo "</tr>";
 			}
