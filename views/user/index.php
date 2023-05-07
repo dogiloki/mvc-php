@@ -21,6 +21,13 @@
 		Contraseña
 		<input type="password" name="password">
 	</label>
+	<select name="id_group">
+		<?php
+			foreach($groups as $group){
+				echo "<option value='{$group->id}' title='{$group->description}'>{$group->name}</option>";
+			}
+		?>
+	</select>
 	<input type="submit">
 </form>
 

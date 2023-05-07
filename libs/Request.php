@@ -54,25 +54,34 @@ class Request{
 		return $this->header[$key]??null;
 	}
 
-	public function get($key=null){
+	public function get($key=null, $value=null){
 		if($key==null){
 			return $this->get;
 		}
-		return $this->get[$key]??null;
+		if($value==null){
+			return $this->get[$key]??null;
+		}
+		return $this->get[$key]=$value;
 	}
 
-	public function post($key=null){
+	public function post($key=null, $value=null){
 		if($key==null){
 			return $this->post;
 		}
-		return $this->post[$key]??null;
+		if($value==null){
+			return $this->post[$key]??null;
+		}
+		return $this->post[$key]=$value;
 	}
 
-	public function put($key=null){
+	public function put($key=null, $value=null){
 		if($key==null){
 			return $this->put;
 		}
-		return $this->put[$key]??null;
+		if($value==null){
+			return $this->put[$key]??null;
+		}
+		return $this->put[$key]=$value;
 	}
 
 }
