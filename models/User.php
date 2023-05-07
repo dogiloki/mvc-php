@@ -2,7 +2,6 @@
 
 namespace models;
 
-use libs\DB;
 use libs\Model;
 
 /**
@@ -10,7 +9,6 @@ use libs\Model;
 **/
 class User extends Model{
 
-	public $table="user";
 	/**
 	 * @ID(id)
 	 */
@@ -27,6 +25,11 @@ class User extends Model{
 	 * @Column(password)
 	 */
 	public $password;
+	/**
+	 * @Column(id_group)
+	 * @Reference(Group,id)
+	 */
+	public $group;
 
 }
 

@@ -152,7 +152,7 @@ class Table{
 	private $limit=null;
 
 	public function __construct($name_table=""){
-		$this->name_table=$name_table;
+		$this->name_table="`".$name_table."`";
 	}
 
 	/*
@@ -525,7 +525,7 @@ class Table{
 
 class Create extends Column2{
 
-	protected static $engine='InnoDB';
+	protected static $engine=null;
 	protected static $charset=null;
 	private static $type=null;
 	private const TABLE=0;
@@ -534,17 +534,17 @@ class Create extends Column2{
 	public static function database($name_db){
 		DB::$create_db=true;
 		$db=DB::singleton();
-		DB::$sql.="CREATE DATABASE IF NOT EXISTS ".$name_db;
+		DB::$sql.="CREATE DATABASE IF NOT EXISTS `".$name_db."`";
 		Create::$type=Create::DATABASE;
 		$query=$db->query(DB::$sql);
-		$db->query('USE '.$name_db);
+		$db->query("USE `".$name_db."`");
 		DB::$create_db=false;
 		Create::reset();
 		return $query;
 	}
 
 	public static function table($name_table,$action=null){
-		DB::$sql.="CREATE TABLE IF NOT EXISTS ".$name_table."(";
+		DB::$sql.="CREATE TABLE IF NOT EXISTS `".$name_table."`(";
 		if($action instanceof \Closure){
 			$action(new Column2,explode("/",implode("/",array_slice(func_get_args(),2))));
 		}
@@ -563,9 +563,8 @@ class Create extends Column2{
 		$query=null;
 		if(Create::$type==Create::TABLE){
 			DB::$sql=substr(DB::$sql,0,strlen(DB::$sql)-1).")";
-			if(Create::$engine!=null){
-				DB::$sql.="ENGINE=".Create::$engine;
-			}
+			Create::$engine??="InnoDB";
+			DB::$sql.="ENGINE=".Create::$engine;
 			if(Create::$charset!=null){
 				DB::$sql.=" DEFAULT CHARSET=".Create::$charset;
 			}
@@ -656,7 +655,7 @@ class Column2{
 	}
 
 	public static function foreignKey($name_table,$name_Column2){
-		Column2::$indexes[Column2::$total_indexes]="FOREIGN KEY (".Column2::$Column2_name.") REFERENCES ".$name_table."(".$name_Column2."),";
+		Column2::$indexes[Column2::$total_indexes]="FOREIGN KEY (".Column2::$Column2_name.") REFERENCES `".$name_table."`(".$name_Column2."),";
 		Column2::$total_indexes++;
 		return new Column2;
 	}

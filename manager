@@ -65,18 +65,7 @@ class Raau{
 
 namespace controllers;
 
-use models;
-
 class '.$name.'{
-
-	/*
-	Ejemplo de acceder a modelos
-	public $model;
-
-	public function __construct(){
-		$this->model=new models\\'.$name.'();
-	}
-	*/
 
 }
 
@@ -101,7 +90,7 @@ class '.$name.'{
 
 namespace models;
 
-use libs\DB;
+use libs\Model;
 
 class '.$name.'{
 
