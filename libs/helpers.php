@@ -3,9 +3,9 @@
 use libs\Router;
 use libs\Config;
 
-function route($name){
+function route($name,$params=[]){
     $router=Router::singletong();
-    url(trim($router->getUrls()[$name]['url'],"/"));
+    return url(trim($router->getUrls()[$name]['url'].implode("/",$params),"/"));
 }
 
 function view($path,$params=[]){
@@ -23,11 +23,11 @@ function config($key){
 
 function url($text){
     //\dirname($_SERVER['PHP_SELF'])
-    echo str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"])."/".$text;
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"])."/".$text;
 }
 
 function urlPublic($text){
-    echo url(config('APP_PUBLIC')."/".$text);
+    return url(config('APP_PUBLIC')."/".$text);
 }
 
 function redirect($url){

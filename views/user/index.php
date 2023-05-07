@@ -4,22 +4,22 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Usuarios</title>
-	<link rel="stylesheet" type="text/css" href="<?php urlPublic('header.css') ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo urlPublic('header.css') ?>">
 </head>
 <body>
 
 <form action="<?php route('user.store'); ?>" method="POST">
 	<label>
 		Nombre
-		<input type="text" name="name">
+		<input type="text" name="name" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
 	</label>
 	<label>
 		Email
-		<input type="email" name="email">
+		<input type="email" name="email" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
 	</label>
 	<label>
 		Contraseña
-		<input type="password" name="password">
+		<input type="password" name="password" value="<?php echo isset($user_found)?$user_found->name:''; ?>">
 	</label>
 	<select name="id_group">
 		<?php
@@ -50,7 +50,7 @@
 				echo "<td>{$user->group->name}</td>";
 				echo "<td>{$user->group->description}</td>";
 				echo "<td><a href='{$user->id}'>EDITAR</a></td>";
-				echo "<td><a href=''>ELIMINAR</a></td>";
+				echo "<td><a href='".route('user.delete',['id'=>$user->id])."'>ELIMINAR</a></td>";
 				echo "</tr>";
 			}
 		?>
