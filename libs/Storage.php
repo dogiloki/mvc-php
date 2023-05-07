@@ -8,7 +8,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class Storage{
 
-    public static $compress_image=true;
+    public static $compress_image=false;
     public static $compress_image_level=70;
 
     public static function upload($file){
