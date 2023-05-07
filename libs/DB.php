@@ -68,6 +68,7 @@ class DB extends \PDO{
 	@param array $params[] -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
 	*/
 	public static function execute($sql,$params=[]){
+		//echo "<pre>".print_r($sql,"<br>")."</pre>";
 		//echo "<pre>".print_r($params,"<br>")."</pre>";
 		$db=self::singleton();
 		if($db==null){

@@ -11,8 +11,8 @@ class Model extends DB{
 	protected $primary_key;
 	protected $params;
 
-	public function __construct($class){
-		$this->class=$class;
+	public function __construct($class=null){
+		$this->class=$class==null?$this:$class;
 		$reflection=new \ReflectionClass(get_class($this->class));
 		$annotation=new Annotation($reflection->getDocComment());
 		$this->table=$annotation->get("Table");
@@ -151,6 +151,7 @@ class Model extends DB{
 			}
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
+			throw new \Exception($ex);
 			return null;
 		}
 	}
@@ -193,6 +194,7 @@ class Model extends DB{
 			return true;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
+			throw new \Exception($ex);
 			return false;
 		}
 	}

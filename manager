@@ -113,7 +113,7 @@ class '.$name.'{
 
 ?>');
 		fclose($file);
-		return "Controlador creador. controllers/".$name.".php";
+		return "Modelo creador. models/".$name.".php";
 	}
 
 }
