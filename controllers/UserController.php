@@ -18,7 +18,7 @@ class UserController{
         $request->post('password',Secure::encodePassword($request->post('password')));
         $user=User::create($request->post());
         $user->save();
-        return $this->index();
+        return back();
     }
 
 }

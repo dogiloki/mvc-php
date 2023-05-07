@@ -34,4 +34,9 @@ function redirect($url){
     return header("location:".config('APP_URL')."/".$url);
 }
 
+function back(){
+    header("Location: ".$_SERVER['HTTP_REFERER']);
+    exit;
+}
+
 ?>
