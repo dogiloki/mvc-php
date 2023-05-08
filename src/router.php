@@ -21,10 +21,11 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    //$user=User::find(1);
     $group=Group::find(1);
-    var_dump($group);
-    //return json(compact('user','group'));
+    $group->users=User::find(function($find){
+        $find->where('id_group',1);
+    },[]);
+    return json(compact('group'));
 })->name('test');
 
 $router->controller();

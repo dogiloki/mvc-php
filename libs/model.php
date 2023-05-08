@@ -65,16 +65,18 @@ class Model extends DB{
 			}
 			$value=$row[$id??$column]??null;
 			$value_id??=$row[$id]??null;
-			if($value!=null){
+			if($value==null){
+				unset($this->class->$attrib);
+			}else{
 				unset($row[$id??$column]);
-			}
-			$this->class->$attrib=$value??$value_original??null;
-		}
-		foreach($row as $column=>$value){
-			if(!is_numeric($column)){
-				$this->class->$column=$value;
+				$this->class->$attrib=$value??$value_original??null;
 			}
 		}
+		// foreach($row as $column=>$value){
+		// 	if(!is_numeric($column)){
+		// 		$this->class->$column=$value;
+		// 	}
+		// }
 	}
 
 	public static function create($row){
@@ -95,11 +97,11 @@ class Model extends DB{
 				$type=$column;
 			}
 			$find=DB::table($model->table);
+			$find->select();
 			$callback($find);
 			$rs=$find->get();
 			if($rs->rowCount()>0){
 				$rows=$rs->fetchAll();
-				$models=[];
 				if(is_array($type)){
 					foreach($rows as $row){
 						$model=new $self(new $static());
