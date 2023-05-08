@@ -3,8 +3,8 @@
 use libs\Router;
 use libs\Config;
 
-function response(){
-    return Router::singletong()->getResponse();
+function dd($obj){
+    echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
 function route($name,...$params){

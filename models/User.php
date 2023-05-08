@@ -27,7 +27,7 @@ class User extends Model{
 	public $password;
 	/**
 	 * @Column(id_group)
-	 * @Reference(Group,id)
+	 * @OneToOne(Group,id)
 	 */
 	public $group;
 

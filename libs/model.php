@@ -39,19 +39,16 @@ class Model extends DB{
 			if($column==null){
 				continue;
 			}
-			$refert=$annotation->get('Reference');
-			if($refert!=null){
-				$attribute=explode(",",$refert)[1];
-				$value=$value->$attribute??null;
-			}
 			$this->params['columns'][$column]=$value;
 		}
+		//var_dump($this->params['columns']);
 	}
 
 	public function setValues($row){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
+		$value_id=null;
 		foreach($this->class as $attrib=>$value){
 			$value_original=$value;
 			$prop=null;
@@ -67,13 +64,9 @@ class Model extends DB{
 				continue;
 			}
 			$value=$row[$id??$column]??null;
+			$value_id??=$row[$id]??null;
 			if($value!=null){
 				unset($row[$id??$column]);
-			}
-			$refert=$annotation->get('Reference');
-			if($refert!=null){
-				$attribute="models\\".explode(",",$refert)[0];
-				$value=$attribute::find($value);
 			}
 			$this->class->$attrib=$value??$value_original??null;
 		}
