@@ -2,6 +2,7 @@
 
 use libs\Router;
 use libs\Config;
+use libs\Model;
 
 function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
@@ -18,9 +19,9 @@ function view($path,$params=[]){
     Router::view($path,$params);
 }
 
-function json($text){
+function json($array){
     header("Content-type: application/json");
-    return json_encode($text);
+    return json_encode($array);
 }
 
 function config($key){

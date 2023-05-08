@@ -10,11 +10,14 @@ class Model extends DB{
 	protected $class;
 	protected $primary_key;
 	protected $params;
+	protected $annotation_class;
+	protected $annotation_attributes;
 
 	public function __construct($class=null){
 		$this->class=$class==null?$this:$class;
 		$reflection=new \ReflectionClass(get_class($this->class));
 		$annotation=new Annotation($reflection->getDocComment());
+		$this->annotation_class=$annotation;
 		$this->table=$annotation->get("Table");
 		//self::$params=get_class_vars(get_class($class));
 		$this->getValues();
@@ -22,6 +25,12 @@ class Model extends DB{
 
 	private function getValues(){
 		foreach($this->class as $attrib=>$value){
+			if(property_exists(get_class($this->class),$attrib)){
+				$visibility=(new \ReflectionProperty(get_class($this->class),$attrib))->isPublic();
+				if(!$visibility){
+					continue;
+				}
+			}
 			$this->params['attributes'][$attrib]=$value;
 			$prop=null;
 			try{
@@ -30,6 +39,7 @@ class Model extends DB{
 				continue;
 			}
 			$annotation=new Annotation($prop->getDocComment());
+			$this->annotation_attributes[$attrib]=$annotation;
 			$id=$annotation->get('ID');
 			if($id!=null){
 				$this->primary_key=$id;
@@ -44,39 +54,69 @@ class Model extends DB{
 		//var_dump($this->params['columns']);
 	}
 
-	public function setValues($row){
+	private function setValues($row,$ignore_relation=false){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
 		$value_id=null;
 		foreach($this->class as $attrib=>$value){
 			$value_original=$value;
-			$prop=null;
-			try{
-				$prop=new \ReflectionProperty(get_class($this->class),$attrib);
-			}catch(\Exception $ex){
+			$annotation=$this->annotation_attributes[$attrib]??null;
+			if($annotation==null){
 				continue;
 			}
-			$annotation=new Annotation($prop->getDocComment());
 			$id=$annotation->get('ID');
 			$column=$annotation->get('Column');
+			$relation=$annotation->get('OneToOne')??$annotation->get('OneToMany')??$annotation->get('ManyToOne')??$annotation->get('ManyToMany');
 			if($column==null && $id==null){
-				continue;
+				if($relation==null){
+					continue;
+				}
 			}
 			$value=$row[$id??$column]??null;
 			$value_id??=$row[$id]??null;
-			if($value==null){
+			//($value==null && $ignore_relation)
+			if(($value==null && $relation==null)){
 				unset($this->class->$attrib);
 			}else{
 				unset($row[$id??$column]);
+				if($relation!=null){
+					$reference=explode(',',$relation);
+					$model=new ("models\\".$reference[0])();
+					$model_attrib=$model->annotation_attributes[$reference[1]];
+					$model_column=$model_attrib->get('ID')??$column->get('Column');
+					if($ignore_relation){
+						$this->class->{'_'.$attrib}=fn()=>$this->getReference($annotation,$reference[0],$value_id,$model_column);
+						unset($this->class->$attrib);
+						break;
+					}else{
+						$value=$this->getReference($annotation,$reference[0],$value_id,$model_column);
+					}
+				}
 				$this->class->$attrib=$value??$value_original??null;
 			}
 		}
+		// Llenar los atributos que no estan en la clase
 		// foreach($row as $column=>$value){
 		// 	if(!is_numeric($column)){
 		// 		$this->class->$column=$value;
 		// 	}
 		// }
+	}
+
+	public function __get($attrib){
+		$attrib='_'.$attrib;
+		return ($this->class->$attrib)();
+	}
+
+	private function getReference($annotation,$model,$column,$value){
+		if($annotation->get('OneToOne')!=null){
+			$value=("models\\".$model)::find($column,$value,null,true);
+		}
+		if($annotation->get('OneToMany')!=null){
+			$value=("models\\".$model)::find($column,$value,[],true);
+		}
+		return $value;
 	}
 
 	public static function create($row){
@@ -87,7 +127,7 @@ class Model extends DB{
 		return $model->class;
 	}
 
-	public static function find($value,$column=null,$type=null){
+	public static function find($value,$column=null,$type=null,$ignore_relation=false){
 		$self=self::class;
 		$static=static::class;
 		$model=new $self(new $static());
@@ -105,12 +145,12 @@ class Model extends DB{
 				if(is_array($type)){
 					foreach($rows as $row){
 						$model=new $self(new $static());
-						$model->setValues($row);
+						$model->setValues($row,$ignore_relation);
 						$class[]=$model->class;
 					}
 					return $class;
 				}else{
-					$model->setValues($rows[0]);
+					$model->setValues($rows[0],$ignore_relation);
 					return $model->class;
 				}
 			}else{
@@ -132,11 +172,11 @@ class Model extends DB{
 			if($rs==null || sizeof($rows)<=0){
 				return null;
 			}
-			$model->setValues($rows[0]);
+			$model->setValues($rows[0],$ignore_relation);
 			$class=[];
 			foreach($rows as $row){
 				$model=new $self(new $static());
-				$model->setValues($row);
+				$model->setValues($row,$ignore_relation);
 				$class[]=$model->class;
 			}
 			if(is_array($type)){
