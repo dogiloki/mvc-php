@@ -5,6 +5,7 @@ namespace controllers;
 use models\User;
 use models\Group;
 use libs\Secure;
+use libs\DB;
 
 class UserController{
 
@@ -19,10 +20,18 @@ class UserController{
     }
 
     public function store($request){
-        $request->post('password',Secure::encodePassword($request->post('password')));
-        $user=User::create($request->post());
-        $user->save();
-        return back();
+        try{
+            $request->password=Secure::encodePassword($request->password);
+            $user=new User();
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->password=$request->password;
+            $user->group=$request->id_group;
+            $user->save();
+            return back();
+        }catch(\Exception $ex){
+            echo $ex->getMessage();
+        }
     }
 
     public function update($request){

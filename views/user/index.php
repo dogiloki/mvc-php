@@ -54,12 +54,13 @@
 		</tr>
 		<?php
 			foreach($users as $user){
+				//dd($user);
 				echo "<tr>";
 				echo "<td>{$user->name}</td>";
 				echo "<td>{$user->email}</td>";
 				echo "<td>{$user->group->name}</td>";
 				echo "<td>{$user->group->description}</td>";
-				echo "<td><a href='".route('group.index',$user->id)."'>EDITAR</a></td>";
+				echo "<td><a href='".route('user.index',$user->id)."'>EDITAR</a></td>";
 				echo "<td><a href='".route('user.delete',$user->id)."'>ELIMINAR</a></td>";
 				echo "</tr>";
 			}

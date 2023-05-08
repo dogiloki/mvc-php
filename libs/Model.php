@@ -74,13 +74,12 @@ class Model extends DB{
 				}
 			}
 			$value=$row[$id??$column]??null;
-			$value_id??=$row[$id]??null;
 			//($value==null && $ignore_relation)
 			if(($value==null && $relation==null)){
 				unset($this->class->$attrib);
 			}else{
-				unset($row[$id??$column]);
 				if($relation!=null){
+					$value_id??=$row[$column]??null;
 					$reference=explode(',',$relation);
 					$model=new ("models\\".$reference[0])();
 					$model_attrib=$model->annotation_attributes[$reference[1]];
@@ -94,6 +93,7 @@ class Model extends DB{
 					}
 				}
 				$this->class->$attrib=$value??$value_original??null;
+				unset($row[$id??$column]);
 			}
 		}
 		// Llenar los atributos que no estan en la clase
@@ -118,7 +118,8 @@ class Model extends DB{
 		}
 		return $value;
 	}
-
+	
+	/*
 	public static function create($row){
 		$self=self::class;
 		$static=static::class;
@@ -126,6 +127,7 @@ class Model extends DB{
 		$model->setValues($row);
 		return $model->class;
 	}
+	*/
 
 	public static function find($value,$column=null,$type=null,$ignore_relation=false){
 		$self=self::class;
