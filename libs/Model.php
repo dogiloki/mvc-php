@@ -12,6 +12,7 @@ class Model extends DB{
 	protected $params;
 	protected $annotation_class;
 	protected $annotation_attributes;
+	protected $calls=[];
 
 	public function __construct($class=null){
 		$this->class=$class==null?$this:$class;
@@ -86,7 +87,7 @@ class Model extends DB{
 					$model_attrib=$model->annotation_attributes[$reference[1]];
 					$model_column=$model_attrib->get('ID')??$column->get('Column');
 					if($ignore_relation){
-						$this->class->{'_'.$attrib}=fn()=>$this->getReference($annotation,$reference[0],$value_id,$model_column);
+						$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference[0],$value_id,$model_column);
 						unset($this->class->$attrib);
 						break;
 					}else{
@@ -106,8 +107,7 @@ class Model extends DB{
 	}
 
 	public function __get($attrib){
-		$attrib='_'.$attrib;
-		return ($this->class->$attrib)();
+		return ($this->class->calls[$attrib])();
 	}
 
 	private function getReference($annotation,$model,$column,$value){
