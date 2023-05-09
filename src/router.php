@@ -23,7 +23,7 @@ $router->post('/update/group/{id}','GroupController@update')->name('group.update
 $router->get('/test',function(){
     $user=User::find(1);
     $group=Group::find(1);
-    //var_dump($user->group->users[0]->group->name);
+    //dd($group->users[0]->group->users[0]->group->name);
     return json(compact('user','group'));
 })->name('test');
 

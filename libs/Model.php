@@ -74,12 +74,13 @@ class Model extends DB{
 				}
 			}
 			$value=$row[$id??$column]??null;
+			$value_id??=$row[$id]??null;
 			//($value==null && $ignore_relation)
 			if(($value==null && $relation==null)){
 				unset($this->class->$attrib);
 			}else{
 				if($relation!=null){
-					$value_id??=$row[$column]??null;
+					$value_id=$row[$column]??$value_id;
 					$reference=explode(',',$relation);
 					$model=new ("models\\".$reference[0])();
 					$model_attrib=$model->annotation_attributes[$reference[1]];
