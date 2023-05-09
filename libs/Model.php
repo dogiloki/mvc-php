@@ -67,7 +67,7 @@ class Model extends DB{
 			}
 			$id=$annotation->get('ID');
 			$column=$annotation->get('Column');
-			$relation=$annotation->get('OneToOne')??$annotation->get('OneToMany')??$annotation->get('ManyToOne')??$annotation->get('ManyToMany');
+			$relation=$annotation->get('HasOne')??$annotation->get('HasMany')??$annotation->get('ManyToMany');
 			if($column==null && $id==null){
 				if($relation==null){
 					continue;
@@ -111,10 +111,10 @@ class Model extends DB{
 	}
 
 	private function getReference($annotation,$model,$column,$value){
-		if($annotation->get('OneToOne')!=null){
+		if($annotation->get('HasOne')!=null){
 			$value=("models\\".$model)::find($column,$value,null,true);
 		}
-		if($annotation->get('OneToMany')!=null){
+		if($annotation->get('HasMany')!=null){
 			$value=("models\\".$model)::find($column,$value,[],true);
 		}
 		return $value;
@@ -244,12 +244,6 @@ class Model extends DB{
 			throw new \Exception($ex);
 			return false;
 		}
-	}
-
-	public function update($row){
-		unset($row[$this->primary_key]);
-		$this->setValues($row);
-		return $this->class;
 	}
 
 	public function delete(){

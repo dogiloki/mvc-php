@@ -25,7 +25,7 @@ class Group extends Model{
 	public $description;
 
 	/**
-	 * @OneToMany(User,id)
+	 * @HasMany(User,id)
 	 */
 	public $users;
 

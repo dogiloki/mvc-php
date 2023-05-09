@@ -37,7 +37,10 @@ class UserController{
     public function update($request){
         $user=User::find($request->id);
         if($user!=null){
-            $user->update($request->post());
+            $user->name=$request->name;
+            $user->email=$request->email;
+            $user->password=$request->password;
+            $user->group=$request->id_group;
             $user->save();
         }
         return redirect(route('user.index'));

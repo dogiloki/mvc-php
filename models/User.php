@@ -27,7 +27,7 @@ class User extends Model{
 	public $password;
 	/**
 	 * @Column(id_group)
-	 * @OneToOne(Group,id)
+	 * @HasOne(Group,id)
 	 */
 	public $group;
 
