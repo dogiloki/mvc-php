@@ -1,10 +1,11 @@
 <?php
 
-namespace libs;
+namespace libs\DB;
 
 use libs\Annotation;
+use libs\DB\DB;
 
-class Model extends DB{
+class Model{
 
 	protected $table;
 	protected $class;

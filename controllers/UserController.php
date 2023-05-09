@@ -5,7 +5,6 @@ namespace controllers;
 use models\User;
 use models\Group;
 use libs\Secure;
-use libs\DB;
 
 class UserController{
 

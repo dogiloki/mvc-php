@@ -2,7 +2,7 @@
 
 namespace models;
 
-use libs\Model;
+use libs\DB\Model;
 
 /**
  * @Table(user)
