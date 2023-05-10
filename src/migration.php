@@ -1,6 +1,6 @@
 <?php
 
-use libs\DB;
+use libs\DB\DB;
 
 // Sentencias SQL
 
