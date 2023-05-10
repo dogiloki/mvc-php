@@ -112,15 +112,15 @@ class Model{
 	private function getReference($annotation,$reference,$value_id){
 		$value=null;
 		$model=new ("models\\".$reference[0])();
-		$attrib=$model->annotation_attributes[$reference[1]];
-		$column=$attrib->get('ID')??$attrib->get('Column');
+		//$attrib=$model->annotation_attributes[$reference[1]];
+		$column=$reference[1];
 		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
 			$value=("models\\".$reference[0])::find($value_id,$column,($annotation->get('HasOne')?null:[]));
 		}
 		if($annotation->get('ManyToMany')!=null){
 			$model_middle=new ("models\\".$reference[2])();
-			$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
-			$column_middle=$attrib_middle->get('ID')??$attrib_middle->get('Column');
+			//$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
+			$column_middle=$reference[3];
 			$value=("models\\".$reference[0])::find(function($find)use($model,$model_middle,$column_middle,$value_id){
 				$find->select($model->getTable().".*");
 				$find->join($model_middle->getTable())->on($column_middle,$value_id);

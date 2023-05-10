@@ -25,7 +25,7 @@ class Group extends Model{
 	public $description;
 
 	/**
-	 * @HasMany(User,group)
+	 * @HasMany(User,id_group)
 	 */
 	public $users;
 
