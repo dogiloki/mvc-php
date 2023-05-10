@@ -25,6 +25,10 @@ class Model{
 		$this->getValues();
 	}
 
+	public function getTable(){
+		return $this->table;
+	}
+
 	private function getValues(){
 		foreach($this->class as $attrib=>$value){
 			if(property_exists(get_class($this->class),$attrib)){
@@ -56,12 +60,12 @@ class Model{
 		//var_dump($this->params['columns']);
 	}
 
-	private function setValues($row,$ignore_relation=false){
+	private function setValues($row){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
 		$value_id=null;
-		foreach($this->class as $attrib=>$value){
+		foreach($this->params['attributes'] as $attrib=>$value){
 			$value_original=$value;
 			$annotation=$this->annotation_attributes[$attrib]??null;
 			if($annotation==null){
@@ -81,22 +85,16 @@ class Model{
 			if(($value==null && $relation==null)){
 				unset($this->class->$attrib);
 			}else{
-				if($relation!=null){
+				if($relation==null){
+					$this->class->$attrib=$value??$value_original??null;
+					unset($row[$id??$column]);
+				}else{
 					$value_id=$row[$column]??$value_id;
 					$reference=explode(',',$relation);
-					$model=new ("models\\".$reference[0])();
-					$model_attrib=$model->annotation_attributes[$reference[1]];
-					$model_column=$model_attrib->get('ID')??$column->get('Column');
-					if($ignore_relation){
-						$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference[0],$value_id,$model_column);
-						unset($this->class->$attrib);
-						break;
-					}else{
-						$value=$this->getReference($annotation,$reference[0],$value_id,$model_column);
-					}
+					$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference,$value_id);
+					unset($this->class->$attrib);
 				}
-				$this->class->$attrib=$value??$value_original??null;
-				unset($row[$id??$column]);
+				
 			}
 		}
 		// Llenar los atributos que no estan en la clase
@@ -111,12 +109,22 @@ class Model{
 		return ($this->class->calls[$attrib])();
 	}
 
-	private function getReference($annotation,$model,$column,$value){
-		if($annotation->get('HasOne')!=null){
-			$value=("models\\".$model)::find($column,$value,null,true);
+	private function getReference($annotation,$reference,$value_id){
+		$value=null;
+		$model=new ("models\\".$reference[0])();
+		$attrib=$model->annotation_attributes[$reference[1]];
+		$column=$attrib->get('ID')??$attrib->get('Column');
+		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
+			$value=("models\\".$reference[0])::find($value_id,$column,($annotation->get('HasOne')?null:[]));
 		}
-		if($annotation->get('HasMany')!=null){
-			$value=("models\\".$model)::find($column,$value,[],true);
+		if($annotation->get('ManyToMany')!=null){
+			$model_middle=new ("models\\".$reference[2])();
+			$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
+			$column_middle=$attrib_middle->get('ID')??$attrib_middle->get('Column');
+			$value=("models\\".$reference[0])::find(function($find)use($model,$model_middle,$column_middle,$value_id){
+				$find->select($model->getTable().".*");
+				$find->join($model_middle->getTable())->on($column_middle,$value_id);
+			},[]);
 		}
 		return $value;
 	}
@@ -131,7 +139,7 @@ class Model{
 	}
 	*/
 
-	public static function find($value,$column=null,$type=null,$ignore_relation=false){
+	public static function find($value,$column=null,$type=null){
 		$self=self::class;
 		$static=static::class;
 		$model=new $self(new $static());
@@ -149,12 +157,12 @@ class Model{
 				if(is_array($type)){
 					foreach($rows as $row){
 						$model=new $self(new $static());
-						$model->setValues($row,$ignore_relation);
+						$model->setValues($row);
 						$class[]=$model->class;
 					}
 					return $class;
 				}else{
-					$model->setValues($rows[0],$ignore_relation);
+					$model->setValues($rows[0]);
 					return $model->class;
 				}
 			}else{
@@ -176,11 +184,11 @@ class Model{
 			if($rs==null || sizeof($rows)<=0){
 				return null;
 			}
-			$model->setValues($rows[0],$ignore_relation);
+			$model->setValues($rows[0]);
 			$class=[];
 			foreach($rows as $row){
 				$model=new $self(new $static());
-				$model->setValues($row,$ignore_relation);
+				$model->setValues($row);
 				$class[]=$model->class;
 			}
 			if(is_array($type)){

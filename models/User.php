@@ -13,23 +13,32 @@ class User extends Model{
 	 * @ID(id)
 	 */
 	public $id;
+
 	/**
 	 * @Column(name)
 	 */
 	public $name;
+
 	/**
 	 * @Column(email)
 	 */
 	public $email;
+
 	/**
 	 * @Column(password)
 	 */
 	public $password;
+	
 	/**
 	 * @Column(id_group)
 	 * @HasOne(Group,id)
 	 */
 	public $group;
+
+	/**
+	 * @ManyToMany(Rol,id,UserRol,id_user)
+	 */
+	public $roles;
 
 }
 

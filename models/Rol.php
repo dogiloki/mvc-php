@@ -5,9 +5,9 @@ namespace models;
 use libs\DB\Model;
 
 /**
- * @Table(group)
+ * @Table(rol)
  */
-class Group extends Model{
+class Rol extends Model{
 
 	/**
 	 * @ID(id)
@@ -23,11 +23,6 @@ class Group extends Model{
 	 * @Column(description)
 	 */
 	public $description;
-
-	/**
-	 * @HasMany(User,group)
-	 */
-	public $users;
 
 }
 
