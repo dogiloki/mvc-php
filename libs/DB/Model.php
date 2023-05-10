@@ -7,13 +7,16 @@ use libs\DB\DB;
 
 class Model{
 
-	protected $table;
-	protected $class;
-	protected $primary_key;
-	protected $params;
-	protected $annotation_class;
-	protected $annotation_attributes;
-	protected $calls=[];
+	private $table;
+	private $primary_key;
+	private $class;
+	private $params;
+	private $annotation_class;
+	private $annotation_attributes;
+	private $calls=[];
+	private $action_each=null;
+	private $with_attribs=[];
+	private $with_relations=[];
 
 	public function __construct($class=null){
 		$this->class=$class==null?$this:$class;
@@ -23,6 +26,26 @@ class Model{
 		$this->table=$annotation->get("Table");
 		//self::$params=get_class_vars(get_class($class));
 		$this->getValues();
+	}
+
+	public function __get($attrib){
+		return ($this->class->calls[$attrib])();
+	}
+
+	public static function __callStatic($method,$params){
+		$method='_'.$method;
+		$instace=new static;
+		if(method_exists($instace,$method)){
+			return call_user_func_array([$instace,$method],$params);
+		}
+	}
+
+	public function __call($method,$params){
+		$method='_'.$method;
+		$instace=$this;
+		if(method_exists($instace,$method)){
+			return call_user_func_array([$instace,$method],$params);
+		}
 	}
 
 	public function getTable(){
@@ -105,23 +128,19 @@ class Model{
 		// }
 	}
 
-	public function __get($attrib){
-		return ($this->class->calls[$attrib])();
-	}
-
 	private function getReference($annotation,$reference,$value_id){
 		$value=null;
 		$model=new ("models\\".$reference[0])();
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		$column=$reference[1];
 		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
-			$value=("models\\".$reference[0])::find($value_id,$column,($annotation->get('HasOne')?null:[]));
+			$value=$model::find($value_id,$column,($annotation->get('HasOne')?null:[]));
 		}
 		if($annotation->get('ManyToMany')!=null){
 			$model_middle=new ("models\\".$reference[2])();
 			//$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
 			$column_middle=$reference[3];
-			$value=("models\\".$reference[0])::find(function($find)use($model,$model_middle,$column_middle,$value_id){
+			$value=$model::find(function($find)use($model,$model_middle,$column_middle,$value_id){
 				$find->select($model->getTable().".*");
 				$find->join($model_middle->getTable())->on($column_middle,$value_id);
 			},[]);
@@ -139,10 +158,40 @@ class Model{
 	}
 	*/
 
-	public static function find($value,$column=null,$type=null){
-		$self=self::class;
-		$static=static::class;
-		$model=new $self(new $static());
+	public function _each($action){
+		$this->action_each=$action;
+		return $this;
+	}
+
+	public function _with(...$attribs){
+		foreach($attribs as $key=>$attrib){
+			if(is_array($attrib)){
+				$this->with_attribs[]=$attrib;	
+			}else{
+				$this->with_relations[]=$attrib;
+			}
+		}
+		return $this;
+	}
+
+	private function callExtras($model){
+		foreach($this->with_attribs as $attrib){
+			foreach($attrib as $key=>$value){
+				$model->$key=$value;
+			}
+		}
+		foreach($this->with_relations as $attrib){
+			$model->$attrib=$model->$attrib;
+		}
+		if($this->action_each instanceof \Closure){
+			$action=$this->action_each;
+			$action($model);
+		}
+		return $model;
+	}
+
+	public function _find($value,$column=null,$type=null){
+		$model=$this;
 		if($value instanceof \Closure){
 			$callback=$value;
 			if(is_array($column)){
@@ -158,6 +207,7 @@ class Model{
 					foreach($rows as $row){
 						$model=new $self(new $static());
 						$model->setValues($row);
+						$model=$this->callExtras($model);
 						$class[]=$model->class;
 					}
 					return $class;
@@ -187,8 +237,9 @@ class Model{
 			$model->setValues($rows[0]);
 			$class=[];
 			foreach($rows as $row){
-				$model=new $self(new $static());
+				$model=new ($this->class)();
 				$model->setValues($row);
+				$model=$this->callExtras($model);
 				$class[]=$model->class;
 			}
 			if(is_array($type)){
@@ -203,10 +254,8 @@ class Model{
 		}
 	}
 
-	public static function all(){
-		$self=self::class;
-		$static=static::class;
-		$model=new $self(new $static());
+	public function _all(){
+		$model=$this;
 		try{
 			$rs=DB::table($model->table)->select()->execute();
 			if($rs->rowCount()>0){
@@ -214,6 +263,7 @@ class Model{
 				foreach($rows as $row){
 					$model=new $self(new $static());
 					$model->setValues($row);
+					$model=$this->callExtras($model);
 					$class[]=$model->class;
 				}
 				return $class;

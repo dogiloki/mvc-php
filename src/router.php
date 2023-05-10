@@ -21,10 +21,10 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    $user=User::find(1);
-    $group=Group::find(1);
-    dd(json_encode($group->users[0]->roles));
-    //return json(compact('user','group'));
+    $user=User::each(function($user){
+        $user->name=$user->name." (modificado)";
+    })->with(["with"=>"soy texto"],"group")->find(1);
+    dd(json_encode($user));
 })->name('test');
 
 $router->controller();

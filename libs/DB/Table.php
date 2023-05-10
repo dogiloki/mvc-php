@@ -255,6 +255,10 @@ class Table{
 		return $this;
 	}
 
+	public function paginate($max,$pag){
+		return $this->pagination($max,$pag);
+	}
+
 	public function pagination($max,$pag){
 		$index=$max*($pag-1);
 		$end=$max;
