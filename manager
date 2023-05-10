@@ -90,9 +90,9 @@ class '.$name.'{
 
 namespace models;
 
-use libs\Model;
+use libs\DB\Model;
 
-class '.$name.'{
+class '.$name.' extends Model{
 
 	public function modelar(){
 		return "Hola, soy una modelado de datos";
