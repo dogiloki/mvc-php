@@ -29,14 +29,22 @@ class Model{
 	}
 
 	public function __get($attrib){
-		return ($this->class->calls[$attrib])();
+		$action=$this->class->calls[$attrib];
+		if($action instanceof \Closure){
+			return $action();
+		}
+		return $this->class->$attrib;
 	}
 
 	public static function __callStatic($method,$params){
 		$method='_'.$method;
 		$instace=new static;
+		$method_query='_query';
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
+		}else
+		if(method_exists($instace,$method_query)){
+			return call_user_func_array([$instace,$method_query],$params);
 		}
 	}
 
@@ -48,8 +56,17 @@ class Model{
 		}
 	}
 
-	public function getTable(){
+	public function _getTable(){
 		return $this->table;
+	}
+
+	public function _getPrimaryKey(){
+		return $this->primary_key;
+	}
+
+	public function _query(){
+		dd("das");
+		return DB::table($this->table);
 	}
 
 	private function getValues(){
@@ -78,7 +95,13 @@ class Model{
 			if($column==null){
 				continue;
 			}
-			$this->params['columns'][$column]=$value;
+			if($value instanceof Model){
+				$value=$value->class->{$value->class->primary_key};
+			}
+			$this->params['columns'][$attrib]=[
+				'column'=>$column,
+				'value'=>$value
+			];
 		}
 		//var_dump($this->params['columns']);
 	}
@@ -261,7 +284,7 @@ class Model{
 			if($rs->rowCount()>0){
 				$rows=$rs->fetchAll();
 				foreach($rows as $row){
-					$model=new $self(new $static());
+					$model=new $this->class();
 					$model->setValues($row);
 					$model=$this->callExtras($model);
 					$class[]=$model->class;
@@ -282,15 +305,21 @@ class Model{
 			$this->getValues();
 			$primary_key=$this->primary_key;
 			$id=null;
+			$params=[];
+			foreach($this->params['columns'] as $attrib=>$column){
+				$value=$this->class->$attrib;
+				if($value instanceof Model){
+					$value=$value->class->{$value->class->primary_key};
+				}
+				$params[$column['column']]=$value;
+			}
 			if(self::find($this->class->$primary_key)==null){
 				DB::table($this->table)
-				->insert($this->params['columns'])
-				->execute();
+				->insert($params);
 			}else{
 				DB::table($this->table)
-				->update($this->params['columns'])
-				->where($this->primary_key,$this->class->id)
-				->execute();
+				->where($primary_key,$this->class->id)
+				->update($params);
 				$id=$this->class->$primary_key;
 			}
 			$primary_key=$this->primary_key;

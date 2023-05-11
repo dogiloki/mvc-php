@@ -3,6 +3,7 @@
 use libs\Router;
 use models\User;
 use models\Group;
+use libs\DB\DB;
 
 $router=Router::singletong();
 
@@ -21,9 +22,12 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    $user=User::each(function($user){
-        $user->name=$user->name." (modificado)";
-    })->with(["with"=>"soy texto"],"group")->find(1);
+    $user=User::find(1);
+    $group=Group::find(2);
+    $test="test";
+    $user->name=null;
+    dd(json_encode($user));
+    $user->save();
     dd(json_encode($user));
 })->name('test');
 

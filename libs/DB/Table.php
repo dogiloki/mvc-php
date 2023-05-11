@@ -61,7 +61,7 @@ class Table{
 		}else{
 			$this->values_insert=is_array($values_insert)?$values_insert:func_get_args();
 		}
-		return $this;
+		return $this->execute();
 	}
 
 	/*
@@ -93,7 +93,7 @@ class Table{
 		}else{
 			$this->values_update=is_array($values_update)?$values_update:func_get_args();
 		}
-		return $this;
+		return $this->execute();
 	}
 
 	/*
