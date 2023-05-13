@@ -27,7 +27,7 @@ $router->get('/test',function(){
     $login=Auth::attempt([
         'email'=>$user->email,
     ],'123');
-    dd($login);
+    dd(Auth::user());
 })->name('test');
 
 $router->controller();

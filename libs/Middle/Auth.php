@@ -33,7 +33,7 @@ class Auth{
     }
 
     public function _login($user){
-        Session::set($this->name_session,$user);
+        Session::put($this->name_session,$user->{$user->primary_key});
     }
 
     public function _attempt($credentials, $password){
@@ -54,6 +54,11 @@ class Auth{
 
     public function _logout(){
         Session::forget($this->name_session);
+    }
+
+    public function _user(){
+        $id=Session::get($this->name_session);
+        return $this->model_user::find($id);
     }
 
 }
