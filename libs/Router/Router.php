@@ -89,6 +89,8 @@ class Router{
 			if($route->method!=$_SERVER['REQUEST_METHOD']){
 				continue;
 			}
+			$params=[];
+			$request=Request::clear();
 			$count_uri_found=0;
 			$route_uri=explode("/",$route->path);
 			foreach($route_uri as $path_index=>$path){

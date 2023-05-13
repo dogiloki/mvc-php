@@ -26,6 +26,11 @@ class Request{
 		return self::$instance;
 	}
 
+	public static function clear(){
+		self::$instance=null;
+		return self::singleton();
+	}
+
 	public function add($type,$key,$value){
 		$this->$key=$value;
 		switch($type){

@@ -21,8 +21,8 @@ $router->post('/create/group','GroupController@store')->name('group.store');
 $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete');
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
-$router->get('/test',function(){
-    dd(route('test'));
+$router->get('/test/{var?}',function($request){
+    dd($request);
 })->name('test');
 
 $router->controller();
