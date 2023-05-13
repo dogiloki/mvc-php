@@ -1,6 +1,6 @@
 <?php
 
-use libs\Router;
+use libs\Router\Router;
 use libs\Config;
 use libs\Model;
 
@@ -10,8 +10,19 @@ function dd($obj){
 
 function route($name,...$params){
     $router=Router::singletong();
-    $url=url(trim(($router->getUrls()[$name]??"")['url']??"","/"));
-    $url.="/".implode("/",$params);
+    foreach($router->getRoutes() as $route){
+        if($route->name!=$name){
+            continue;
+        }
+        $url="";
+        foreach(explode("/",$route->path) as $key=>$path){
+            if(preg_match('/{.*?}/',$path,$param)){
+                $url.="/".array_shift($params);
+            }else{
+                $url.="/".$path;
+            }
+        }
+    }
     return $url;
 }
 

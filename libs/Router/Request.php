@@ -1,6 +1,6 @@
 <?php
 
-namespace libs;
+namespace libs\Router;
 
 use libs\Session;
 
