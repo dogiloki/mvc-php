@@ -6,6 +6,7 @@ use models\Group;
 use libs\DB\DB;
 use libs\Middle\Auth;
 use libs\Router\Route;
+use libs\Middle\Faker;
 
 $router=Router::singletong();
 
@@ -22,7 +23,8 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test/{var?}',function($request){
-    dd($request);
+    $faker = new Faker();
+    echo $faker->name;
 })->name('test');
 
 $router->controller();

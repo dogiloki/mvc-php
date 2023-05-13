@@ -29,7 +29,6 @@ class Route{
         foreach($path as $key=>$value){
             if(preg_match('/{.*?}/',$value,$param)){
                 $name=str_replace(["{","}","?"],"",$param[0]);
-                dd($this->path." - ".$name);
                 $this->params[$key]=[
                     'name'=>$name,
                     'optional'=>substr($param[0],-2,1)=="?"?true:false
