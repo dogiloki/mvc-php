@@ -87,6 +87,7 @@ class Model{
 			$id=$annotation->get('ID');
 			if($id!=null){
 				$this->primary_key=$id;
+				$this->params['attributes'][$attrib]=$value;
 				continue;
 			}
 			$column=$annotation->get('Column');
@@ -127,19 +128,14 @@ class Model{
 			$value=$row[$id??$column]??null;
 			$value_id??=$row[$id]??null;
 			//($value==null && $ignore_relation)
-			if(($value==null && $relation==null)){
-				//unset($this->class->$attrib);
+			if($relation==null){
+				$this->class->$attrib=$value??$value_original??null;
+				unset($row[$id??$column]);
 			}else{
-				if($relation==null){
-					$this->class->$attrib=$value??$value_original??null;
-					unset($row[$id??$column]);
-				}else{
-					$value_id=$row[$column]??$value_id;
-					$reference=explode(',',$relation);
-					$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference,$value_id);
-					unset($this->class->$attrib);
-				}
-				
+				$value_id=$row[$column]??$value_id;
+				$reference=explode(',',$relation);
+				$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference,$value_id);
+				unset($this->class->$attrib);
 			}
 		}
 		// Llenar los atributos que no estan en la clase
