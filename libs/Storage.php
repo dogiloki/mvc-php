@@ -24,7 +24,7 @@ class Storage{
             $name_temp=$file['tmp_name'];
             $name_exp=explode('.',$name);
             $name_exp=$name_exp[sizeof($name_exp)-1];
-            $sha1=Secure::hash(uniqid(uniqid()));
+            $sha1=Secure::hash();
             $folder=substr($sha1,0,2);
             if(!file_exists($dir)){
                 mkdir($dir);

@@ -17,7 +17,8 @@ class Secure{
 		//return bin2hex(openssl_random_pseudo_bytes($size));
 	}
 
-	public static function hash($text){
+	public static function hash($text=null){
+		$text??=uniqid(uniqid());
 		return hash('sha256',$text);
 	}
 	
