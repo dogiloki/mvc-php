@@ -23,8 +23,10 @@ class Auth{
     }
 
     public static function __callStatic($method,$params){
-        $ins=Auth::singleton();
-        return $ins->$method($params);
+		$instace=Auth::singleton();
+		if(method_exists($instace,$method)){
+			return call_user_func_array([$instace,$method],$params);
+		}
     }
 
     public function login($user){

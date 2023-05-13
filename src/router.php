@@ -23,11 +23,11 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    $user=User::find(13);
+    $user=User::find(1);
     $login=Auth::attemp([
         'email'=>$user->email,
     ],'123');
-    dd("login: ".$login);
+    dd($user);
 })->name('test');
 
 $router->controller();

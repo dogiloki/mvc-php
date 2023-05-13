@@ -29,7 +29,7 @@ class Model{
 	}
 
 	public function __get($attrib){
-		$action=$this->class->calls[$attrib];
+		$action=$this->class->calls[$attrib]??null;
 		if($action instanceof \Closure){
 			return $action();
 		}
@@ -76,7 +76,6 @@ class Model{
 					continue;
 				}
 			}
-			$this->params['attributes'][$attrib]=$value;
 			$prop=null;
 			try{
 				$prop=new \ReflectionProperty(get_class($this->class),$attrib);
@@ -101,6 +100,7 @@ class Model{
 				'column'=>$column,
 				'value'=>$value
 			];
+			$this->params['attributes'][$attrib]=$value;
 		}
 		//var_dump($this->params['columns']);
 	}
@@ -128,7 +128,7 @@ class Model{
 			$value_id??=$row[$id]??null;
 			//($value==null && $ignore_relation)
 			if(($value==null && $relation==null)){
-				unset($this->class->$attrib);
+				//unset($this->class->$attrib);
 			}else{
 				if($relation==null){
 					$this->class->$attrib=$value??$value_original??null;

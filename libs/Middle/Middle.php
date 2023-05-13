@@ -1,17 +1,17 @@
 <?php
 
+namespace libs\Middle;
+
 class Middle{
 
     public static function singleton(){
-        dd("das");
         if(self::$instance==null){
             self::$instance=new Middle();
         }
         return self::$instance;
     }
 
-    public static function config(){
-        $keys=func_get_args();
+    public static function config(...$keys){
         $ins=Middle::singleton();
         $cfg=$ins->cfg;
         foreach($keys as $key){
