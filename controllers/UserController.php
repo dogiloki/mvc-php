@@ -4,7 +4,7 @@ namespace controllers;
 
 use models\User;
 use models\Group;
-use libs\Secure;
+use libs\Middle\Secure;
 
 class UserController{
 
@@ -38,7 +38,7 @@ class UserController{
         if($user!=null){
             $user->name=$request->name;
             $user->email=$request->email;
-            $user->password=$request->password;
+            $user->password=Secure::encodePassword($request->password);
             $user->group=$request->id_group;
             $user->save();
         }

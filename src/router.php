@@ -4,6 +4,7 @@ use libs\Router;
 use models\User;
 use models\Group;
 use libs\DB\DB;
+use libs\Middle\Auth;
 
 $router=Router::singletong();
 
@@ -22,13 +23,11 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    $user=User::find(1);
-    $group=Group::find(2);
-    $test="test";
-    $user->name=null;
-    dd(json_encode($user));
-    $user->save();
-    dd(json_encode($user));
+    $user=User::find(13);
+    $login=Auth::attemp([
+        'email'=>$user->email,
+    ],'123');
+    dd("login: ".$login);
 })->name('test');
 
 $router->controller();

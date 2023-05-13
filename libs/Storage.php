@@ -5,6 +5,7 @@ namespace libs;
 require 'vendor/autoload.php';
 
 use Intervention\Image\ImageManagerStatic as Image;
+use libs\Middle\Secure;
 
 class Storage{
 
@@ -23,7 +24,7 @@ class Storage{
             $name_temp=$file['tmp_name'];
             $name_exp=explode('.',$name);
             $name_exp=$name_exp[sizeof($name_exp)-1];
-            $sha1=sha1(uniqid(uniqid()));
+            $sha1=Secure::hash(uniqid(uniqid()));
             $folder=substr($sha1,0,2);
             if(!file_exists($dir)){
                 mkdir($dir);

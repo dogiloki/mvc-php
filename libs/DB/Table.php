@@ -171,6 +171,20 @@ class Table{
 	public function where(){
 		$args=func_get_args();
 		$column=$args[0]??null;
+		if(is_array($column)){
+			$this->wheres[]="(";
+			foreach($column as $key=>$value){
+				$this->wheres[]=[
+					"column"=>$key,
+					"operator"=>"=",
+					"value"=>$value
+				];
+				$this->wheres[]=" AND ";
+			}
+			array_pop($this->wheres);
+			$this->wheres[]=")";
+			return $this;
+		}
 		if($column instanceof \Closure){
 			$this->wheres[]="(";
 			$column($this);
@@ -272,6 +286,12 @@ class Table{
 	}
 
 	public function get(){
+		return $this->execute();
+	}
+
+	public function first(){
+		$this->limit['index']=0;
+		$this->limit['end']=1;
 		return $this->execute();
 	}
 

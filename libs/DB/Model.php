@@ -65,7 +65,6 @@ class Model{
 	}
 
 	public function _query(){
-		dd("das");
 		return DB::table($this->table);
 	}
 
