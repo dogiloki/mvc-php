@@ -22,9 +22,7 @@ $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete'
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
 $router->get('/test',function(){
-    dd(new Route('POST','///test///{id1?}/ruta///{id2}//{id3}/',function(){
-        echo "hola";
-    }));
+    dd(route('test'));
 })->name('test');
 
 $router->controller();

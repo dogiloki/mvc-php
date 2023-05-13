@@ -23,7 +23,7 @@ function route($name,...$params){
             }
         }
     }
-    return $url;
+    return url($url);
 }
 
 function view($path,$params=[]){
