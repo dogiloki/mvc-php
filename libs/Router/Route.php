@@ -2,6 +2,8 @@
 
 namespace libs\Router;
 
+use libs\Middle\Middle;
+
 class Route{
 
     public static function formatUri(string $uri){
@@ -38,15 +40,34 @@ class Route{
     }
 
     public function call($params=[]){
+        $middleware=$this->middleware;
         $action=$this->action;
-        if($action instanceof \Closure){
-			echo $action($params);
-		}else{
-			$controller=explode('@',$action);
-			$controller[0]="controllers\\".$controller[0];
-			$obj=new $controller[0];
-			echo $obj->{$controller[1]}($params);
-		}
+        if($middleware!=null){
+            if(is_string($this->middleware)){
+                $middleware=new (Middle::config('middle','auth'))();
+            }else{
+                $middleware=new ($this->middleware)();
+            }
+            echo $middleware->redirectTo(function()use($action,$params){
+                if($action instanceof \Closure){
+                    return $action($params);
+                }else{
+                    $controller=explode('@',$action);
+                    $controller[0]="controllers\\".$controller[0];
+                    $obj=new $controller[0];
+                    return $obj->{$controller[1]}($params);
+                }
+            });
+        }else{
+            if($action instanceof \Closure){
+                echo $action($params);
+            }else{
+                $controller=explode('@',$action);
+                $controller[0]="controllers\\".$controller[0];
+                $obj=new $controller[0];
+                echo $obj->{$controller[1]}($params);
+            }
+        }
     }
 
 }

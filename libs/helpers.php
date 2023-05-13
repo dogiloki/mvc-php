@@ -10,6 +10,7 @@ function dd($obj){
 
 function route($name,...$params){
     $router=Router::singletong();
+    $url="";
     foreach($router->getRoutes() as $route){
         if($route->name!=$name){
             continue;

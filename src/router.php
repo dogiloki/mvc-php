@@ -22,10 +22,15 @@ $router->post('/create/group','GroupController@store')->name('group.store');
 $router->get('/delete/group/{id}','GroupController@delete')->name('group.delete');
 $router->post('/update/group/{id}','GroupController@update')->name('group.update');
 
+$router->get('/login',function($request){
+    Auth::login(User::find(1));
+    return view('login');
+})->name('login');
+
 $router->get('/test/{var?}',function($request){
-    $faker = new Faker();
-    echo $faker->name;
-})->name('test');
+    dd(Auth::user());
+    Auth::logout();
+})->name('test')->middleware('auth');
 
 $router->controller();
 

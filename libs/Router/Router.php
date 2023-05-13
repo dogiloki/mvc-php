@@ -81,6 +81,11 @@ class Router{
 		return $this;
 	}
 
+	public function middleware($action){
+		$this->prev_route->middleware=$action;
+		return $this;
+	}
+
 	public function controller(){
 		$base_uri=explode("/",Route::formatUri($_SERVER['REQUEST_URI']));
 		$params=[];
