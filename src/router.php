@@ -24,10 +24,10 @@ $router->post('/update/group/{id}','GroupController@update')->name('group.update
 
 $router->get('/test',function(){
     $user=User::find(1);
-    $login=Auth::attemp([
+    $login=Auth::attempt([
         'email'=>$user->email,
     ],'123');
-    dd($user);
+    dd($login);
 })->name('test');
 
 $router->controller();

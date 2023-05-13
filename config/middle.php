@@ -7,7 +7,7 @@ return [
      */
 
     'auth'=>[
-        'user'=>\models\User::class,
+        'model'=>\models\User::class,
         'session'=>'session_user'
     ]
 

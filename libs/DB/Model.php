@@ -223,7 +223,7 @@ class Model{
 				$rows=$rs->fetchAll();
 				if(is_array($type)){
 					foreach($rows as $row){
-						$model=new $self(new $static());
+						$model=new ($this->class)();
 						$model->setValues($row);
 						$model=$this->callExtras($model);
 						$class[]=$model->class;
@@ -234,7 +234,7 @@ class Model{
 					return $model->class;
 				}
 			}else{
-				return [];
+				return null;
 			}
 		}
 		if($column==null){
@@ -279,7 +279,7 @@ class Model{
 			if($rs->rowCount()>0){
 				$rows=$rs->fetchAll();
 				foreach($rows as $row){
-					$model=new $this->class();
+					$model=new ($this->class)();
 					$model->setValues($row);
 					$model=$this->callExtras($model);
 					$class[]=$model->class;
