@@ -47,8 +47,7 @@ class Create extends Column{
 			if(Create::$charset!=null){
 				DB::$sql.=" DEFAULT CHARSET=".Create::$charset;
 			}
-			$query=$db->prepare(DB::$sql);
-			$query->execute();
+			$query=DB::execute(DB::$sql);
 		}
 		Create::reset();
 		return $query;

@@ -15,8 +15,34 @@ class DB extends \PDO{
 
 	public static $create_db=false;
 
-	private function __construct(){
-		
+	/*
+	Ejecuta una sentencia sql, puede ser metida en un try-catch y obtener el error
+	una descripción del error al ejecutar la sentencia sql.
+	@param string $sql -> Código sql con 
+	@param array $params[] -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
+	*/
+	public static function execute($sql,$params=[]){
+		//echo "<pre>".print_r($sql,"<br>")."</pre>";
+		//echo "<pre>".print_r($params,"<br>")."</pre>";
+		$db=self::singleton();
+		if($db==null){
+			return null;
+		}
+		$query=$db->prepare($sql);
+		self::$sql=$sql;
+		if(!$query->execute($params)){
+			throw new \Exception($query->ErrorInfo()[2]);
+		}
+		return $query;
+	}
+
+	/*
+	Indicar crear una nueva table o base de datos
+	@param string $name_table Nombre de la tabla, sobre la que se construirá la sentencia sql.
+	@return Instanciamiento de la clase Table
+	*/
+	public static function table($name_table){
+		return new Table($name_table);
 	}
 
 	public static function singleton(){
@@ -66,43 +92,30 @@ class DB extends \PDO{
 		}
 	}
 
-	/*
-	Ejecuta una sentencia sql, puede ser metida en un try-catch y obtener el error
-	una descripción del error al ejecutar la sentencia sql.
-	@param string $sql -> Código sql con 
-	@param array $params[] -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
-	*/
-	public static function execute($sql,$params=[]){
-		//echo "<pre>".print_r($sql,"<br>")."</pre>";
-		//echo "<pre>".print_r($params,"<br>")."</pre>";
-		$db=self::singleton();
-		if($db==null){
-			return null;
-		}
-		$query=$db->prepare($sql);
-		self::$sql=$sql;
-		if(!$query->execute($params)){
-			throw new \Exception($query->ErrorInfo()[2]);
-		}
-		return $query;
+	public function __construct(){
+		
 	}
 
 	/*
 	Indicar crear una nueva table o base de datos
 	@return Instanciamiento de la clase Create
 	*/
-	public static function DBcreate(){
+	public function create(){
 		return new Create;
 	}
 
-	/*
-	Indicar crear una nueva table o base de datos
-	@param string $name_table Nombre de la tabla, sobre la que se construirá la sentencia sql.
-	@return Instanciamiento de la clase Table
-	*/
-	public static function table($name_table){
-		return new Table($name_table);
-	}
+	/**
+     * Elimina una tabla de la base de datos
+     * @param string $table Nombre de la tabla a eliminar
+     */
+    public function dropIfExists(string $table){
+        try{
+            $sql="DROP TABLE IF EXISTS `$table"."`";
+            DB::execute($sql);
+        }catch(\Exception $ex){
+			throw new \Exception($ex->getMessage());
+        }
+    }
 
 }
 
