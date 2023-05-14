@@ -8,6 +8,11 @@ function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
+function abort($code){
+    http_response_code($code);
+    exit;
+}
+
 function route($name,...$params){
     $router=Router::singletong();
     $url="";
