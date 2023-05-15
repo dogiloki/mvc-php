@@ -56,7 +56,8 @@ function urlPublic($text){
 }
 
 function redirect($url){
-    return header("location:".$url);
+    header("location:".$url);
+    exit;
 }
 
 function back(){
