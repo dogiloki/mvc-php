@@ -295,7 +295,32 @@ class Model{
 		}
 	}
 
-	public function save(){
+	public function _create($row){
+		$model=$this;
+		try{
+			$model->setValues($row);
+			$model->save();
+			return $model->class;
+		}catch(\Exception $ex){
+			//echo $ex->getMessage();
+			throw new \Exception($ex);
+		}
+		return null;
+	}
+
+	public function update($row){
+		$model=$this;
+		try{
+			$model->save($row);
+			return $model->class;
+		}catch(\Exception $ex){
+			//echo $ex->getMessage();
+			throw new \Exception($ex);
+		}
+		return null;
+	}
+
+	public function save($row=null){
 		try{
 			$this->getValues();
 			$primary_key=$this->primary_key;
@@ -317,7 +342,7 @@ class Model{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)
 				->where($primary_key,$this->class->id)
-				->update($params);
+				->update($row??$params);
 				$id=$this->class->$primary_key;
 			}
 			$primary_key=$this->primary_key;

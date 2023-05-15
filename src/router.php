@@ -28,8 +28,11 @@ $router->get('/login',function($request){
 })->name('login');
 
 $router->get('/test/{var?}',function($request){
-    dd($request);
-})->name('test')->middleware('auth');
+    $user=User::find(1);
+    $user->update([
+        'name'=>null,
+    ]);
+})->name('test');
 
 $router->controller();
 
