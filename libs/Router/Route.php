@@ -40,7 +40,7 @@ class Route{
         }
     }
 
-    public function call(...$params){
+    public function call($params){
         $middlewares=$this->middlewares;
         $action=$this->action;
         foreach($middlewares as $middleware){
