@@ -27,6 +27,12 @@ class Middle{
         $this->cfg=include 'config/middle.php';
     }
 
+    public function handle(){}
+
+    public function redirectTo(){}
+
+    public function terminate(){}
+
 }
 
 ?>

@@ -1,4 +1,3 @@
-
 <?php
 
 use libs\DB\Migration;
@@ -26,4 +25,4 @@ return new class extends Migration{
 	
 };
 		
-?>		
+?>

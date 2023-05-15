@@ -25,10 +25,7 @@ $router->get('/login',function($request){
 })->name('login');
 
 $router->get('/test/{var?}',function($request){
-    $user=User::find(1);
-    $user->update([
-        'name'=>null,
-    ]);
-})->name('test');
+    dd(Auth::user());
+})->name('test')->middleware('auth');
 
 ?>

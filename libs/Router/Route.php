@@ -16,13 +16,14 @@ class Route{
     public $action;
     public $params;
     public $name;
-    public $middleware;
+    public $middlewares;
 
     public function __construct(string $method, string $path, $action){
         $this->method=$method;
         $this->path=Route::formatUri($path);
         $this->action=$action;
         $this->params=[];
+        $this->middlewares=[];
         $this->generateParams();
     }
 
@@ -39,34 +40,27 @@ class Route{
         }
     }
 
-    public function call($params=[]){
-        $middleware=$this->middleware;
+    public function call(...$params){
+        $middlewares=$this->middlewares;
         $action=$this->action;
-        if($middleware!=null){
-            if(is_string($this->middleware)){
-                $middleware=new (Middle::config('middle','auth'))();
+        foreach($middlewares as $middleware){
+            if(is_string($middleware)){
+                $middleware=new (Middle::config('middle',$middleware))();
             }else{
-                $middleware=new ($this->middleware)();
+                $middleware=new ($middleware)();
             }
-            echo $middleware->redirectTo(function()use($action,$params){
-                if($action instanceof \Closure){
-                    return $action($params);
-                }else{
-                    $controller=explode('@',$action);
-                    $controller[0]="controllers\\".$controller[0];
-                    $obj=new $controller[0];
-                    return $obj->{$controller[1]}($params);
-                }
-            });
+            if(!$middleware->handle()){
+                $middleware->redirectTo();
+            }
+            $middleware->terminate();
+        }
+        if($action instanceof \Closure){
+            echo $action($params);
         }else{
-            if($action instanceof \Closure){
-                echo $action($params);
-            }else{
-                $controller=explode('@',$action);
-                $controller[0]="controllers\\".$controller[0];
-                $obj=new $controller[0];
-                echo $obj->{$controller[1]}($params);
-            }
+            $controller=explode('@',$action);
+            $controller[0]="controllers\\".$controller[0];
+            $obj=new $controller[0];
+            echo $obj->{$controller[1]}($params);
         }
     }
 

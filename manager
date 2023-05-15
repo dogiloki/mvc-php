@@ -38,6 +38,9 @@ switch($command){
 		}else
 		if($argv[2]=='migration'){
 			Raau::msg(Raau::newMigration($argv[3]));
+		}else
+		if($argv[2]=='middleware'){
+			Raau::msg(Raau::newMiddleware($argv[3]));
 		}
 		break;
 	}
@@ -103,8 +106,8 @@ class Raau{
 		if(!$file){
 			return "Error al abrir archivo";
 		}
-		fwrite($file,"
-<?php
+		fwrite($file,
+"<?php
 
 use libs\DB\Migration;
 		
@@ -126,8 +129,7 @@ return new class extends Migration{
 	
 };
 		
-?>		
-");
+?>");
 	}
 
 	public static function newController($name){
@@ -184,6 +186,55 @@ class '.$name.' extends Model{
 ?>');
 		fclose($file);
 		return "Modelo creador. models/".$name.".php";
+	}
+
+	public static function newMiddleware($name){
+		if($name==null){
+			$name=readline("Nombre del middleware: ");
+		}
+		if(file_exists("middlewares/".$name.".php")){
+			return "El middleware ".$name." ya existe";
+		}
+		$file=fopen("middlewares/".$name.".php","w+b");
+		if(!$file){
+			return "Error al abrir archivo";
+		}
+		fwrite($file,
+"<?php
+
+namespace middlewares;
+		
+use libs\Middle\Middle;
+		
+class AuthMiddleware extends Middle{
+
+	/**
+     * Verificar si llamar a redirectTo()
+     * @return bool
+     */
+	public function handle(){
+		
+	}
+	
+	/**
+     * Redireccionar a una ruta
+     */
+	public function redirectTo(){
+		
+	}
+	
+	/**
+     * Ejecución al finalizar
+     */
+	public function terminate(){
+		
+	}
+		
+}
+		
+?>");
+		fclose($file);
+		return "Middleware creador. middlewares/".$name.".php";
 	}
 
 }

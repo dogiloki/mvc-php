@@ -81,8 +81,8 @@ class Router{
 		return $this;
 	}
 
-	public function middleware($action){
-		$this->prev_route->middleware=$action;
+	public function middleware(...$action){
+		$this->prev_route->middlewares=$action;
 		return $this;
 	}
 
