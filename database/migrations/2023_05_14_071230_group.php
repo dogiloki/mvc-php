@@ -9,7 +9,7 @@ return new class extends Migration{
 	 * Run the migrations.
 	 */
 	public function up(): void{
-		$this->create()->table('group',function($table){
+		$this->table('group',function($table){
 			$table->add('id','int')->autoIncrement()->primaryKey();
 			$table->add('name','varchar',255);
 			$table->add('description','varchar',255);

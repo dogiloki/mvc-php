@@ -2,63 +2,93 @@
 
 namespace libs\DB;
 
-class Create extends Column{
+use libs\DB\Column;
+use libs\Middle\Middle;
 
-	protected static $engine=null;
-	protected static $charset=null;
-	private static $type=null;
-	private const TABLE=0;
-	private const DATABASE=1;
+class Create{
 
-	public static function database($name_db){
-		DB::$create_db=true;
-		$db=DB::singleton();
-		DB::$sql.="CREATE DATABASE IF NOT EXISTS `".$name_db."`";
-		Create::$type=Create::DATABASE;
-		$query=$db->query(DB::$sql);
-		$db->query("USE `".$name_db."`");
-		DB::$create_db=false;
-		Create::reset();
-		return $query;
+    private $engine=null;
+    private $charset=null;
+    private $name_table=null;
+    private $columns=[];
+    private $prev_column=null;
+    private $sql="";
+
+    public function __construct(){
+		
 	}
 
-	public static function table($name_table,$action=null){
-		DB::$sql.="CREATE TABLE IF NOT EXISTS `".$name_table."`(";
-		if($action instanceof \Closure){
-			$action(new Column,explode("/",implode("/",array_slice(func_get_args(),2))));
-		}
-		Create::$type=Create::TABLE;
-		return Create::execute();
+    public function table($name_table, $action){
+        $this->engine=Middle::config('database','engine');
+        $this->charset=Middle::config('database','charset');
+        $this->name_table="`".$name_table."`";
+        $this->sql="CREATE TABLE IF NOT EXISTS ".$this->name_table;
+        if($action instanceof \Closure){
+            $action($this,explode("/",implode("/",array_slice(func_get_args(),2))));
+        }
+        return $this->execute();
+    }
+
+    /**
+     * Motor de almacenamiento
+     * @param string $name
+     */
+	public function engine($name){
+		$this->$engine=$name;
 	}
 
-	public static function execute($db=null){
-		$db=$db==null?DB::singleton():$db;
-		foreach(Column::$Columns as $Column){
-			DB::$sql.=$Column;
-		}
-		foreach(Column::$indexes as $index){
-			DB::$sql.=$index;
-		}
-		$query=null;
-		if(Create::$type==Create::TABLE){
-			DB::$sql=substr(DB::$sql,0,strlen(DB::$sql)-1).")";
-			Create::$engine??="InnoDB";
-			DB::$sql.="ENGINE=".Create::$engine;
-			if(Create::$charset!=null){
-				DB::$sql.=" DEFAULT CHARSET=".Create::$charset;
-			}
-			$query=DB::execute(DB::$sql);
-		}
-		Create::reset();
-		return $query;
+    /**
+     * Tipo de charset
+     * @param string $name
+     */
+	public function charset($name){
+		$this->$charset=$name;
 	}
 
-	public static function reset(){
-		DB::$sql="";
-		Create::$engine=null;
-		Create::$type=null;
-		Column::reset();
-	}
+    /**
+     * Agregar columna
+     * @param string $column Nombre de la columna
+     * @param string $type Tipo de dato
+     * @param int $size Tamaño del dato
+     */
+    public function add($name, $type, $size=null){
+        $column=new Column($name, $type, $size);
+        $this->columns[]=$column;
+        $this->prev_column=$column;
+        return $column;
+    }
+
+    /**
+     * Elimina una tabla de la base de datos
+     * @param string $table Nombre de la tabla a eliminar
+     */
+    public function dropIfExists(string $table){
+        try{
+            $sql="DROP TABLE IF EXISTS `$table"."`";
+            $this->sql=$sql;
+            DB::execute($this->sql);
+        }catch(\Exception $ex){
+			throw new \Exception($ex->getMessage());
+        }
+    }
+
+    /**
+     * Ejecutar sql
+     */
+    public function execute(){
+        $sql="(";
+        foreach($this->columns as $column){
+            $sql.=$column->sql();
+        }
+        $sql=substr($sql,0,strlen($sql)-1);
+        $sql.=")";
+        $sql.="ENGINE=".$this->engine;
+        $sql.=" DEFAULT CHARSET=".$this->charset;
+        $this->sql.=$sql;
+        return DB::execute($this->sql);
+    }
+
+
 
 }
 

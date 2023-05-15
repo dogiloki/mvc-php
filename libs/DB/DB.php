@@ -92,30 +92,9 @@ class DB extends \PDO{
 		}
 	}
 
-	public function __construct(){
+	private function __construct(){
 		
 	}
-
-	/*
-	Indicar crear una nueva table o base de datos
-	@return Instanciamiento de la clase Create
-	*/
-	public function create(){
-		return new Create;
-	}
-
-	/**
-     * Elimina una tabla de la base de datos
-     * @param string $table Nombre de la tabla a eliminar
-     */
-    public function dropIfExists(string $table){
-        try{
-            $sql="DROP TABLE IF EXISTS `$table"."`";
-            DB::execute($sql);
-        }catch(\Exception $ex){
-			throw new \Exception($ex->getMessage());
-        }
-    }
 
 }
 

@@ -4,97 +4,81 @@ namespace libs\DB;
 
 class Column{
 
-	private static $Column_name=null;
-	protected static $Columns=[];
-	private static $indice_Column=null;
-	private static $total_Columns=0;
+    private $name=null;
+    private $type=null;
+    private $size=null;
+    private $null=false;
+    private $indices=[];
+    private $auto_increment=false;
+    private $default=null;
+    private $comment=null;
 
-	protected static $indexes=[];
-	private static $total_indexes=0;
+    public function __construct($name, $type, $size){
+        $this->name=$name;
+        $this->type=$type;
+        $this->size=$size;
+    }
 
-	protected static function reset(){
-		Column::$Column_name=null;
-		Column::$Columns=[];
-		Column::$indice_Column=null;
-		Column::$total_Columns=0;
+    public function nullable(){
+        $this->null=true;
+        return $this;
+    }
 
-		Column::$indexes=null;
-		Column::$total_indexes=0;
-	}
+    public function autoIncrement(){
+        $this->auto_increment=true;
+        return $this;
+    }
 
-	/* Motor de almacenimiento */
+    // Indices
 
-	public static function engine($name){
-		Create::$engine=$name;
-	}
+    public function primaryKey(){
+        return $this->primary();
+    }
+    public function primary(){
+        $this->indices[]="PRIMARY KEY (`".$this->name."`)";
+        return $this;
+    }
 
-	/* charset */
+    public function unique(){
+        $this->indices[]="UNIQUE (`".$this->name."`)";
+        return $this;
+    }
 
-	public static function charset($name){
-		Create::$charset=$name;
-	}
+    public function index(){
+        $this->indices[]="INDEX (`".$this->name."`)";
+        return $this;
+    }
 
-	/* Nombre y tipo de dato */
+    public function fullText(){
+        $this->indices[]="FULLTEXT (`".$this->name."`)";
+        return $this;
+    }
 
-	public static function add($value,$type,$size=null){
-		$Column=$value." ".strtoupper($type).($size?"(".$size.")":"")." NOT NULL,";
-		Column::$Column_name=$value;
-		Column::$Columns[Column::$total_Columns]=$Column;
-		Column::$indice_Column=Column::$total_Columns;
-		Column::$total_Columns++;
-		return new Column;
-	}
+    public function foreignKey($table, $column){
+        return $this->foreign($table, $column);
+    }
+    public function foreign($table, $column){
+        $this->indices[]="FOREIGN KEY (`".$this->name."`) REFERENCES `".$table."`(`".$column."`)";
+        return $this;
+    }
 
-	/* remove, not null */
-
-	public static function nullable(){
-		$indice=Column::$indice_Column;
-		$value=Column::$Columns[$indice];
-		Column::$Columns[$indice]=str_replace("NOT NULL","",$value);
-		return new Column;
-	}
-
-	/* auto_increment */
-
-	public static function autoIncrement(){
-		$indice=Column::$indice_Column;
-		$value=Column::$Columns[$indice];
-		$value=str_replace(",","",$value);
-		Column::$Columns[$indice]=$value." AUTO_INCREMENT,";
-		return new Column;
-	}
-
-	/* Indices */
-
-	public static function primaryKey(){
-		Column::$indexes[Column::$total_indexes]="PRIMARY KEY (".Column::$Column_name."),";
-		Column::$total_indexes++;
-		return new Column;
-	}
-
-	public static function foreignKey($name_table,$name_Column){
-		Column::$indexes[Column::$total_indexes]="FOREIGN KEY (".Column::$Column_name.") REFERENCES `".$name_table."`(".$name_Column."),";
-		Column::$total_indexes++;
-		return new Column;
-	}
-
-	public static function fullText(){
-		Column::$indexes[Column::$total_indexes]="FULLTEXT(".Column::$Column_name."),";
-		Column::$total_indexes++;
-		return new Column;
-	}
-
-	public static function unique(){
-		Column::$indexes[Column::$total_indexes]="UNIQUE(".Column::$Column_name."),";
-		Column::$total_indexes++;
-		return new Column;
-	}
-
-	public static function index(){
-		Column::$indexes[Column::$total_indexes]="INDEX(".Column::$Column_name."),";
-		Column::$total_indexes++;
-		return new Column;
-	}
+    /// Generación del sql
+    
+    public function sql(){
+        $sql="`".$this->name."` ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
+        if(!$this->null){
+            $sql.=" NOT NULL";
+        }
+        $sql.=",";
+        if($this->auto_increment){
+            $sql=substr($sql,0,strlen($sql)-1);
+            $sql.=" AUTO_INCREMENT,";
+        }
+        foreach($this->indices as $indice){
+            $sql.=" ".$indice.",";
+        }
+        return $sql;
+    }
 
 }
 

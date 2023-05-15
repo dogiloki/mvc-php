@@ -18,6 +18,15 @@ return [
     'middle'=>[
         'auth'=>\middlewares\AuthMiddleware::class,
         'guest'=>\middlewares\GuestMiddleware::class
+    ],
+
+    /**
+     * Database
+     */
+
+    'database'=>[
+        'engine'=>'InnoDB',
+        'charset'=>'utf8mb4'
     ]
 
 ]
