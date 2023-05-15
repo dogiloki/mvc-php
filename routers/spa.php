@@ -1,12 +1,13 @@
 <?php
 
-$router->get('/var/variable',function(){
+$router->post('/var',function(){
     $variable='Soy una variable';
     return json(compact('variable'));
 });
 
-$router->get('/component/vista',function(){
-    return view('components.vista');
+$router->post('/component/vista',function($request){
+    $variable=$request->variable??null;
+    return view('components.vista',compact('variable'));
 });
 
 ?>
