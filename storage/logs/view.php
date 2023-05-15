@@ -16,9 +16,9 @@
     })" value="Cargar componente"><br>
     Componente:
     <component-vista></component-vista>
-    <?php if(isset($variable1){ ?>)
+    <?php if(isset($variable1)){ ?>
         <p><?php echo $variable1; ?></p>
-    <?php }else if(count($variable2){ ?>)
+    <?php }else if(isset($variable2)){ ?>
         <p><?php echo $variabl2; ?></p>
     <?php }else{ ?>
         <p><?php echo $variable3??""; ?></p>

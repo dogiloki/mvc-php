@@ -1,1 +1,1 @@
-<h2>Soy un componente: <?php echo $variable; ?></h2>
+<h2>Soy un componente: {{$variable}}</h2>

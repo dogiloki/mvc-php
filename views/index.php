@@ -18,7 +18,7 @@
     <component-vista></component-vista>
     @if(isset($variable1))
         <p>{{$variable1}}</p>
-    @elseif(count($variable2))
+    @elseif(isset($variable2))
         <p>{{$variabl2}}</p>
     @else
         <p>{{$variable3??""}}</p>
