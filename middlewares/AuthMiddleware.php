@@ -13,6 +13,7 @@ class AuthMiddleware extends Middle{
         }
         return redirect(route('login'));
     }
+    
 }
 
 ?>

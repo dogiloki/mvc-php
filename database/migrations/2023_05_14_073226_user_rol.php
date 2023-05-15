@@ -10,9 +10,10 @@ return new class extends Migration{
 	 */
 	public function up(): void{
 		$this->table('user_rol',function($table){
-			$table->add('id','int')->autoIncrement()->primaryKey();
-			$table->add('id_user','int')->foreignKey('user','id');
-			$table->add('id_rol','int')->foreignKey('rol','id');
+			$table->id();
+			$table->idForeign('id_user')->foreignKey('user','id');
+			$table->idForeign('id_rol')->foreignKey('rol','id');
+			$table->timestamps();
 		});
 	}
 		

@@ -58,6 +58,27 @@ class Create{
         return $column;
     }
 
+    // Funcionalidades
+
+    public function id(){
+        $this->add('id','bigint')->primary()->autoIncrement();
+    }
+
+    /*
+    public function softDelete(){
+        $this->add('deleted_at','timestamp')->nullable()->index();
+    }
+    */
+
+    public function idForeign($name_table){
+        return $this->add($name_table,'bigint');
+    }
+
+    public function timestamps(){
+        $this->add('created_at','timestamp')->default('CURRENT_TIMESTAMP')->index();
+        $this->add('updated_at','timestamp')->nullable()->index();
+    }
+
     /**
      * Elimina una tabla de la base de datos
      * @param string $table Nombre de la tabla a eliminar

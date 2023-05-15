@@ -309,9 +309,12 @@ class Model{
 				$params[$column['column']]=$value;
 			}
 			if(self::find($this->class->$primary_key)==null){
+				$params['created_at']=date('Y-m-d H:i:s');
+				$params['updated_at']=null;
 				DB::table($this->table)
 				->insert($params);
 			}else{
+				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)
 				->where($primary_key,$this->class->id)
 				->update($params);

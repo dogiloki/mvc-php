@@ -10,9 +10,10 @@ return new class extends Migration{
 	 */
 	public function up(): void{
 		$this->table('rol',function($table){
-			$table->add('id','int')->autoIncrement()->primaryKey();
+			$table->id();
 			$table->add('name','varchar',255);
 			$table->add('description','varchar',255);
+			$table->timestamps();
 		});
 	}
 		

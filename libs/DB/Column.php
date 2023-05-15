@@ -29,6 +29,16 @@ class Column{
         return $this;
     }
 
+    public function default($value){
+        $this->default=$value;
+        return $this;
+    }
+
+    public function comment($value){
+        $this->comment=$value;
+        return $this;
+    }
+
     // Indices
 
     public function primaryKey(){
@@ -62,7 +72,7 @@ class Column{
         return $this;
     }
 
-    /// Generación del sql
+    // Generación del sql
     
     public function sql(){
         $sql="`".$this->name."` ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
