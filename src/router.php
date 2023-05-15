@@ -28,8 +28,7 @@ $router->get('/login',function($request){
 })->name('login');
 
 $router->get('/test/{var?}',function($request){
-    dd(Auth::user());
-    Auth::logout();
+    dd($request);
 })->name('test')->middleware('auth');
 
 $router->controller();

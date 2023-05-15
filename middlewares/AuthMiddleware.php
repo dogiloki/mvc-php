@@ -7,9 +7,9 @@ use libs\Middle\Auth;
 
 class AuthMiddleware extends Middle{
 
-    public function redirectTo(\Clouse $action, $params=[]){
+    public function redirectTo($next){
         if(Auth::check()){
-            return $action($params);
+            return $next();
         }
         return redirect(route('login'));
     }

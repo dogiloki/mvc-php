@@ -33,6 +33,9 @@ class Auth{
     }
 
     public function _login($user){
+        if($user==null){
+            return;
+        }
         Session::put($this->name_session,$user->{$user->primary_key});
     }
 
