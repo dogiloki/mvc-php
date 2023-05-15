@@ -3,7 +3,7 @@
 <head>
     <title>Inicio</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{urlPublic('css/normalize.css')}}">
+    <link rel="stylesheet" href="<?php echo urlPublic('css/normalize.css'); ?>">
 </head>
 <body>
     <h1>Hola mundo</h1>
@@ -16,15 +16,15 @@
     })" value="Cargar componente"><br>
     Componente:
     <component-vista></component-vista>
-    @if(isset($variable1))
-        <p>{{$variable1}}</p>
-    @elseif(count($variable2))
-        <p>{{$variabl2}}</p>
-    @else
-        <p>{{$variable3??""}}</p>
-    @endif
+    <?php if(isset($variable1){ ?>)
+        <p><?php echo $variable1; ?></p>
+    <?php }else if(count($variable2){ ?>)
+        <p><?php echo $variabl2; ?></p>
+    <?php }else{ ?>
+        <p><?php echo $variable3??""; ?></p>
+    <?php } ?>
 </body>
 </html>
 
-<script src="{{urlPublic('js/fetch.js')}}"></script>
-<script src="{{urlPublic('js/spa.js')}}"></script>
+<script src="<?php echo urlPublic('js/fetch.js'); ?>"></script>
+<script src="<?php echo urlPublic('js/spa.js'); ?>"></script>

@@ -5,6 +5,7 @@ namespace libs\Router;
 use libs\Cofing;
 use libs\Router\Route;
 use libs\Router\Request;
+use libs\View;
 
 require_once __DIR__."/../helpers.php";
 
@@ -63,7 +64,7 @@ class Router{
 				foreach($params as $key=>$param){
 					$$key=$param;
 				}
-				require_once($require_path);
+				eval("?>".View::render($require_path)."<?php");
 				return 0;
 			}
 		}
