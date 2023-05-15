@@ -16,7 +16,8 @@ return [
      */
 
     'middle'=>[
-        'auth'=>\middlewares\AuthMiddleware::class
+        'auth'=>\middlewares\AuthMiddleware::class,
+        'guest'=>\middlewares\GuestMiddleware::class
     ],
 
     /**

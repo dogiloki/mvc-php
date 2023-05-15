@@ -29,6 +29,9 @@ function route($name,...$params){
             }
         }
     }
+    if($url==""){
+        throw new Exception("Route (".$name.") not found");
+    }
     return url($url);
 }
 
@@ -55,7 +58,10 @@ function urlPublic($text){
     return url(config('APP_PUBLIC')."/".$text);
 }
 
-function redirect($url){
+function redirect($url=null){
+    if($url==null){
+        $url=url("");
+    }
     header("location:".$url);
     exit;
 }

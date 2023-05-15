@@ -206,7 +206,7 @@ namespace middlewares;
 		
 use libs\Middle\Middle;
 		
-class AuthMiddleware extends Middle{
+class ".$name." extends Middle{
 
 	/**
      * Verificar si llamar a redirectTo()

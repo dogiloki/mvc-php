@@ -7,7 +7,7 @@ use libs\Middle\Auth;
 use libs\Router\Route;
 use libs\Middle\Faker;
 
-$router->get('/','HomeController@index')->name('home.index');
+$router->get('/','HomeController@index')->name('home');
 
 $router->get('/user/{id?}','UserController@index')->name('user.index');
 $router->post('/create/user','UserController@store')->name('user.store');
@@ -21,8 +21,8 @@ $router->post('/update/group/{id}','GroupController@update')->name('group.update
 
 $router->get('/login',function($request){
     Auth::login(User::find(1));
-    return view('login');
-})->name('login');
+    dd(Auth::user());
+})->name('login')->middleware('guest');
 
 $router->get('/test/{var?}',function($request){
     dd(Auth::user());
