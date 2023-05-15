@@ -25,20 +25,14 @@ class User extends Model{
 	public $email;
 
 	/**
+	 * @Column(verify_email_at)
+	 */
+	public $verify_email_at;
+
+	/**
 	 * @Column(password)
 	 */
 	public $password;
-	
-	/**
-	 * @Column(id_group)
-	 * @HasOne(Group,id)
-	 */
-	public $group;
-
-	/**
-	 * @ManyToMany(Rol,id,UserRol,id_user)
-	 */
-	public $roles;
 
 }
 
