@@ -1,14 +1,11 @@
 <?php
 
-use libs\Router\Router;
 use models\User;
 use models\Group;
 use libs\DB\DB;
 use libs\Middle\Auth;
 use libs\Router\Route;
 use libs\Middle\Faker;
-
-$router=Router::singletong();
 
 $router->get('/','HomeController@index')->name('home.index');
 
@@ -33,7 +30,5 @@ $router->get('/test/{var?}',function($request){
         'name'=>null,
     ]);
 })->name('test');
-
-$router->controller();
 
 ?>

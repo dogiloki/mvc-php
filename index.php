@@ -10,9 +10,22 @@ spl_autoload_register(function($clase){
 
 // Configuración
 use libs\Config;
-$cfg=Config::singleton("src/config.cfg");
+$cfg=Config::singleton("config.cfg");
 //$cfg->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
-
-require_once("src/router.php");
+// Enrutadores
+$directory=scandir("routers");
+use libs\Router\Router;
+$router=Router::singletong();
+foreach($directory as $file){
+	if($file=='.' || $file=='..'){
+		continue;
+	}
+	$ext=explode(".",$file)[1];
+	if($ext!="php"){
+		continue;
+	}
+	require_once("routers/".$file);
+}
+$router->controller();
 
 ?>

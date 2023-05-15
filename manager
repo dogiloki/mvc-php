@@ -9,7 +9,7 @@ spl_autoload_register(function($clase){
 
 use libs\Config;
 use libs\DB\DB;
-$cfg=Config::singleton("src/config.cfg");
+$cfg=Config::singleton("config.cfg");
 
 $command=$argv[1]??null;
 
