@@ -3,12 +3,12 @@
 return [
 
     'name'=>'SESSION_PHP',
-    'lifetime'=>3600,
+    'lifetime'=>120,
     'path'=>'/',
-    'domain'=>null,
+    'domain'=>env('SESSION_DOMAIN'),
     'secure'=>false,
     'httponly'=>true,
-    'samesite'=>'Lax'
+    'samesite'=>'lax'
 
 ];
 

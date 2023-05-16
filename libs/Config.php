@@ -10,11 +10,11 @@ class Config{
         if(file_exists($filename)){
             $value=$cfg;
             foreach($keys as $key){
-                $value=$value[$key]??null;
+                $value=$value[$key];
             }
             return $value;
         }
-        return null;
+        throw new \Exception("File not found: ".$filename);
     }
 
 }

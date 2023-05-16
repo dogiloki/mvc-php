@@ -1,9 +1,10 @@
 <?php
 
-namespace libs\Middle\Auth;
+namespace libs\Auth;
 
 use libs\Middle\Session;
 use libs\Middle\Secure;
+use libs\Config;
 
 class Auth{
 
@@ -19,7 +20,7 @@ class Auth{
     private $model_user;
 
     public function __construct(){
-        $this->name_session=Config::session('name');
+        $this->name_session='auth';
         $this->model_user=Config::auth('web','model');
     }
 
