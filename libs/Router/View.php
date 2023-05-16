@@ -45,7 +45,7 @@ class View{
 
         fclose($handler);
 
-        $m=fopen("storage/logs/view.php","w");
+        $m=fopen("storage/framework/views/".str_replace(["/","\\"],".",$path),"w");
         fwrite($m,$content);
         fclose($m);
 
