@@ -12,8 +12,8 @@ class Secure{
 		return password_verify($text,$text_coded);
 	}
 
-	public static function token($size=64){
-		return bin2hex(random_bytes($size));
+	public static function random($size=32){
+		return substr(str_replace(["/","+","="],"",base64_encode(random_bytes($size))),0,$size);
 		//return bin2hex(openssl_random_pseudo_bytes($size));
 	}
 

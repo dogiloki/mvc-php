@@ -41,7 +41,22 @@ class Session{
         ]);
     }
 
-    public function _regenerate(){
+    public function __call($method,$params){
+        $method='_'.$method;
+        if(method_exists($this,$method)){
+            return call_user_func_array([$this,$method],$params);
+        }
+    }
+
+    public function _name(){
+        return $this->name_session;
+    }
+
+    public function _id(){
+        return $this->session_id;
+    }
+
+    public function _regenerate(){  
         $this->session_id=session_regenerate_id(true);
     }
 
@@ -78,6 +93,14 @@ class Session{
     public function _destroy(){
         self::$instance=null;
         session_destroy();
+    }
+    
+    public function _encode(){
+        return session_encode();
+    }
+
+    public function _payload(){
+        return base64_encode($this->encode());
     }
 
 }
