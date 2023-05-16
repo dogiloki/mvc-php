@@ -2,10 +2,6 @@
 
 namespace libs\Socket;
 
-require_once 'libs/Config.php';
-
-use libs\Config;
-
 class SocketServer{
 
     public $sockets;
@@ -14,9 +10,8 @@ class SocketServer{
     public $server;
 
     public function __construct(){
-        Config::singleton("src/config.cfg");
-        $this->host=Config::get('SOCKET_HOST');
-        $this->port=Config::get('SOCKET_PORT');
+        $this->host=env('SOCKET_HOST');
+        $this->port=env('SOCKET_PORT');
         $this->server=socket_create(AF_INET,SOCK_STREAM,SOL_TCP);
         socket_set_option($this->server,SOL_SOCKET,SO_REUSEADDR,1);
         socket_bind($this->server,0,$this->port);

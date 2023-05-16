@@ -4,8 +4,6 @@ namespace libs\HTTP;
 
 require_once('vendor/autoload.php');
 
-use libs\Config;
-
 class HTTP{
 
 	public static $host;
@@ -31,8 +29,6 @@ class HTTP{
 		$data=[
 			'headers'=>[
 				"content-type"=>"application/json",
-				"authorization"=>Config::get('API_CLIP_TYPE_AUTHORIZATION')." ".Config::get('API_CLIP_KEY')."==",
-				"x-api-key"=>Config::get('API_CLIP_TYPE_AUTHORIZATION')." ".Config::get('API_CLIP_KEY')."==",
 				"accept"=>"application/vnd.com.payclip.v2+json",
 				"accept"=>"application/vnd.com.payclip.v1+json"
 			]

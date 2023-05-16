@@ -3,15 +3,17 @@
 use libs\Router\Router;
 use libs\HTTP\Response;
 use libs\Auth\Auth;
-use libs\Config;
+use libs\Env;
 use libs\Model;
+
+Env::singleton("config.env");
 
 function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
-function config($key){
-    return Config::get($key);
+function env($key){
+    return Env::get($key);
 }
 
 function auth(){
@@ -25,7 +27,7 @@ function url($text){
 }
 
 function urlPublic($text){
-    return url(config('APP_PUBLIC')."/".$text);
+    return url(env('APP_PUBLIC')."/".$text);
 }
 
 // Functions from Response::class

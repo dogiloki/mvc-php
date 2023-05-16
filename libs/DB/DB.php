@@ -3,7 +3,6 @@
 // Permite aplicar el patrón Singleton para mantener una única instancia de PDO
 namespace libs\DB;
 
-use libs\Config;
 use libs\DB\Table;
 use libs\DB\Create;
 use libs\DB\Flat;
@@ -46,11 +45,10 @@ class DB extends \PDO{
 	}
 
 	public static function singleton(){
-		$config=Config::singleton();
 		if(self::$instance==null){
 			try{
-				$connection="mysql:host=".$config->get('DB_HOST').(self::$create_db?"":";port=".$config->get('DB_PORT').";dbname=".$config->get('DB_NAME'));
-				self::$instance=new \PDO($connection,$config->get('DB_USER'),$config->get('DB_PASSWORD'));
+				$connection="mysql:host=".env('DB_HOST').(self::$create_db?"":";port=".env('DB_PORT').";dbname=".env('DB_NAME'));
+				self::$instance=new \PDO($connection,env('DB_USER'),env('DB_PASSWORD'));
 				self::$instance->query('SET NAMES utf8');
 			}catch(\PDOException $ex){
 				echo $ex->getMessage();

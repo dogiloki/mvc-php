@@ -2,12 +2,9 @@
 
 namespace libs\Router;
 
-use libs\Cofing;
 use libs\Router\Route;
 use libs\Router\Request;
 use libs\Router\View;
-
-require_once __DIR__."/../helpers.php";
 
 class Router{
 

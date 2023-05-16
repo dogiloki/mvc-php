@@ -7,7 +7,6 @@ class SPA{
         Fetch.post("var",(data)=>{
             data=JSON.parse(data);
             for(let name of names){
-                console.log(name);
                 let value=data[name];
                 let contents=Array.from(document.getElementsByTagName('var-'+name));
                 contents.forEach((content)=>{

@@ -3,7 +3,7 @@
 // Implementa el patrón singleton para mantener una única instancia y acceder a sus valores desde cuaquier sitio
 namespace libs;
 
-class Config{
+class Env{
 
 	private $vars;
 	private $positions;
@@ -52,29 +52,22 @@ class Config{
 	// }
 
 	public static function set($key,$value){
-		$config=Config::singleton();
+		$config=Env::singleton();
 		$config->vars[$key]=$value;
 	}
 
 	public static function get($key){
-		$config=Config::singleton();
+		$config=Env::singleton();
 		return $config->vars[$key]??null;
 	}
 
 	public static function singleton($file=null){
 		if(self::$instance==null){
-			self::$instance=new Config($file);
+			self::$instance=new Env($file);
 		}
 		return self::$instance;
 	}
 
 }
-
-/*
-Ejemplo de uso
-$config=Config::singleton();
-$config->set('nombre','Juan');
-echo $config->get('nombre');
-*/
 
 ?>

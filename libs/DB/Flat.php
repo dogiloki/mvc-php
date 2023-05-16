@@ -8,6 +8,10 @@ class Flat{
 		$this->value=$value;
 	}
 
+	public static function __callStatic($name,$args){
+		return new Flat($name."(".$args.")");
+	}
+
 }
 
 ?>

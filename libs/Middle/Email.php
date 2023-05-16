@@ -9,7 +9,6 @@ require_once('vendor/phpmailer/phpmailer/src/SMTP.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-use libs\Config;
 
 class Email{
 
@@ -20,15 +19,15 @@ class Email{
 			// Configuración del servidor
 			$mail->SMTPDebug=SMTP::DEBUG_SERVER;
 			$mail->isSMTP();
-			$mail->Host=Config::get('EMAIL_HOST');
+			$mail->Host=env('EMAIL_HOST');
 			$mail->SMTPAuth=true;
-			$mail->Username=Config::get('EMAIL_ADDRESS');
-			$mail->Password=Config::get('EMAIL_PASSWORD');
+			$mail->Username=env('EMAIL_USERNAME');
+			$mail->Password=env('EMAIL_PASSWORD');
 			$mail->SMTPSecure=PHPMailer::ENCRYPTION_STARTTLS;
-			$mail->Port=Config::get('EMAIL_PORT');
+			$mail->Port=env('EMAIL_PORT');
 
 			// Contenido
-			$mail->setFrom(Config::get('EMAIL_ADDRESS'),$title); // Título del remitente
+			$mail->setFrom(env('EMAIL_USERNAME'),$title); // Título del remitente
 			$mail->addAddress($email); // Email del receptor
 			$mail->isHTML(true);
 			$mail->Subject=$subject;
