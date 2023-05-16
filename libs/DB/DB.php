@@ -6,6 +6,7 @@ namespace libs\DB;
 use libs\DB\Table;
 use libs\DB\Create;
 use libs\DB\Flat;
+use libs\Config;
 
 class DB extends \PDO{
 
@@ -49,7 +50,7 @@ class DB extends \PDO{
 			try{
 				$connection="mysql:host=".env('DB_HOST').(self::$create_db?"":";port=".env('DB_PORT').";dbname=".env('DB_NAME'));
 				self::$instance=new \PDO($connection,env('DB_USER'),env('DB_PASSWORD'));
-				self::$instance->query('SET NAMES utf8');
+				self::$instance->query('SET NAMES '.Config::database('charset'));
 			}catch(\PDOException $ex){
 				echo $ex->getMessage();
 				return http_response_code(400);

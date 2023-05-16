@@ -4,7 +4,6 @@ namespace libs\Middle\Auth;
 
 use libs\Middle\Session;
 use libs\Middle\Secure;
-use libs\Middle\Middle;
 
 class Auth{
 
@@ -20,8 +19,8 @@ class Auth{
     private $model_user;
 
     public function __construct(){
-        $this->name_session=Middle::config('auth','session');
-        $this->model_user=Middle::config('auth','model');
+        $this->name_session=Config::session('name');
+        $this->model_user=Config::auth('web','model');
     }
 
     public static function __callStatic($method,$params){

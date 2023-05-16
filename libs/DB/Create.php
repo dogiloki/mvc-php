@@ -3,7 +3,7 @@
 namespace libs\DB;
 
 use libs\DB\Column;
-use libs\Middle\Middle;
+use libs\Config;
 
 class Create{
 
@@ -19,8 +19,8 @@ class Create{
 	}
 
     public function table($name_table, $action){
-        $this->engine=Middle::config('database','engine');
-        $this->charset=Middle::config('database','charset');
+        $this->engine=Config::database('engine');
+        $this->charset=Config::database('charset');
         $this->name_table="`".$name_table."`";
         $this->sql="CREATE TABLE IF NOT EXISTS ".$this->name_table;
         if($action instanceof \Closure){

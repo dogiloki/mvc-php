@@ -1,8 +1,17 @@
 <?php
 
 return [
-    'model'=>models\User::class,
-    'session'=>'session_user'
+
+    'web'=>[
+        'driver'=>'session',
+        'model'=>models\User::class
+    ],
+
+    'api'=>[
+        'driver'=>'token',
+        'model'=>models\User::class
+    ]
+
 ];
 
 ?>

@@ -4,6 +4,7 @@ use libs\Router\Router;
 use libs\HTTP\Response;
 use libs\Auth\Auth;
 use libs\Env;
+use libs\Config;
 use libs\Model;
 
 Env::singleton("config.env");
