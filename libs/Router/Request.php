@@ -2,7 +2,7 @@
 
 namespace libs\Router;
 
-use libs\Session;
+use libs\Middle\Session;
 
 class Request{
 

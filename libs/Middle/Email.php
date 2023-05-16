@@ -1,6 +1,6 @@
 <?php
 
-namespace libs;
+namespace libs\Middle;
 
 require_once('vendor/phpmailer/phpmailer/src/Exception.php');
 require_once('vendor/phpmailer/phpmailer/src/PHPMailer.php');

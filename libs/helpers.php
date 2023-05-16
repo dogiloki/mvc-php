@@ -1,6 +1,8 @@
 <?php
 
 use libs\Router\Router;
+use libs\HTTP\Response;
+use libs\Auth\Auth;
 use libs\Config;
 use libs\Model;
 
@@ -8,44 +10,12 @@ function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
-function abort($code){
-    http_response_code($code);
-    exit;
-}
-
-function route($name,...$params){
-    $router=Router::singletong();
-    $url="";
-    foreach($router->getRoutes() as $route){
-        if($route->name!=$name){
-            continue;
-        }
-        $url="";
-        foreach(explode("/",$route->path) as $key=>$path){
-            if(preg_match('/{.*?}/',$path,$param)){
-                $url.="/".array_shift($params);
-            }else{
-                $url.="/".$path;
-            }
-        }
-    }
-    if($url==""){
-        throw new Exception("Route (".$name.") not found");
-    }
-    return url($url);
-}
-
-function view($path,$params=[]){
-    Router::view($path,$params);
-}
-
-function json($array){
-    header("Content-type: application/json");
-    return json_encode($array);
-}
-
 function config($key){
-    return Config::singleton()->get($key);
+    return Config::get($key);
+}
+
+function auth(){
+    return Auth::user();
 }
 
 function url($text){
@@ -58,17 +28,28 @@ function urlPublic($text){
     return url(config('APP_PUBLIC')."/".$text);
 }
 
-function redirect($url=null){
-    if($url==null){
-        $url=url("");
-    }
-    header("location:".$url);
-    exit;
-}
+// Functions from Response::class
 
-function back(){
-    header("Location: ".$_SERVER['HTTP_REFERER']);
-    exit;
+function response(){
+    return Response::class;
+}
+function json(...$params){
+    return Response::json(...$params);
+}
+function view(...$params){
+    return Response::view(...$params);
+}
+function abort(...$params){
+    return Response::abort(...$params);
+}
+function route(...$params){
+    return Response::route(...$params);
+}
+function redirect(...$params){
+    return Response::redirect(...$params);
+}
+function back(...$params){
+    return Response::back(...$params);
 }
 
 ?>

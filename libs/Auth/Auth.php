@@ -1,8 +1,8 @@
 <?php
 
-namespace libs\Middle;
+namespace libs\Middle\Auth;
 
-use libs\Session;
+use libs\Middle\Session;
 use libs\Middle\Secure;
 use libs\Middle\Middle;
 
@@ -62,6 +62,10 @@ class Auth{
     public function _user(){
         $id=Session::get($this->name_session);
         return $this->model_user::find($id);
+    }
+
+    public function _id(){
+        return Session::get($this->name_session);
     }
 
 }

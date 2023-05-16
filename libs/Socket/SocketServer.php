@@ -1,5 +1,7 @@
 <?php
 
+namespace libs\Socket;
+
 require_once 'libs/Config.php';
 
 use libs\Config;
