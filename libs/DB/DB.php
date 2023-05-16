@@ -48,8 +48,8 @@ class DB extends \PDO{
 	public static function singleton(){
 		if(self::$instance==null){
 			try{
-				$connection="mysql:host=".env('DB_HOST').(self::$create_db?"":";port=".env('DB_PORT').";dbname=".env('DB_NAME'));
-				self::$instance=new \PDO($connection,env('DB_USER'),env('DB_PASSWORD'));
+				$connection="mysql:host=".Config::database('host').(self::$create_db?"":";port=".Config::database('port').";dbname=".Config::database('database'));
+				self::$instance=new \PDO($connection,Config::database('user'),Config::database('password'));
 				self::$instance->query('SET NAMES '.Config::database('charset'));
 			}catch(\PDOException $ex){
 				echo $ex->getMessage();
