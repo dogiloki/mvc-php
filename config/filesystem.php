@@ -37,7 +37,33 @@ return [
 
     'logs'=>[
         'path'=>'storage/logs',
-        'file'=>'storage/logs/app.log'
+        'file'=>'storage/logs/app.log',
+        'channels'=>[
+            'info'=>[
+                'path'=>'storage/logs/info',
+            ],
+            'error'=>[
+                'path'=>'storage/logs/error',
+            ],
+            'warning'=>[
+                'path'=>'storage/logs/warning',
+            ],
+            'debug'=>[
+                'path'=>'storage/logs/debug',
+            ],
+            'notice'=>[
+                'path'=>'storage/logs/notice',
+            ],
+            'critical'=>[
+                'path'=>'storage/logs/critical',
+            ],
+            'alert'=>[
+                'path'=>'storage/logs/alert',
+            ],
+            'emergency'=>[
+                'path'=>'storage/logs/emergency',
+            ]
+        ],
     ],
 
 ];
