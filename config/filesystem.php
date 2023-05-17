@@ -9,7 +9,7 @@ return [
 
     'public'=>[
         'path'=>'public',
-        'url'=>url()."/public",
+        'url'=>url()."public",
     ],
 
     'database'=>[

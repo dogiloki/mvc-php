@@ -6,6 +6,7 @@ require 'vendor/autoload.php';
 
 use Intervention\Image\ImageManagerStatic as Image;
 use libs\Middle\Secure;
+use libs\Config;
 
 class Storage{
 
@@ -43,7 +44,7 @@ class Storage{
                 return null;
             }
         }catch(\Exception $ex){
-            echo $ex->getMessage();
+            
         }
         return null;
     }

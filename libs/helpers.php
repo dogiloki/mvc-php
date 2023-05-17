@@ -28,7 +28,7 @@ function url($text=""){
 }
 
 function urlPublic($text){
-    return url(env('APP_PUBLIC')."/".$text);
+    return Config::filesystem('public.url')."/".$text;
 }
 
 // Functions from Response::class
