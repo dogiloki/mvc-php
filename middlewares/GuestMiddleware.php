@@ -3,7 +3,7 @@
 namespace middlewares;
 		
 use libs\Middle\Middle;
-use libs\Middle\Auth;
+use libs\Auth\Auth;
 		
 class GuestMiddleware extends Middle{
 

@@ -2,7 +2,7 @@
 
 namespace libs\Router;
 
-use libs\Middle\Middle;
+use libs\Config;
 
 class Route{
 
@@ -45,9 +45,10 @@ class Route{
         $action=$this->action;
         foreach($middlewares as $middleware){
             if(is_string($middleware)){
-                $middleware=new (Middle::config('middle',$middleware))();
+                $name=Config::middleware($middleware);
+                $middleware=new $name();
             }else{
-                $middleware=new ($middleware)();
+                $middleware=new $middleware();
             }
             if(!$middleware->handle()){
                 $middleware->redirectTo();
