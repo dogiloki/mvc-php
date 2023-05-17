@@ -21,8 +21,8 @@ switch($command){
 		}
 		break;
 	}
-	case 'seed':{
-		Raau::seed();
+	case 'seeder':{
+		Raau::seeder();
 		break;
 	}
 	case 'new':{
@@ -97,7 +97,7 @@ class Raau{
 		}
 	}
 
-	public static function seed(){
+	public static function seeder(){
 		$seeder=new database\seeders\DatabaseSeeder();
 		$seeder->run();
 	}

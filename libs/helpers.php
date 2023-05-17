@@ -24,7 +24,7 @@ function auth(){
 function url($text=""){
     //\dirname($_SERVER['PHP_SELF'])
     $text=trim($text,"/");
-    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"])."/".$text;
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
 }
 
 function urlPublic($text){
