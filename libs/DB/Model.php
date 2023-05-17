@@ -148,14 +148,14 @@ class Model{
 
 	private function getReference($annotation,$reference,$value_id){
 		$value=null;
-		$model=new ("models\\".$reference[0])();
+		$model=new (Config::filesystem('models')."\\".$reference[0])();
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		$column=$reference[1];
 		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
 			$value=$model::find($value_id,$column,($annotation->get('HasOne')?null:[]));
 		}
 		if($annotation->get('ManyToMany')!=null){
-			$model_middle=new ("models\\".$reference[2])();
+			$model_middle=new (Config::filesystem('models')."\\".$reference[2])();
 			//$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
 			$column_middle=$reference[3];
 			$value=$model::find(function($find)use($model,$model_middle,$column_middle,$value_id){

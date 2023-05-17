@@ -2,8 +2,8 @@
 
 return [
 
-    'auth'=>middlewares\AuthMiddleware::class,
-    'guest'=>middlewares\GuestMiddleware::class
+    'auth'=>AuthMiddleware::class,
+    'guest'=>GuestMiddleware::class
     
 ];
 

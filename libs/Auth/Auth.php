@@ -21,7 +21,7 @@ class Auth{
 
     public function __construct(){
         $this->name_session='auth';
-        $this->model_user=Config::auth('web','model');
+        $this->model_user=Config::auth('web.model');
     }
 
     public static function __callStatic($method,$params){

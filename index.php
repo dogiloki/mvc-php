@@ -11,8 +11,9 @@ spl_autoload_register(function($clase){
 require_once "libs/helpers.php";
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Enrutadores
-$directory=scandir("routers");
 use libs\Router\Router;
+use libs\Config;
+$directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
 foreach($directory as $file){
 	if($file=='.' || $file=='..'){
@@ -22,7 +23,7 @@ foreach($directory as $file){
 	if($ext!="php"){
 		continue;
 	}
-	require_once("routers/".$file);
+	require_once(Config::filesystem("routes.path")."/".$file);
 }
 $router->controller();
 

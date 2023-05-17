@@ -5,6 +5,7 @@ namespace libs\Router;
 use libs\Router\Route;
 use libs\Router\Request;
 use libs\Router\View;
+use libs\Config;
 
 class Router{
 
@@ -56,7 +57,7 @@ class Router{
 	public static function view($path,$params=[]){
 		$path=str_replace(".","/",$path);
 		foreach(Router::$ext_views as $value){
-			$require_path="views/".$path.".".$value;
+			$require_path=Config::filesystem('views.path')."/".$path.".".$value;
 			if(file_exists($require_path)){
 				foreach($params as $key=>$param){
 					$$key=$param;

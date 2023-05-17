@@ -13,7 +13,7 @@ class Storage{
     public static $compress_image_level=70;
 
     public static function upload($file){
-        $dir=Config::singleton()->get('APP_STORAGE')."/";
+        $dir=Config::filesystem('storage.app')."/";
         if($file==null){
             return null;
         }
@@ -54,7 +54,7 @@ class Storage{
     }
 
     public static function get($file){
-        $dir=Config::singleton()->get('APP_STORAGE')."/";
+        $dir=Config::filesystem('storage.app')."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
@@ -65,7 +65,7 @@ class Storage{
     }
     
     public static function delete($file){
-        $dir=Config::singleton()->get('APP_STORAGE')."/";
+        $dir=Config::filesystem('storage.app')."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;

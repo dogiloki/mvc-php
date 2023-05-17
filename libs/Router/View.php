@@ -2,6 +2,8 @@
 
 namespace libs\Router;
 
+use libs\Config;
+
 class View{
 
     static $statementsWithParentheses=[
@@ -45,7 +47,8 @@ class View{
 
         fclose($handler);
 
-        $m=fopen("storage/framework/views/".str_replace(["/","\\"],".",$path),"w");
+        $name=str_replace(["/","\\"],".",$path);
+        $m=fopen(Config::filesystem('views.cache')."/".$name,"w");
         fwrite($m,$content);
         fclose($m);
 
