@@ -21,6 +21,10 @@ switch($command){
 		}
 		break;
 	}
+	case 'seed':{
+		Raau::seed();
+		break;
+	}
 	case 'new':{
 		$argv[2]??=null;
 		$argv[3]??=null;
@@ -91,6 +95,11 @@ class Raau{
 				}
 			}
 		}
+	}
+
+	public static function seed(){
+		$seeder=new database\seeders\DatabaseSeeder();
+		$seeder->run();
 	}
 
 	public static function newMigration($name){
