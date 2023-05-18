@@ -23,6 +23,12 @@
     @else
         <p>{{$variable3??""}}</p>
     @endif
+    @auth
+        @php
+            $user=user();
+        @endphp
+        <p>Autenticado: {{$user->name}}</p>
+    @endauth
 </body>
 </html>
 

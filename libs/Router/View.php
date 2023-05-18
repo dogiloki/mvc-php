@@ -13,18 +13,24 @@ class View{
         "foreach",
         "while",
         "switch",
-        "case"
+        "case",
+        "try",
+        "catch",
+        "finally",
+        "function"
     ];
 
     static $patterns=[
         "/@php/"=>"<?php",
         "/@endphp/"=>"?>",
         "/{{(.*?)}}/"=>"<?php echo $1; ?>",
-        "/{-{(.*?)}}/"=>"$1",
         "/@else/"=>"<?php }else{ ?>",
         "/@default/"=>"<?php default: ?>",
         "/@break/"=>"<?php break; ?>",
-        "/@continue/"=>"<?php continue; ?>"
+        "/@continue/"=>"<?php continue; ?>",
+        "/@end(.*?)\s/m"=>"<?php } ?>",
+        "/@(.*?)\)\s/m"=>"<?php if($1)){ ?>",
+        "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
 
     public static function render($path){
@@ -38,7 +44,7 @@ class View{
             }else{
                 $patterns["/@".$statement."\((.*?)\)\s/m"]="<?php ".$statement."($1){ ?>";
             }
-            $patterns["/@end".$statement."/"]="<?php } ?>";
+            $patterns["/@end".$statement."\s/m"]="<?php } ?>";
         }
         // Statements with parentheses
         $content=preg_replace(array_keys($patterns),array_values($patterns),$content);

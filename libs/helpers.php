@@ -18,6 +18,10 @@ function env($key){
 }
 
 function auth(){
+    return Auth::check();
+}
+
+function user(){
     return Auth::user();
 }
 
