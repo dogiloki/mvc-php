@@ -62,7 +62,8 @@ class Router{
 				foreach($params as $key=>$param){
 					$$key=$param;
 				}
-				eval("?>".View::render($require_path)."<?php");
+				/*eval("?>".View::render($require_path)."<?php");*/
+				require_once View::render($require_path);
 				return 0;
 			}
 		}

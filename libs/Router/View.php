@@ -34,6 +34,11 @@ class View{
     ];
 
     public static function render($path){
+        $name=str_replace(["/","\\"],".",$path);
+        $path_cache=Config::filesystem('views.cache')."/".$name;
+        if(file_exists($path_cache) && filemtime($path_cache)>filemtime($path)){
+            return $path_cache;
+        }
         $handler=fopen($path,"r");
         $content=fread($handler,filesize($path));
         $patterns=[];
@@ -54,11 +59,11 @@ class View{
         fclose($handler);
 
         $name=str_replace(["/","\\"],".",$path);
-        $m=fopen(Config::filesystem('views.cache')."/".$name,"w");
+        $m=fopen($path_cache,"w");
         fwrite($m,$content);
         fclose($m);
 
-        return $content;
+        return $path_cache;
     }
 
     static function getParentheses($text, $content){
