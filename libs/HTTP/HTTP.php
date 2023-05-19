@@ -2,8 +2,6 @@
 
 namespace libs\HTTP;
 
-require_once('vendor/autoload.php');
-
 class HTTP{
 
 	public static $host;

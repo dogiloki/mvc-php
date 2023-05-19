@@ -8,6 +8,7 @@ spl_autoload_register(function($clase){
 	}
 });
 
+require "vendor/autoload.php";
 require_once "libs/helpers.php";
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Enrutadores

@@ -2,8 +2,6 @@
 
 namespace libs\Middle;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 class Faker{
 
     public $faker;

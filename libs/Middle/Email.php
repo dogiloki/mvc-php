@@ -2,10 +2,6 @@
 
 namespace libs\Middle;
 
-require_once('vendor/phpmailer/phpmailer/src/Exception.php');
-require_once('vendor/phpmailer/phpmailer/src/PHPMailer.php');
-require_once('vendor/phpmailer/phpmailer/src/SMTP.php');
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
