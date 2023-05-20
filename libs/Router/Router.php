@@ -5,6 +5,7 @@ namespace libs\Router;
 use libs\Router\Route;
 use libs\Router\Request;
 use libs\Router\View;
+use libs\Middle\Session;
 use libs\Config;
 
 class Router{
@@ -71,6 +72,7 @@ class Router{
 
 	private function add($method,$url,$action=null,$private=false){
 		$route=new Route($method,$url,$action);
+		$route->name_file=explode(".",basename(debug_backtrace()[1]['file']))[0];
 		$this->prev_route=$route;
 		$this->routes[]=$route;
 		return $this;
@@ -121,6 +123,7 @@ class Router{
 				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 				$request->{$key_request}=$value_request;
 			}
+			$route->middlewares=array_merge($route->middlewares,Config::middleware('routers.'.$route->name_file)??[]);
 			$route->call($request);
 			return;
 		}

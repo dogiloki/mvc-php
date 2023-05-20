@@ -44,8 +44,8 @@ class Request{
 		return $this->cookie[$key]??null;
 	}
 
-	public function session($key){
-		return $this->session[$key]??null;
+	public function session(){
+		return Session::singleton();
 	}
 
 	public function files($key){
@@ -87,6 +87,10 @@ class Request{
 			return $this->put[$key]??null;
 		}
 		return $this->put[$key]=$value;
+	}
+
+	public function input($key){
+		return $this->$key??null;
 	}
 
 }

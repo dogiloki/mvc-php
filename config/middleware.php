@@ -5,7 +5,7 @@ return [
     'routers'=>[
 
         'web'=>[
-            app\Middlewares\VerifyCsrfToken::class
+            
         ],
 
         'api'=>[

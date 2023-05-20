@@ -5,7 +5,7 @@ use libs\HTTP\Response;
 use libs\Auth\Auth;
 use libs\Env;
 use libs\Config;
-use libs\Model;
+use libs\Middle\Session;
 
 Env::singleton("config.env");
 
@@ -15,6 +15,10 @@ function dd($obj){
 
 function env($key){
     return Env::get($key);
+}
+
+function csrfToken(){
+    return Session::csrfToken();
 }
 
 function auth(){

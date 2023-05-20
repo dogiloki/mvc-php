@@ -11,7 +11,7 @@ class Config{
         if(file_exists($filename)){
             $value=$cfg;
             foreach($keys as $key){
-                $value=$value[$key];
+                $value=$value[$key]??null;
             }
             return $value;
         }

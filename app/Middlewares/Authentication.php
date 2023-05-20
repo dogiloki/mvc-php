@@ -2,30 +2,30 @@
 
 namespace app\Middlewares;
 
-use libs\Middle\Middle;
+use libs\Middle\Middleware;
 use libs\Auth\Auth;
 
-class Authenticate extends Middle{
+class Authenticate extends Middleware{
 
     /**
      * Verificar si llamar a redirectTo()
      * @return bool
      */
-    public function handle(){
+    public function handle($request){
         return Auth::check();
     }
     
     /**
      * Redireccionar a una ruta
      */
-    public function redirectTo(){
+    public function redirectTo($request){
         return redirect(route('login'));
     }
 
     /**
      * Ejecución al finalizar
      */
-    public function terminate(){
+    public function terminate($request){
         
     }
 

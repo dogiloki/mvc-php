@@ -18,7 +18,7 @@ class Secure{
 	}
 
 	public static function hash($text=null){
-		$text??=uniqid(uniqid());
+		$text??=uniqid(rand(),true);
 		return hash('sha256',$text);
 	}
 	

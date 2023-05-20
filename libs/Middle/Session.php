@@ -3,6 +3,7 @@
 namespace libs\Middle;
 
 use libs\Config;
+use libs\Middle\Secure;
 
 class Session{
 
@@ -39,6 +40,7 @@ class Session{
             'cookie_httponly'=>Config::session('httponly'),
             'cookie_samesite'=>Config::session('samesite')
         ]);
+        $this->csrfToken();
     }
 
     public function __call($method,$params){
@@ -58,6 +60,15 @@ class Session{
 
     public function _regenerate(){  
         $this->session_id=session_regenerate_id(true);
+    }
+
+    public function _csrfToken(){
+        $token=$this->get('csrf_token');
+        if($token==null){
+            $token=Secure::hash();
+            $this->put('csrf_token',$token);
+        }
+        return $token;
     }
 
     public function _put($key,$value=null){

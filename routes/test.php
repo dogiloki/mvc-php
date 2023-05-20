@@ -12,7 +12,7 @@ $router->post('/test',function($request){
 });
 
 $router->get('/test',function($request){
-    
+    echo csrfToken();
 });
 
 ?>

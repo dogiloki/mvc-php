@@ -1,6 +1,6 @@
 <?php
 
-$router->get('/',function(){
+$router->post('/',function(){
     return view('index');
 });
 

@@ -11,6 +11,7 @@ class Route{
         return $uri;
     }
 
+    public $name_file;
     public $method;
     public $path;
     public $action;
@@ -44,17 +45,16 @@ class Route{
         $middlewares=$this->middlewares;
         $action=$this->action;
         foreach($middlewares as $middleware){
-            if(is_string($middleware)){
+            if(!($middleware=new $middleware())){
                 $name=Config::middleware('alias.'.$middleware);
                 $middleware=new $name();
-            }else{
-                $middleware=new $middleware();
             }
-            if(!$middleware->handle()){
-                $middleware->redirectTo();
+            if(!$middleware->handle($params)){
+                $middleware->redirectTo($params);
             }
-            $middleware->terminate();
+            $middleware->terminate($params);
         }
+        
         if($action instanceof \Closure){
             echo $action($params);
         }else{
