@@ -1,6 +1,6 @@
 <?php
 
-namespace models;
+namespace app\Models;
 
 use libs\DB\Model;
 

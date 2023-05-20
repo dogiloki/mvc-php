@@ -23,15 +23,15 @@ return [
     ],
 
     'controllers'=>[
-        'path'=>'controllers'
+        'path'=>'app/Controllers'
     ],
 
     'models'=>[
-        'path'=>'models'
+        'path'=>'app/Models'
     ],
 
     'views'=>[
-        'path'=>'views',
+        'path'=>'resources/views',
         'cache'=>'storage/framework/views',
     ],
 

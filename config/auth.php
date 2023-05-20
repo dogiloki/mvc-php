@@ -4,12 +4,12 @@ return [
 
     'web'=>[
         'driver'=>'session',
-        'model'=>models\User::class
+        'model'=>app\Models\User::class
     ],
 
     'api'=>[
         'driver'=>'token',
-        'model'=>models\User::class
+        'model'=>app\Models\User::class
     ]
 
 ];

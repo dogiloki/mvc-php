@@ -45,7 +45,7 @@ class Route{
         $action=$this->action;
         foreach($middlewares as $middleware){
             if(is_string($middleware)){
-                $name=Config::middleware($middleware);
+                $name=Config::middleware('alias.'.$middleware);
                 $middleware=new $name();
             }else{
                 $middleware=new $middleware();

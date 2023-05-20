@@ -1,11 +1,11 @@
 <?php
 
-namespace middlewares;
+namespace app\Middlewares;
 
 use libs\Middle\Middle;
 use libs\Auth\Auth;
 
-class AuthMiddleware extends Middle{
+class Authenticate extends Middle{
 
     /**
      * Verificar si llamar a redirectTo()
