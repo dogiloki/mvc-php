@@ -13,7 +13,7 @@ class VerifyCsrfToken extends Middleware{
                return abort(401,"CSRF token not found");
           }
           return $csrf_token==csrfToken()?$next($request):abort(401,"CSRF token invalid");
-	}
+	}     
 
 }
 

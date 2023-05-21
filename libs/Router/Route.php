@@ -42,26 +42,27 @@ class Route{
         }
     }
 
-    public function call(Request $request){
-        $middlewares=$this->middlewares;
-        foreach($middlewares as $middleware){
-            if(is_object($middleware)){
-                $middleware=new $middleware();
-            }else{
-                $middleware=new (Config::middleware("alias.".$middleware))();
-            }
-            try{
-                $middleware->handle($request,function($request){
-                    $this->callAction($request);
-                });
-                $middleware->terminate($request,function($request){
-                    $this->callAction($request);
-                });
-            }catch(\Exception $ex){
-                $middleware->report($ex);
-            }
+    public function call(Request $request, $index_middlewares=0){
+        $middleware=$this->middlewares[$index_middlewares]??null;
+        if($middleware==null){
+            $this->callAction($request);
+            exit;
         }
-        $this->callAction($request);
+        if(is_object($middleware)){
+            $middleware=new $middleware();
+        }else{
+            $middleware=new (Config::middleware("alias.".$middleware))();
+        }
+        try{
+            $middleware->handle($request,function($request)use($index_middlewares){
+                $this->call($request,$index_middlewares+1);
+            });
+            $middleware->terminate($request,function($request)use($index_middlewares){
+                $this->call($request,$index_middlewares+1);
+            });
+        }catch(\Exception $ex){
+            $middleware->report($ex);
+        }
     }
 
     private function callAction(Request $request){
