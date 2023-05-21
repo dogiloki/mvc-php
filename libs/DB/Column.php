@@ -79,7 +79,13 @@ class Column{
         if(!$this->null){
             $sql.=" NOT NULL";
         }
+        if($this->default){
+            $sql.=" DEFAULT '".$this->default."'";
+        }
         $sql.=",";
+        if($this->comment){
+            $sql.=" -- ".$this->comment;
+        }
         if($this->auto_increment){
             $sql=substr($sql,0,strlen($sql)-1);
             $sql.=" AUTO_INCREMENT,";
