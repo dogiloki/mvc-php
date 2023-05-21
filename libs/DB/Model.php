@@ -235,7 +235,11 @@ class Model{
 					return $model->class;
 				}
 			}else{
-				return null;
+				if(is_array($type)){
+					return [];
+				}else{
+					return null;
+				}
 			}
 		}
 		if($column==null){
@@ -244,14 +248,22 @@ class Model{
 		try{
 			$rs=null;
 			if($value==null){
-				return null;
+				if(is_array($type)){
+					return [];
+				}else{
+					return null;
+				}
 			}
 			$rs=DB::table($model->table)->select()
 			->where($column,$value)
 			->execute();
 			$rows=$rs->fetchAll();
 			if($rs==null || sizeof($rows)<=0){
-				return null;
+				if(is_array($type)){
+					return [];
+				}else{
+					return null;
+				}
 			}
 			$model->setValues($rows[0]);
 			$class=[];
@@ -269,7 +281,6 @@ class Model{
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
 			throw new \Exception($ex);
-			return null;
 		}
 	}
 
@@ -292,7 +303,6 @@ class Model{
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
 			throw new \Exception($ex);
-			return [];
 		}
 	}
 

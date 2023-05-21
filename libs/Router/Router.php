@@ -5,7 +5,7 @@ namespace libs\Router;
 use libs\Router\Route;
 use libs\Router\View;
 use libs\HTTP\Request;
-use libs\Middle\Session;
+use libs\View\Component;
 use libs\Config;
 
 class Router{
@@ -67,6 +67,15 @@ class Router{
 				require_once View::render($require_path);
 				return 0;
 			}
+		}
+	}
+	public static function component($name,$params=[]){
+		$name=str_replace(".","/",$name);
+		foreach(Router::$ext_views as $value){
+			$class=Config::filesystem('components.path')."/".$name;
+			$class=str_replace("/","\\",$class);
+			$component=new $class();
+			return $component->init($params);
 		}
 	}
 

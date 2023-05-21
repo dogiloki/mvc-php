@@ -6,6 +6,7 @@ namespace libs\DB;
 use libs\DB\Table;
 use libs\DB\Flat;
 use libs\Config;
+use libs\Middle\Log;
 
 class DB extends \PDO{
 
@@ -23,6 +24,7 @@ class DB extends \PDO{
 	public static function execute($sql,$params=[]){
 		//echo "<pre>".print_r($sql,"<br>")."</pre>";
 		//echo "<pre>".print_r($params,"<br>")."</pre>";
+		Log::channel("debug","sql: ".$sql." params: ".json_encode($params)," | DB | execute()");
 		$db=self::singleton();
 		if($db==null){
 			return null;

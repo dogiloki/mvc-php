@@ -109,6 +109,10 @@ class Request{
 		return $this->$key??null;
 	}
 
+	public function all(){
+		return array_merge($this->get,$this->post,$this->put);
+	}
+
 }
 
 ?>

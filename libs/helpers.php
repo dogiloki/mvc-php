@@ -64,6 +64,9 @@ function json(...$params){
 function view(...$params){
     return Response::view(...$params);
 }
+function component(...$params){
+    return Response::component(...$params);
+}
 function abort(...$params){
     return Response::abort(...$params);
 }

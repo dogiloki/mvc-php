@@ -15,6 +15,10 @@ class Response{
         Router::view($path,$params);
     }
 
+    public static function component($name,$params=[]){
+        Router::component($name,$params);
+    }
+
     public static function abort($code,$message=null){
         http_response_code($code);
         if($message==null){

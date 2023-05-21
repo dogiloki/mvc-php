@@ -8,27 +8,11 @@
 <body>
     <h1>Hola mundo</h1>
     <p>Bienvenido</p>
-    <var-variable>Texto en vista</var-variable>
-    <input type="button" onclick="SPA.renderVar('variable')" value="Cargar variable"><br>
-    <input type="text" id="box-text" value="Texto para componente" placeholder="Escribe algo..."><br>
-    <input type="button" onclick="SPA.renderComponent('vista',{
-        variable:document.getElementById('box-text').value
-    })" value="Cargar componente"><br>
-    Componente:
-    <component-vista></component-vista>
-    @if(isset($variable1))
-        <p>{{$variable1}}</p>
-    @elseif(isset($variable2))
-        <p>{{$variabl2}}</p>
-    @else
-        <p>{{$variable3??""}}</p>
-    @endif
-    @auth
-        @php
-            $user=user();
-        @endphp
-        <p>Autenticado: {{$user->name}}</p>
-    @endauth
+    @php
+        $user=\app\Models\User::all();
+    @endphp
+    <input type="search" wire:vista("search")>
+    <component:vista :variable="{{base64_encode(serialize($user))}}"/>
 </body>
 </html>
 

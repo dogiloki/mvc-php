@@ -94,6 +94,11 @@ class Session{
         }
     }
 
+    public function _regenerate(){
+        $this->destroy();
+        $this->start();
+    }
+
     public function _isStarted(){
         return $this->started;
     }

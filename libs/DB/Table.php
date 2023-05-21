@@ -203,7 +203,7 @@ class Table{
 		}else{
 			$this->wheres[]=[
 				"column"=>$column,
-				"operator"=>$operator,
+				"operator"=>" ".$operator." ",
 				"value"=>$value
 			];
 		}
