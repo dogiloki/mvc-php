@@ -5,7 +5,8 @@ return [
     'routers'=>[
 
         'web'=>[
-            libs\Session\Middleware\StartSession::class
+            libs\Session\Middleware\StartSession::class,
+            app\Middlewares\VerifyCsrfToken::class
         ],
 
         'api'=>[
