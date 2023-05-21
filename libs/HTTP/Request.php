@@ -1,13 +1,19 @@
 <?php
 
-namespace libs\Router;
+namespace libs\HTTP;
 
 use libs\Middle\Session;
 
 class Request{
 
 	private static $instance=null;
-	public $header=null;
+	public $header;
+	public $get;
+	public $post;
+	public $put;
+	public $cookie;
+	public $session;
+	public $files;
 
 	private function __construct(){
 		$this->get=[];

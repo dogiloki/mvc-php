@@ -3,33 +3,16 @@
 namespace app\Middlewares;
 
 use libs\Middle\Middleware;
+use libs\HTTP\Request;
 
 class VerifyCsrfToken extends Middleware{
 
-    /**
-     * Verificar si llamar a redirectTo()
-     * @return bool
-     */
-	public function handle($request){
-		$csrf_token=$request->input('_token')??$request->header('X-CSRF-TOKEN');
-        if($csrf_token==null){
-            return false;
-        }
-        return $csrf_token==csrfToken();
-	}
-	
-	/**
-     * Redireccionar a una ruta
-     */
-	public function redirectTo($request){
-        return $_SERVER['REQUEST_METHOD']=='GET'?null:abort(419);
-	}
-	
-	/**
-     * Ejecución al finalizar
-     */
-	public function terminate($request){
-		
+     public function handle(Request $request, \Closure $next){
+          $csrf_token=$request->input('_token')??$request->header('X-CSRF-TOKEN');
+          if($csrf_token==null){
+               return abort(401,"CSRF token not found");
+          }
+          return $csrf_token==csrfToken()?$next($request):abort(401,"CSRF token invalid");
 	}
 
 }

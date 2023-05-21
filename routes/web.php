@@ -1,7 +1,7 @@
 <?php
 
-$router->post('/',function(){
+$router->get('/',function(){
     return view('index');
-});
+})->name('home');
 
 ?>

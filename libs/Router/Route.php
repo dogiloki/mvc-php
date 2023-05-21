@@ -3,6 +3,7 @@
 namespace libs\Router;
 
 use libs\Config;
+use libs\HTTP\Request;
 
 class Route{
 
@@ -41,27 +42,37 @@ class Route{
         }
     }
 
-    public function call($params){
+    public function call(Request $request){
         $middlewares=$this->middlewares;
-        $action=$this->action;
         foreach($middlewares as $middleware){
-            if(!($middleware=new $middleware())){
-                $name=Config::middleware('alias.'.$middleware);
-                $middleware=new $name();
+            if(is_object($middleware)){
+                $middleware=new $middleware();
+            }else{
+                $middleware=new (Config::middleware("alias.".$middleware))();
             }
-            if(!$middleware->handle($params)){
-                $middleware->redirectTo($params);
+            try{
+                $middleware->handle($request,function($request){
+                    $this->callAction($request);
+                });
+                $middleware->terminate($request,function($request){
+                    $this->callAction($request);
+                });
+            }catch(\Exception $ex){
+                $middleware->report($ex);
             }
-            $middleware->terminate($params);
         }
-        
+        $this->callAction($request);
+    }
+
+    private function callAction(Request $request){
+        $action=$this->action;
         if($action instanceof \Closure){
-            echo $action($params);
+            echo $action($request);
         }else{
             $controller=explode('@',$action);
             $controller[0]=Config::filesystem('controllers')."\\".$controller[0];
             $obj=new $controller[0];
-            echo $obj->{$controller[1]}($params);
+            echo $obj->{$controller[1]}($request);
         }
     }
 

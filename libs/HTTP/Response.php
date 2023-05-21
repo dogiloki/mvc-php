@@ -15,8 +15,20 @@ class Response{
         Router::view($path,$params);
     }
 
-    public static function abort($code){
+    public static function abort($code,$message=null){
         http_response_code($code);
+        if($message==null){
+            $message=match($code){
+                404=>"Not found",
+                403=>"Forbidden",
+                401=>"Unauthorized",
+                500=>"Internal Server Error",
+                400=>"Bad Request",
+                419=>"Page Expired",
+                default=>"Error"
+            };
+        }
+        echo "<h1>".$code." - ".$message."</h1>";
         exit;
     }
 
@@ -37,7 +49,7 @@ class Response{
             }
         }
         if($url==""){
-            throw new Exception("Route (".$name.") not found");
+            throw new \Exception("Route (".$name.") not found");
         }
         return url($url);
     }

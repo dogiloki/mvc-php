@@ -3,8 +3,8 @@
 namespace libs\Router;
 
 use libs\Router\Route;
-use libs\Router\Request;
 use libs\Router\View;
+use libs\HTTP\Request;
 use libs\Middle\Session;
 use libs\Config;
 
@@ -127,21 +127,7 @@ class Router{
 			$route->call($request);
 			return;
 		}
-		return $this->http_response_code(404,$params);
-	}
-
-	private function http_response_code($code,$params=[]){
-		$request=Request::singleton();
-		if($params==null || sizeof($params)<=0){
-			// Agregar request
-			foreach($_REQUEST as $key_request=>$value_request){
-				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
-			}
-		}
-		http_response_code($code);
-		if($action=$this->http_response_code[$code]??null){
-			$this->action($action,$request);
-		}
+		return abort(404);
 	}
 
 }
