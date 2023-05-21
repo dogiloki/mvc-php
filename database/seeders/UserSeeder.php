@@ -3,9 +3,8 @@
 namespace database\seeders;
 
 use libs\DB\Seeder;
-use libs\DB\DB;
 use libs\Middle\Secure;
-use models\User;
+use app\Models\User;
 
 class UserSeeder extends Seeder{
 

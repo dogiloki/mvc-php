@@ -4,7 +4,6 @@
 namespace libs\DB;
 
 use libs\DB\Table;
-use libs\DB\Create;
 use libs\DB\Flat;
 use libs\Config;
 

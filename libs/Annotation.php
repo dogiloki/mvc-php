@@ -5,6 +5,7 @@ namespace libs;
 class Annotation{
 
 	public $params=[];
+	public $text;
 
 	public function __construct($text){
 		$this->text=$text;

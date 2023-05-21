@@ -34,7 +34,7 @@ class Create{
      * @param string $name
      */
 	public function engine($name){
-		$this->$engine=$name;
+		$this->engine=$name;
 	}
 
     /**
@@ -42,7 +42,7 @@ class Create{
      * @param string $name
      */
 	public function charset($name){
-		$this->$charset=$name;
+		$this->charset=$name;
 	}
 
     /**

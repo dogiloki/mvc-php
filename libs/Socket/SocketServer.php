@@ -8,6 +8,7 @@ class SocketServer{
     public $host;
     public $port;
     public $server;
+    public $clients;
 
     public function __construct(){
         $this->host=env('SOCKET_HOST');

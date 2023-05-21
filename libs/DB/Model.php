@@ -4,6 +4,7 @@ namespace libs\DB;
 
 use libs\Annotation;
 use libs\DB\DB;
+use libs\Config;
 
 class Model{
 

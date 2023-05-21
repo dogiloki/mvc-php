@@ -32,7 +32,7 @@ class Email{
 			$done=$mail->send();
 			ob_end_clean();
 			return $done;
-		}catch(\Exception $ex){
+		}catch(Exception $ex){
 			ob_end_clean();
 			return false;
 		}
