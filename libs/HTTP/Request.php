@@ -2,7 +2,9 @@
 
 namespace libs\HTTP;
 
-use libs\Middle\Session;
+use libs\Session\Session;
+use libs\Cookie\Cookie;
+use libs\Middle\Secure;
 
 class Request{
 
@@ -19,7 +21,6 @@ class Request{
 		$this->get=[];
 		$this->post=[];
 		$this->put=[];
-		$this->cookie=$_COOKIE;
 		$this->session=Session::singleton();
 		$this->files=$_FILES??[];
 		$this->header=getallheaders();
@@ -37,6 +38,15 @@ class Request{
 		return self::singleton();
 	}
 
+	public static function csrfToken(){
+		if(Cookie::exists('CSRF_TOKEN')){
+			return Cookie::get('CSRF_TOKEN');
+		}
+		$token=Secure::random();
+		Cookie::set('CSRF_TOKEN',$token);
+		return $token;
+	}
+
 	public function add($type,$key,$value){
 		$this->$key=$value;
 		switch($type){
@@ -46,8 +56,8 @@ class Request{
 		}
 	}
 
-	public function cookie($key){
-		return $this->cookie[$key]??null;
+	public function cookie(){
+		return new Cookie();
 	}
 
 	public function session(){

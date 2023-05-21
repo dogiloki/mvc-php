@@ -2,7 +2,7 @@
 
 namespace libs\Auth;
 
-use libs\Middle\Session;
+use libs\Session\Session;
 use libs\Middle\Secure;
 use libs\Config;
 

@@ -1,24 +1,34 @@
 <?php
 
-use libs\Router\Router;
+use libs\HTTP\Request;
 use libs\HTTP\Response;
 use libs\Auth\Auth;
 use libs\Env;
 use libs\Config;
-use libs\Middle\Session;
 
 Env::singleton("config.env");
 
 function dd($obj){
+    $trace=debug_backtrace();
+    $file=$trace[0]['file'];
+    $line=$trace[0]['line'];
+    echo $file;
+    echo "<br>";
+    echo $line;
+    echo "<br>";
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
-function env($key){
+function env($key,$default=null){
+    $value=Env::get($key);
+    if($value==null){
+        Env::set($key,$default);
+    }
     return Env::get($key);
 }
 
 function csrfToken(){
-    return Session::csrfToken();
+    return Request::csrfToken();
 }
 
 function auth(){
@@ -37,6 +47,10 @@ function url($text=""){
 
 function urlPublic($text){
     return Config::filesystem('public.url')."/".$text;
+}
+
+function storagePath($text=""){
+    return Config::filesystem('storage.path')."/".$text;
 }
 
 // Functions from Response::class

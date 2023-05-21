@@ -5,7 +5,7 @@ return [
     'routers'=>[
 
         'web'=>[
-            
+            libs\Session\Middleware\StartSession::class
         ],
 
         'api'=>[
@@ -13,10 +13,7 @@ return [
         ]
 
     ],
-
-    /**
-     * No puntos en las claves
-     */
+    
     'alias'=>[
         'auth'=>app\Middlewares\Authenticate::class,
         'guest'=>app\Middlewares\Guest::class,

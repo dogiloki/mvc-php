@@ -3,6 +3,7 @@
 return [
 
     'storage'=>[
+        'path'=>'storage',
         'app'=>'storage/app',
         'public'=>'storage/app/public',
     ],

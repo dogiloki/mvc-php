@@ -48,9 +48,7 @@ class Route{
             $this->callAction($request);
             exit;
         }
-        if(is_object($middleware)){
-            $middleware=new $middleware();
-        }else{
+        if(!($middleware=new $middleware())){
             $middleware=new (Config::middleware("alias.".$middleware))();
         }
         try{
