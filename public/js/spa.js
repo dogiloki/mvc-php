@@ -1,60 +1,105 @@
+class Component{
+
+    static TYPE_WIRES=Object.freeze({
+        CHANGE:{
+            id:Symbol(),
+            text:"change"
+        },
+        CLICK:{
+            id:Symbol(),
+            text:"click"
+        },
+        IGNORE:{
+            id:Symbol(),
+            text:"ignore"
+        }
+    });
+
+    constructor(component){
+        let name=component.tagName.substring(10);
+        this.content=component;
+        this.name=name;
+        this.wires=[];
+        this.params={};
+        this.getParams();
+        this.render();
+    }
+
+    getWires(){
+        let collection=this.content.getElementsByTagName('*');
+        for(let a=0; a<collection.length; a++){
+            let element=collection[a];
+            let attributes=Array.from(element.attributes);
+            attributes.forEach((attribute)=>{
+                if(attribute.name.startsWith("wire:")){
+                    let wire=attribute.name.substring(5);
+                    let listener=wire;
+                    let attrib=attribute.value;
+                    //let listener=wire.match(/^([^()]+)/)[1];
+                    //let attrib=wire.match(/"([^"]+)"/)[1];
+                    this.setWires(element, listener, attrib);
+                }
+            });
+        }
+    }
+
+    getParams(){
+        let element=this.content;
+        let attributes=Array.from(element.attributes);
+        attributes.forEach((attribute)=>{
+            let name=attribute.name;
+            if(name.startsWith(":")){
+                this.params[name]=attribute.value;
+            }
+        });
+    }
+
+    setWires(element, listener, attrib){
+        let wire={
+            "element":element,
+            "listener":listener,
+            "attrib":attrib,
+            getValue:()=>{
+                return element.value??element.innerHTML??element.src??element.href??element.data;
+            }
+        };
+        //console.log(this.content.querySelector((element.tagName)+"[wire\\:"+listener+"=\""+attrib+"\"]"));
+        if(listener==Component.TYPE_WIRES.IGNORE.text){
+
+        }else{
+            element.addEventListener(listener,()=>{
+                this.params[attrib]=wire.getValue();
+                this.render();
+            });
+        }
+        this.wires.push(wire);
+    }
+
+    render(){
+        Fetch.post("component/"+this.name,(data)=>{
+            let doc=new DOMParser().parseFromString(data,"text/html");
+            this.content.innerHTML=data;
+            this.getWires();
+        },{
+            "body":new URLSearchParams(this.params)
+        });
+    }
+
+}
+
 class SPA{
 
     constructor(){
-        let collection=document.getElementsByTagName('*');
-        this.components={};
-        this.wires={};
-        for(let i=0;i<collection.length;i++){
-            let element=collection[i];
-            let name=element.tagName.toLowerCase();
-            if(name.startsWith("component:")){
-                let component=name.substring(10);
-                this.components[component]=element.attributes;
-                this.renderComponent(component);
-            }
-            let attributes=element.attributes;
-            for(let index=0; index<attributes.length; index++){
-                let attribute=attributes[index];
-                if(attribute.name.startsWith("wire:")){
-                    let wire=attribute.name.substring(5);
-                    this.wires['model']={
-                        "element":element,
-                        "attribute":wire
-                    };
-                    this.listenerModel(element,wire);
-                }
-            }
-        }
-    }
-    
-    renderComponent(name){
-        let content=Array.from(document.getElementsByTagName('component:'+name))[0];
-        let attributes=Array.from(this.components[name]);
-        let params={};
-        attributes.forEach((attribute)=>{
-            params[attribute.name]=attribute.value;
-        });
-        Fetch.post("component/"+name,(data)=>{
-            content.innerHTML=data;
-        },{
-            "dataType":"html",
-            "body":new URLSearchParams(params)
-        });
+        this.components=[];
+        this.getComponents();
     }
 
-    listenerModel(element,wire){
-        element.addEventListener('keyup',()=>{
-            let value=element.value;
-            let params={};
-            let method=wire.match(/^([^()]+)/)[1];
-            let attrib=wire.match(/"([^"]+)"/)[1];
-            let content=Array.from(document.getElementsByTagName('component:'+method))[0];
-            params[attrib]=value;
-            Fetch.post("component/"+method,(data)=>{
-                content.innerHTML=data;
-            },{
-                "body":new URLSearchParams(params)
-            });
+    getComponents(){
+        let colletion=Array.from(document.getElementsByTagName('*'));
+        colletion.forEach((element)=>{
+            if(element.tagName.startsWith("COMPONENT:")){
+                this.components.push(new Component(element));
+            }
         });
     }
 

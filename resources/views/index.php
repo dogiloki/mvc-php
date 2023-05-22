@@ -11,7 +11,6 @@
     @php
         $user=\app\Models\User::all();
     @endphp
-    <input type="search" wire:vista("search")>
     <component:vista :variable="{{base64_encode(serialize($user))}}"/>
 </body>
 </html>
