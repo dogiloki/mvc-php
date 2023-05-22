@@ -43,16 +43,7 @@ class Component{
         }
     }
 
-    getParams(){
-        let element=this.content;
-        let attributes=Array.from(element.attributes);
-        attributes.forEach((attribute)=>{
-            let name=attribute.name;
-            if(name.startsWith(":")){
-                this.params[name]=attribute.value;
-            }
-        });
-    }
+    
 
     setWires(element, listener, attrib){
         let wire={
@@ -86,23 +77,3 @@ class Component{
     }
 
 }
-
-class SPA{
-
-    constructor(){
-        this.components=[];
-        this.getComponents();
-    }
-
-    getComponents(){
-        let colletion=Array.from(document.getElementsByTagName('*'));
-        colletion.forEach((element)=>{
-            if(element.tagName.startsWith("COMPONENT:")){
-                this.components.push(new Component(element));
-            }
-        });
-    }
-
-}
-
-window.spa=new SPA();
