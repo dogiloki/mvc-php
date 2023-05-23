@@ -73,16 +73,16 @@ document.addEventListener('DOMContentLoaded',()=>{
                 component.node.innerHTML=html;
                 getWires(component,true);
             }else{
-                // collection_old.forEach((element_old,index)=>{
-                //     let element_new=collection_new[index];
-                //     console.log(element_new,element_old);
-                //     if(element_new==null){
-                //         element_old.remove();
-                //     }
-                // });
-                // getWires(component,false);
-                component.node.innerHTML=html;
-                getWires(component,true);
+                collection_old.forEach((element_old,index)=>{
+                    let element_new=collection_new[index]??null;
+                    if(element_new==null){
+                        component.node.removeChild(element_old);
+                    }
+                    if(element_new.textContent!=element_old.textContent){
+                        component.node.replaceChild(element_new,element_old);
+                    }
+                });
+                getWires(component,false);
             }
             component.wires.map((wire)=>{
                 let value=vars[wire.attrib];
