@@ -7,7 +7,8 @@ use libs\View\Component;
 class Vista extends Component{
 
     public $variable="Soy una variable";
-    public $search="texto";
+    public $search;
+    public $prueba;
 
     public function amount(){
         $search=$this->search;

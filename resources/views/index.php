@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         });
         return params;
     }
+
     for(let component of components){
         render(component);
     }
@@ -56,24 +57,42 @@ document.addEventListener('DOMContentLoaded',()=>{
             wire.value=wire.getValue();
             return wire;
         })
+        let component_send={...component};
+        component_send.node=null;
+        component_send.wires=component.wires.filter((wire)=>{
+            return wire.listener!="none" && wire.listener!=null;
+        });
         Fetch.post("component/"+component.name,(data)=>{
-            let doc=new DOMParser().parseFromString(data,"text/html");
+            let json=JSON.parse(data);
+            let html=json.html;
+            let vars=json.vars;
+            let doc=new DOMParser().parseFromString(html,"text/html");
             let collection_old=Array.from(component.node.getElementsByTagName('*'));
             let collection_new=Array.from(doc.body.getElementsByTagName('*'));
             if(collection_old.length==0){
-                component.node.innerHTML=data;
+                component.node.innerHTML=html;
                 getWires(component,true);
             }else{
-                collection_new.forEach((element_new,index)=>{
-                    let element_old=component.node.querySelector("#"+component.name+"-"+index);
-                    if(element_old!=null && element_new.textContent!=element_old.textContent){
-                        component.node.replaceChild(element_new,element_old);
-                    }
-                });
-                getWires(component,false);
+                // collection_old.forEach((element_old,index)=>{
+                //     let element_new=collection_new[index];
+                //     console.log(element_new,element_old);
+                //     if(element_new==null){
+                //         element_old.remove();
+                //     }
+                // });
+                // getWires(component,false);
+                component.node.innerHTML=html;
+                getWires(component,true);
             }
+            component.wires.map((wire)=>{
+                let value=vars[wire.attrib];
+                if(wire.getValue()!=value){
+                    wire.setValue(value);
+                }
+                return wire;
+            });
         },{
-            "body":new URLSearchParams({json:JSON.stringify(component)})
+            "body":new URLSearchParams({json:JSON.stringify(component_send)})
         });
     }
 
@@ -104,17 +123,57 @@ document.addEventListener('DOMContentLoaded',()=>{
             "listener":listener,
             "attrib":attrib,
             getValue:()=>{
-                return element.value??element.innerHTML??element.src??element.href??element.data;
+                let value;
+                switch(element.tagName){
+                    case "INPUT":
+                    case "TEXTAREA":
+                    case "SELECT":
+                        value=element.value;
+                        break;
+                    case "IMG":
+                        value=element.src;
+                        break;
+                    case "A":
+                        value=element.href;
+                        break;
+                    case "OBJECT":
+                        value=element.data;
+                        break;
+                    default:
+                        value=element.innerHTML;
+                }
+                return value;
+            },
+            setValue:(value)=>{
+                switch(element.tagName){
+                    case "INPUT":
+                    case "TEXTAREA":
+                    case "SELECT":
+                        element.value=value;
+                        break;
+                    case "IMG":
+                        element.src=value;
+                        break;
+                    case "A":
+                        element.href=value;
+                        break;
+                    case "OBJECT":
+                        element.data=value;
+                        break;
+                    default:
+                        element.innerHTML=value;
+                }
             }
         };
         //console.log(this.content.querySelector((element.tagName)+"[wire\\:"+listener+"=\""+attrib+"\"]"));
-        element.addEventListener(listener,()=>{
-            component.vars[attrib]=wire.getValue();
-            render(component);
-        });
+        if(listener!="none" && listener!=null){
+            element.addEventListener(listener,()=>{
+                component.vars[attrib]=wire.getValue();
+                render(component);
+            });
+        }
         component.wires.push(wire);
     }
-    console.log(components);
 
 });
 

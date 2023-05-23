@@ -65,16 +65,17 @@ class Router{
 				}
 				/*eval("?>".View::render($require_path)."<?php");*/
 				require_once View::render($require_path);
+				return;
 			}
 		}
 	}
-	public static function component($name,$params=[]){
+	public static function component($name){
 		$name=str_replace(".","/",$name);
 		foreach(Router::$ext_views as $value){
 			$class=Config::filesystem('components.path')."/".$name;
 			$class=str_replace("/","\\",$class);
 			$component=new $class();
-			return $component->init($params);
+			return $component;
 		}
 	}
 

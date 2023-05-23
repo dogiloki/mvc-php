@@ -12,11 +12,11 @@ class Response{
     }
 
     public static function view($path,$params=[]){
-        Router::view($path,$params);
+        return Router::view($path,$params);
     }
 
     public static function component($name,$params=[]){
-        Router::component($name,$params);
+        return Router::component($name,$params);
     }
 
     public static function abort($code,$message=null){

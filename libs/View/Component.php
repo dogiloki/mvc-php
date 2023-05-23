@@ -28,10 +28,13 @@ abstract class Component{
         $attributes=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
         $params=[];
         foreach($attributes as $attribute){
-            $this->{$attribute->name}=$this->{$attribute->name};
             $params[$attribute->name]=$this->{$attribute->name};
         }
-        $this->render($params);
+        return $this->render($params);
+    }
+
+    public function getVars(){
+        return get_object_vars($this);
     }
 
     public function amount(){

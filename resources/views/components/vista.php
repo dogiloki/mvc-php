@@ -3,6 +3,6 @@
 <p>{{$search}}</p>
 <ul>
     @foreach($variable as $user)
-        <li>{{$user->name}}: {{$user->email}}</li>
+        <li>{{$user->name}} - {{$user->email}}</li>
     @endforeach
 </ul>
