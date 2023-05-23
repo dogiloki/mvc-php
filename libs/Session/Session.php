@@ -34,6 +34,7 @@ class Session{
     private $values;
 
     private function __construct(){
+        $this->name_session=Config::session('cookie.name');
         $this->values=[];
     }
 
@@ -49,7 +50,7 @@ class Session{
             return;
         }
         $this->session_id=Secure::random();
-        $this->values['_token']=csrfToken();
+        $this->values['_token']=Session::token();
         // Crear archivo de session
         if(Config::session('driver')=='file'){
             $path=Config::session('file.path');
@@ -66,7 +67,6 @@ class Session{
     }
 
     private function sync(){
-        $this->name_session=Config::session('cookie.name');
         $session_id=Secure::decrypt(Cookie::get($this->name_session));
         if(!$session_id){
             return false;
@@ -77,8 +77,8 @@ class Session{
             $file=$path."/".$session_id;
             if(file_exists($file)){
                 $this->values=array_merge(
-                    $this->values,
-                    unserialize(file_get_contents($file))??[]
+                    unserialize(file_get_contents($file))??[],
+                    $this->values
                 );
                 $this->session_id=$session_id;
                 // Sobreescribir el archivo de session
@@ -94,9 +94,38 @@ class Session{
         }
     }
 
+    public function _regenerateToken(){
+        Cookie::delete("CSFR_TOKEN");
+        $this->put('_token',Session::token(true));
+    }
+
+    public function _token($regenerate=false){
+		if(Cookie::exists('CSRF_TOKEN') && !$regenerate){
+			return Cookie::get('CSRF_TOKEN');
+		}
+		$token=Secure::random();
+		Cookie::set('CSRF_TOKEN',$token);
+		return $token;
+	}
+
     public function _regenerate(){
-        $this->destroy();
-        $this->start();
+        $this->session_id=Secure::random();
+        // Renombrar archivo de session
+        if(Config::session('driver')=='file'){
+            $path=Config::session('file.path');
+            $file=$path."/".$this->session_id;
+            $file_old=$path."/".Secure::decrypt(Cookie::get($this->name_session));
+            if(file_exists($file_old)){
+                rename($file_old,$file);
+            }
+        }
+        $this->started=Cookie::set(
+            $this->name_session,
+            Secure::encrypt($this->session_id)
+        );
+        if($this->isStarted()){
+            $this->put('_token',Session::token());
+        }
     }
 
     public function _isStarted(){

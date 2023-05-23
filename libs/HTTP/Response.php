@@ -71,6 +71,11 @@ class Response{
         exit;
     }
 
+    public static function reload(){
+        header("Location: ".$_SERVER['REQUEST_URI']);
+        exit;
+    }
+
 }
 
 ?>

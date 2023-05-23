@@ -40,7 +40,11 @@ class Cookie{
         $domain??=Config::session('cookie.domain')??parse_url($_SERVER['HTTP_HOST'],PHP_URL_HOST);
         $secure??=Config::session('cookie.secure');
         $httponly??=Config::session('cookie.httponly');
-        return setcookie($name,$value,time()+$time,$path,$domain,$secure,$httponly);
+        if(setcookie($name,$value,time()+$time,$path,$domain,$secure,$httponly)){
+            $_COOKIE[$name]=$value;
+            return true;
+        }
+        return false;
     }
 
     public function _get($name){
@@ -49,10 +53,15 @@ class Cookie{
 
     public function _delete($name){
         setcookie($name,"",time()-1,"/");
+        unset($_COOKIE[$name]);
     }
 
     public function _exists($name){
         return isset($_COOKIE[$name]);
+    }
+
+    public function _all(){
+        return $_COOKIE;
     }
 
 }

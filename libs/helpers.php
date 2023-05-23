@@ -1,8 +1,8 @@
 <?php
 
-use libs\HTTP\Request;
 use libs\HTTP\Response;
 use libs\Auth\Auth;
+use libs\Session\Session;
 use libs\Env;
 use libs\Config;
 
@@ -28,7 +28,7 @@ function env($key,$default=null){
 }
 
 function csrfToken(){
-    return Request::csrfToken();
+    return Session::token();
 }
 
 function auth(){
@@ -78,6 +78,9 @@ function redirect(...$params){
 }
 function back(...$params){
     return Response::back(...$params);
+}
+function reload(...$params){
+    return Response::reload(...$params);
 }
 
 ?>

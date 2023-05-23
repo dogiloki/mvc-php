@@ -38,15 +38,6 @@ class Request{
 		return self::singleton();
 	}
 
-	public static function csrfToken(){
-		if(Cookie::exists('CSRF_TOKEN')){
-			return Cookie::get('CSRF_TOKEN');
-		}
-		$token=Secure::random();
-		Cookie::set('CSRF_TOKEN',$token);
-		return $token;
-	}
-
 	public function add($type,$key,$value){
 		$this->$key=$value;
 		switch($type){
@@ -62,6 +53,10 @@ class Request{
 
 	public function session(){
 		return Session::singleton();
+	}
+
+	public function method(){
+		return $_SERVER['REQUEST_METHOD']??null;
 	}
 
 	public function files($key){
