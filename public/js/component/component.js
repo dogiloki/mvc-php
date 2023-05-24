@@ -26,7 +26,8 @@ class Component{
         let collection=component.element.getElementsByTagName('*');
         for(let a=0; a<collection.length; a++){
             let element=collection[a];
-            element.setAttribute("id",component.name+"-"+a);
+            let key=component.name+"_"+a;
+            element.setAttribute("id",key);
             let attributes=Array.from(element.attributes);
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
@@ -64,27 +65,15 @@ class Component{
             let html=json.html;
             let vars=json.vars;
             let doc=new DOMParser().parseFromString(html,"text/html");
-            let collection_old=Array.from(component.element.getElementsByTagName('*'));
-            let collection_new=Array.from(doc.body.getElementsByTagName('*'));
-            if(collection_old.length==0){
-                component.element.innerHTML=html;
+            try{
+                let element_focus=document.activeElement;
+                component.element.replaceChild(doc.body.firstChild,component.element.firstChild);
                 this.getWires();
-            }else{
-                try{
-                    collection_old.forEach((element_old,index)=>{
-                        let element_new=collection_new[index]??null;
-                        if(element_new==null && element_old!=null){
-                            component.element.removeChild(element_old);
-                        }
-                        if(element_new.textContent!=element_old.textContent && element_new!=null && element_old!=null){
-                            component.element.replaceChild(element_new,element_old);
-                        }
-                    });
-                }catch(error){
+                document.getElementById(element_focus.getAttribute('id')).focus();
+                this.syncVars(vars);
+            }catch(error){
 
-                }
             }
-            this.syncVars(json.vars);
         },{
             "body":new URLSearchParams({json:JSON.stringify(component_send)})
         });

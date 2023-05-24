@@ -11,8 +11,7 @@
     @php
         $user=\app\Models\User::all();
     @endphp
-    <component:vista :variable="{{base64_encode(serialize($user))}}">
-    </component:vista>
+    <component:vista :variable="{{base64_encode(serialize($user))}}"/>
 </body>
 </html>
 
