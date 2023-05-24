@@ -1,5 +1,6 @@
 <h2>Soy un componente:</h2>
-<input type="search" wire:keyup="search" placeholder="Escribe un nombre">
+<input type="search" wire:model="search" placeholder="Escribe un nombre">
+<input type="search" wire:model="search" placeholder="Escribe un nombre">
 <p>{{$search}}</p>
 <ul>
     @foreach($variable as $user)

@@ -10,7 +10,6 @@ class Authenticate extends Middleware{
 
     public function handle(Request $request, \Closure $next){
         if(!Auth::check()){
-            echo "da";
             return redirect(route('login'));
         }
         return $next($request);
