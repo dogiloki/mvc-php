@@ -11,6 +11,10 @@ class Vista extends Component{
     public $prueba;
 
     public function amount(){
+        
+    }
+
+    public function buscar(){
         $search=$this->search;
         $this->variable=\app\Models\User::find(function($find)use($search){
             $find->where("name","like","%{$search}%");

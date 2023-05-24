@@ -22,8 +22,17 @@ class Wire{
         switch(this.element.tagName){
             case "INPUT":
             case "TEXTAREA":
-            case "SELEXT":{
+            case "SELECT":{
                 value=this.element.value;
+                break;
+            }
+            case "RADIO":
+            case "CHECKBOX":{
+                value=this.element.checked;
+                break;
+            }
+            case "IMG":{
+                value=this.element.src;
                 break;
             }
         }
@@ -34,11 +43,30 @@ class Wire{
         switch(this.element.tagName){
             case "INPUT":
             case "TEXTAREA":
-            case "SELEXT":{
+            case "SELECT":{
                 this.element.value=value;
                 break;
             }
+            case "RADIO":
+            case "CHECKBOX":{
+                this.element.checked=value;
+                break;
+            }
+            case "IMG":{
+                this.element.src=value;
+                break;
+            }
         }
+    }
+
+    getAction(){
+        let content=this.content;
+        let method=content.match(/^([^()]+)/)[1];
+        let params=content.match(/\(([^)]*)\)/)[1].replaceAll('"','').replaceAll("'","");
+        return {
+            "method": method,
+            "params": params.split(",")
+        };
     }
 
 }

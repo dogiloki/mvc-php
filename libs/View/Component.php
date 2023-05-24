@@ -22,6 +22,12 @@ abstract class Component{
             }
             $this->$key=$value;
         }
+        $actions=$json->actions??[];
+        foreach($actions as $action){
+            $method=$action->method;
+            $params=$action->params;
+            $this->$method(...$params);
+        }
         $this->amount();
         // Obtener atributos y valores
         $reflection=new \ReflectionClass(get_class($this));

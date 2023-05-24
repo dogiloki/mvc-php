@@ -4,6 +4,7 @@ class Component{
         this.name=name;
         this.element=element;
         this.vars=this.getVars(element);
+        this.actions=[];
         this.wires=[];
         this.render();
     }
@@ -32,8 +33,6 @@ class Component{
                     let text=attribute.name.substring(5);
                     let type=text;
                     let content=attribute.value;
-                    //let listener=wire.match(/^([^()]+)/)[1];
-                    //let attrib=wire.match(/"([^"]+)"/)[1];
                     let wire=new Wire(element,type,content)
                     component.wires.push(wire);
                     component.setEventListener(wire);
@@ -97,6 +96,14 @@ class Component{
                 wire.element.addEventListener("input",()=>{
                     this.vars[wire.content]=wire.getValue();
                     this.render();
+                });
+                break;
+            }
+            case Wire.TYPE_WIRES.CLICK.text:{
+                wire.element.addEventListener("click",()=>{
+                    this.actions.push(wire.getAction());
+                    this.render();
+                    this.actions=[];
                 });
                 break;
             }
