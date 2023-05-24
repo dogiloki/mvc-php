@@ -3,16 +3,17 @@
 namespace libs\View;
 
 use libs\Http\Request;
+use libs\Middle\Log;
 
 abstract class Component{
 
+    protected $_attributes=[];
+    protected $_actions=[];
+
     public function init(Request $request){
         $json=json_decode($request->all()['json']);
-        $wires=call_user_func_array('array_merge',array_map(function($wire){
-            $array[$wire->attrib]=$wire->value;
-            return $array;
-        },$json->wires??[]));
-        $params=array_merge((array)$json->vars??[],(array)$wires);
+        $params=(array)$json->vars??[];
+        $this->_attributes=$params;
         foreach($params as $key=>$param){
             if(substr($key,0,1)==":"){
                 $value=unserialize(base64_decode($param));
@@ -20,15 +21,18 @@ abstract class Component{
             }else{
                 $value=$param;
             }
-            $this->$key=$value;
+            if($this->$key!=$value){
+                $this->updating($key,$value);
+                $this->$key=$value;
+            }
         }
         $actions=$json->actions??[];
+        $this->_actions=$actions;
         foreach($actions as $action){
             $method=$action->method;
             $params=$action->params;
             $this->$method(...$params);
         }
-        $this->amount();
         // Obtener atributos y valores
         $reflection=new \ReflectionClass(get_class($this));
         $attributes=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
@@ -39,12 +43,18 @@ abstract class Component{
         return $this->render($params);
     }
 
-    public function getVars(){
-        return get_object_vars($this);
+    public function updating($name,$value){
+
     }
 
-    public function amount(){
-        
+    public function syncInput($name){
+        $value=$this->_attributes[$name]??$this->$name;
+        $this->$name=$value;
+        return $value;
+    }
+
+    public function getVars(){
+        return get_object_vars($this);
     }
 
     public function render($params){

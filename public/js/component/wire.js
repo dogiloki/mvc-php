@@ -20,20 +20,13 @@ class Wire{
     getValue(){
         let value=null;
         switch(this.element.tagName){
-            case "INPUT":
             case "TEXTAREA":
-            case "SELECT":{
-                value=this.element.value;
-                break;
-            }
-            case "RADIO":
-            case "CHECKBOX":{
-                value=this.element.checked;
-                break;
-            }
-            case "IMG":{
-                value=this.element.src;
-                break;
+            case "SELECT": value=this.element.value; break;
+            case "INPUT":{
+                switch(this.element.type){
+                    case "checkbox": value=this.element.checked; break;
+                    default: value=this.element.value; break;
+                }
             }
         }
         return value;
@@ -41,20 +34,13 @@ class Wire{
 
     setValue(value){
         switch(this.element.tagName){
-            case "INPUT":
             case "TEXTAREA":
-            case "SELECT":{
-                this.element.value=value;
-                break;
-            }
-            case "RADIO":
-            case "CHECKBOX":{
-                this.element.checked=value;
-                break;
-            }
-            case "IMG":{
-                this.element.src=value;
-                break;
+            case "SELECT": this.element.value=value; break;
+            case "INPUT":{
+                switch(this.element.type){
+                    case "checkbox": this.element.checked=value; break;
+                    default: this.element.value=value; break;
+                }
             }
         }
     }
@@ -65,7 +51,7 @@ class Wire{
         let params=content.match(/\(([^)]*)\)/)[1].replaceAll('"','').replaceAll("'","");
         return {
             "method": method,
-            "params": params.split(",")
+            "params": params.replaceAll(" ","")==""?[]:params.split(",")
         };
     }
 
