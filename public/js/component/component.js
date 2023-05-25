@@ -1,5 +1,19 @@
 class Component{
 
+    static cache_hash={};
+
+    static async hash(text){
+        text=btoa(text);
+        if(Component.cache_hash[text]!=null){
+            return Component.cache_hash[text];
+        }
+        let buffer=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(text));
+        let array=Array.from(new Uint8Array(buffer));
+        let hash=array.map(byte=>byte.toString(16).padStart(2,'0')).join('');
+        Component.cache_hash[text]=hash;
+        return hash;
+    }
+
     constructor(name,element){
         this.name=name;
         this.element=element;
@@ -21,13 +35,12 @@ class Component{
         return vars;
     }
 
-    getWires(){
+    async getWires(key_focus=null){
         let component=this;
         let collection=component.element.getElementsByTagName('*');
         for(let a=0; a<collection.length; a++){
             let element=collection[a];
-            let key=component.name+"_"+a;
-            element.setAttribute("id",key);
+            let hash=element.tagName+";";
             let attributes=Array.from(element.attributes);
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
@@ -38,7 +51,20 @@ class Component{
                     component.wires.push(wire);
                     component.setEventListener(wire);
                 }
+                hash+=attribute.name+";";
             });
+            console.log(hash);
+            let key=component.name+"_";
+            if(attributes.length>0){
+                hash=await Component.hash(hash).then((hash)=>{return hash});
+                key+=hash;
+            }else{
+                key+=a;
+            }
+            element.setAttribute("key",key);
+            if(key_focus==key){
+                element.focus();
+            }
         }
     }
 
@@ -68,8 +94,7 @@ class Component{
             try{
                 let element_focus=document.activeElement;
                 component.element.replaceChild(doc.body.firstChild,component.element.firstChild);
-                this.getWires();
-                document.getElementById(element_focus.getAttribute('id')).focus();
+                this.getWires(element_focus.getAttribute("key"));
                 this.syncVars(vars);
             }catch(error){
 

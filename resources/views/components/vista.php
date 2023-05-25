@@ -1,9 +1,9 @@
 <div>
     <h2>Soy un componente:</h2>
-    <input type="search" wire:model="search" placeholder="Escribe un nombre">
     @if($search!="")
-        {{$search}}
+        <p>{{$search}}</p>
     @endif
+    <input type="search" wire:model="search" placeholder="Escribe un nombre">
     <label>
         Busqueda en tiempo real
         <input type="checkbox" wire:model="live_search">
