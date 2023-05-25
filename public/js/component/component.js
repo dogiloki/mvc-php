@@ -45,6 +45,7 @@ class Component{
             let element=collection[a];
             let key=component.name+";"+element.tagName+";";
             let attributes=Array.from(element.attributes);
+            let generate_hash=false;
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
                     let text=attribute.name.substring(5);
@@ -53,10 +54,15 @@ class Component{
                     let wire=new Wire(element,type,content)
                     component.wires.push(wire);
                     component.setEventListener(wire);
+                    key+=attribute.name+";";
+                    generate_hash=true;
                 }
-                key+=attribute.name+";";
+                if(attribute.name=="id" || attribute.name=="type"){
+                    key+=attribute.name+"="+attribute.value+";";
+                    generate_hash=true;
+                }
             });
-            if(attributes.length>0){
+            if(generate_hash){
                 let hash=await Component.hash(key).then((hash)=>{return hash});
                 key=hash;
             }else{
@@ -71,7 +77,6 @@ class Component{
     }
 
     syncVars(vars){
-        console.log(this.wires);
         this.wires.map((wire)=>{
             let value=vars[wire.content];
             if(wire.getValue()!=value){
