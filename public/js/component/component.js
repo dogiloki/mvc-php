@@ -3,7 +3,9 @@ class Component{
     static cache_hash={};
 
     static async hash(text){
-        text=btoa(text);
+        if(text.length>64){
+            text=btoa(text);
+        }
         if(Component.cache_hash[text]!=null){
             return Component.cache_hash[text];
         }
@@ -35,12 +37,13 @@ class Component{
         return vars;
     }
 
-    async getWires(key_focus=null){
+    async getWires(key_focus=null,vars={}){
         let component=this;
+        component.wires=[];
         let collection=component.element.getElementsByTagName('*');
         for(let a=0; a<collection.length; a++){
             let element=collection[a];
-            let hash=element.tagName+";";
+            let key=component.name+";"+element.tagName+";";
             let attributes=Array.from(element.attributes);
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
@@ -51,24 +54,24 @@ class Component{
                     component.wires.push(wire);
                     component.setEventListener(wire);
                 }
-                hash+=attribute.name+";";
+                key+=attribute.name+";";
             });
-            console.log(hash);
-            let key=component.name+"_";
             if(attributes.length>0){
-                hash=await Component.hash(hash).then((hash)=>{return hash});
-                key+=hash;
+                let hash=await Component.hash(key).then((hash)=>{return hash});
+                key=hash;
             }else{
-                key+=a;
+                key=component.name+"_"+a;
             }
             element.setAttribute("key",key);
             if(key_focus==key){
                 element.focus();
             }
         }
+        this.syncVars(vars);
     }
 
     syncVars(vars){
+        console.log(this.wires);
         this.wires.map((wire)=>{
             let value=vars[wire.content];
             if(wire.getValue()!=value){
@@ -94,8 +97,7 @@ class Component{
             try{
                 let element_focus=document.activeElement;
                 component.element.replaceChild(doc.body.firstChild,component.element.firstChild);
-                this.getWires(element_focus.getAttribute("key"));
-                this.syncVars(vars);
+                this.getWires(element_focus.getAttribute("key"),vars);
             }catch(error){
 
             }
