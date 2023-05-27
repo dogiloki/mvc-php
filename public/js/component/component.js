@@ -47,7 +47,8 @@ class Component{
         for(let a=0; a<collection.length; a++){
             let element=collection[a];
             let attributes=Array.from(element.attributes);
-            let key=component.name+"-"+element.tagName+"-";
+            let key=component.name+"-";
+            let id=element.getAttribute("id");
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
                     let text=attribute.name.substring(5);
@@ -56,10 +57,10 @@ class Component{
                     let wire=new Wire(element,type,content)
                     component.wires.push(wire);
                     component.setEventListener(wire);
-                    if(attribute.name=="id"){
-                        key+=attribute.value;
+                    if(id!=null){
+                        key+=id;
                     }else{
-                        key+=attribute.name+"-"+content.match(/^([^()]+)/)[1];
+                        key+=element.tagName+"-"+attribute.name+"-"+content.match(/^([^()]+)/)[1];
                     }
                     key=key.toLowerCase();
                     element.setAttribute("key",key);
