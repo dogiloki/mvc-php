@@ -1,5 +1,6 @@
 class Component{
 
+    /* SIN USO */
     static cache_hash={};
 
     static async hash(text){
@@ -15,6 +16,8 @@ class Component{
         Component.cache_hash[text]=hash;
         return hash;
     }
+    /* SIN USO */
+    
 
     constructor(name,element){
         this.name=name;
@@ -37,15 +40,14 @@ class Component{
         return vars;
     }
 
-    async getWires(key_focus=null,vars={}){
+    getWires(key_focus=null,vars={}){
         let component=this;
         component.wires=[];
         let collection=component.element.getElementsByTagName('*');
         for(let a=0; a<collection.length; a++){
             let element=collection[a];
-            let key=component.name+";"+element.tagName+";";
             let attributes=Array.from(element.attributes);
-            let generate_hash=false;
+            let key=component.name+"-"+element.tagName+"-";
             attributes.forEach((attribute)=>{
                 if(attribute.name.startsWith("wire:")){
                     let text=attribute.name.substring(5);
@@ -54,21 +56,15 @@ class Component{
                     let wire=new Wire(element,type,content)
                     component.wires.push(wire);
                     component.setEventListener(wire);
-                    key+=attribute.name+";";
-                    generate_hash=true;
-                }
-                if(attribute.name=="id" || attribute.name=="type"){
-                    key+=attribute.name+"="+attribute.value+";";
-                    generate_hash=true;
+                    if(attribute.name=="id"){
+                        key+=attribute.value;
+                    }else{
+                        key+=attribute.name+"-"+content.match(/^([^()]+)/)[1];
+                    }
+                    key=key.toLowerCase();
+                    element.setAttribute("key",key);
                 }
             });
-            if(generate_hash){
-                let hash=await Component.hash(key).then((hash)=>{return hash});
-                key=hash;
-            }else{
-                key=component.name+"_"+a;
-            }
-            element.setAttribute("key",key);
             if(key_focus==key){
                 element.focus();
             }
