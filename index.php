@@ -6,7 +6,7 @@ function url($text=""){
     return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
 }
 
-require_once("libs\Config.php");
+require_once("libs/Config.php");
 use libs\Config;
 
 spl_autoload_register(function($clase){

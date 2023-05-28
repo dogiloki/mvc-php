@@ -72,7 +72,7 @@ return [
     ],
 
     'cache'=>[
-        'path'=>'storage/app/cache',
+        'path'=>'storage/framework/cache',
         'file'=>'files.json'
     ]
 
