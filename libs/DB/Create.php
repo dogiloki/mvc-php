@@ -52,6 +52,9 @@ class Create{
      * @param int $size Tamaño del dato
      */
     public function add($name, $type, $size=null){
+        if($type=="varchar"){
+            $size=255;
+        }
         $column=new Column($name, $type, $size);
         $this->columns[]=$column;
         $this->prev_column=$column;

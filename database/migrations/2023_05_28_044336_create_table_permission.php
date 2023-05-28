@@ -8,12 +8,10 @@ return new class extends Migration{
 	 * Run the migrations.
 	 */
 	public function up(): void{
-		$this->table('user',function($table){
+		$this->table('permission',function($table){
 			$table->id();
+			$table->add('code','varchar')->unique();
 			$table->add('name','varchar');
-			$table->add('email','varchar');
-			$table->add('verify_email_at','datetime')->nullable();
-			$table->add('password','varchar');
 			$table->timestamps();
 		});
 	}
@@ -22,7 +20,7 @@ return new class extends Migration{
 	 * Reverse the migrations.
 	 */
 	public function down(): void{
-		$this->dropIfExists('user');
+		$this->dropIfExists('permission');
 	}
 	
 };

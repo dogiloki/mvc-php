@@ -140,6 +140,10 @@ class Session{
         return $this->session_id;
     }
 
+    public function _payload(){
+        return serialize($this->values);
+    }
+
     public function _get($name){
         return $this->values[$name]??null;
     }

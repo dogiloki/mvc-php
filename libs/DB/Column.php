@@ -80,7 +80,7 @@ class Column{
             $sql.=" NOT NULL";
         }
         if($this->default){
-            $sql.=" DEFAULT '".$this->default."'";
+            $sql.=" DEFAULT ".$this->default;
         }
         $sql.=",";
         if($this->comment){
