@@ -1,6 +1,6 @@
 <?php
 
-namespace libs\Router;
+namespace libs\View;
 
 use libs\Config;
 

@@ -71,6 +71,11 @@ return [
         ],
     ],
 
+    'cache'=>[
+        'path'=>'storage/app/cache',
+        'file'=>'files.json'
+    ]
+
 ];
 
 ?>

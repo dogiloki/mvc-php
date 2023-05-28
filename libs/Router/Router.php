@@ -3,9 +3,8 @@
 namespace libs\Router;
 
 use libs\Router\Route;
-use libs\Router\View;
+use libs\View\View;
 use libs\HTTP\Request;
-use libs\View\Component;
 use libs\Config;
 
 class Router{
