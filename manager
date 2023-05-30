@@ -7,6 +7,7 @@ spl_autoload_register(function($clase){
 	}
 });
 
+require "vendor/autoload.php";
 require_once("libs/helpers.php");
 
 $command=$argv[1]??null;
