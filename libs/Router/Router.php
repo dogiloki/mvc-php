@@ -54,7 +54,7 @@ class Router{
 	}
 
 	public static $ext_views=["html","php"];
-	public static function view($path,$params=[]){
+	public static function view($path,$params=[],$once=false){
 		$path=str_replace(".","/",$path);
 		foreach(Router::$ext_views as $value){
 			$require_path=Config::filesystem('views.path')."/".$path.".".$value;
@@ -63,7 +63,11 @@ class Router{
 					$$key=$param;
 				}
 				/*eval("?>".View::render($require_path)."<?php");*/
-				require_once View::render($require_path);
+				if($once){
+					require_once View::render($require_path);
+				}else{
+					require View::render($require_path);
+				}
 				return;
 			}
 		}

@@ -29,6 +29,7 @@ class View{
         "/@break/"=>"<?php break; ?>",
         "/@continue/"=>"<?php continue; ?>",
         "/@end(.*?)\s/m"=>"<?php } ?>",
+        "/@extends\((.*?)\)\s/m"=>"<?php view($1); ?>",
         "/@(.*?)\)\s/m"=>"<?php if($1)){ ?>",
         "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
