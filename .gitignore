@@ -1,4 +1,4 @@
 vendor
-config.env
+*.env
 storage/framework
 storage/logs
