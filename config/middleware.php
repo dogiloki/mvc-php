@@ -9,6 +9,11 @@ return [
             app\Middlewares\VerifyCsrfToken::class
         ],
 
+        'test'=>[
+            libs\Session\Middleware\StartSession::class,
+            app\Middlewares\VerifyCsrfToken::class
+        ],
+
         'api'=>[
 
         ]

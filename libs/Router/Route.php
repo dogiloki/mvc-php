@@ -22,6 +22,7 @@ class Route{
 
     public function __construct(string $method, string $path, $action){
         $this->method=$method;
+        $path=folderRoot($path);
         $this->path=Route::formatUri($path);
         $this->action=$action;
         $this->params=[];

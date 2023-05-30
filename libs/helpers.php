@@ -19,6 +19,11 @@ function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
+function folderRoot($path=""){
+    $folder=explode("/",explode(".",$_SERVER['PHP_SELF'])[0]??"/");
+    return join("/",array_slice($folder,0,count($folder)-1))."/".$path;
+}
+
 function env($key,$default=null){
     $value=Env::get($key);
     if($value==null){
