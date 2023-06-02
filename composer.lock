@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f394fd80bfaf6928c65ed17ff3f5e1e",
+    "content-hash": "42917dc023687738f64beb7cbd52cf6f",
     "packages": [
         {
             "name": "fakerphp/faker",
@@ -482,6 +482,65 @@
                 }
             ],
             "time": "2022-05-21T17:30:32+00:00"
+        },
+        {
+            "name": "leafo/scssphp",
+            "version": "v0.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/leafo/scssphp.git",
+                "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/1b168bfee60889547e1fe55b9afdf055f6d3c58d",
+                "reference": "1b168bfee60889547e1fe55b9afdf055f6d3c58d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.6",
+                "squizlabs/php_codesniffer": "~2.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
+            },
+            "bin": [
+                "bin/pscss"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Leafo\\ScssPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Leaf Corcoran",
+                    "email": "leafot@gmail.com",
+                    "homepage": "http://leafo.net"
+                }
+            ],
+            "description": "scssphp is a compiler for SCSS written in PHP.",
+            "homepage": "http://leafo.github.io/scssphp/",
+            "keywords": [
+                "css",
+                "less",
+                "sass",
+                "scss",
+                "stylesheet"
+            ],
+            "support": {
+                "issues": "https://github.com/leafo/scssphp/issues",
+                "source": "https://github.com/leafo/scssphp/tree/v0.8.2"
+            },
+            "abandoned": "scssphp/scssphp",
+            "time": "2019-05-09T18:51:51+00:00"
         },
         {
             "name": "phpmailer/phpmailer",

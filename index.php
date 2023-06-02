@@ -48,6 +48,10 @@ function slug($text){
 require "vendor/autoload.php";
 require_once "libs/helpers.php";
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
+// Verificar archivos publicos
+$uri=$_SERVER['REQUEST_URI'];
+file_exists(Config::filesystem("public.path").$uri) && !is_dir(Config::filesystem("public.path").$uri) && die(file_get_contents(Config::filesystem("public.path").$uri));
+unset($uri);
 // Enrutadores
 use libs\Router\Router;
 $directory=scandir(Config::filesystem("routes.path"));

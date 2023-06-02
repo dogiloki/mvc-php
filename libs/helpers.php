@@ -5,6 +5,7 @@ use libs\Auth\Auth;
 use libs\Session\Session;
 use libs\Env;
 use libs\Config;
+use Leafo\ScssPhp\Compiler;
 
 Env::singleton("config.env");
 
@@ -50,6 +51,28 @@ function urlPublic($text){
 
 function storagePath($text=""){
     return Config::filesystem('storage.path')."/".$text;
+}
+
+function scss($path){
+    $path_input=Config::filesystem('scss.path_input');
+    $path_output=Config::filesystem('scss.path_output');
+    $file_input=$path_input."/".$path;
+    $file_output=$path_output."/".explode(".",$path)[0].".css";
+    if(file_exists($file_output)==false || filemtime($file_input)>filemtime($file_output)){
+        try{
+            $scss=new Compiler();
+            $scss->setImportPaths($path_input);
+            $css=$scss->compile(file_get_contents($file_input));
+            $path_output=dirname($file_output);
+            if(!is_dir($path_output)){
+                mkdir($path_output,0777,true);
+            }
+            file_put_contents($file_output,$css);
+        }catch(Exception $e){
+            
+        }
+    }
+    return url($file_output);
 }
 
 // Functions from Response::class

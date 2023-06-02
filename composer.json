@@ -3,6 +3,7 @@
         "guzzlehttp/guzzle": "^7.5",
         "phpmailer/phpmailer": "^6.8",
         "intervention/image": "^2.7",
-        "fakerphp/faker": "^1.21"
+        "fakerphp/faker": "^1.21",
+        "leafo/scssphp": "^0.8.2"
     }
 }

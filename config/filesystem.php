@@ -31,6 +31,11 @@ return [
         'path'=>'app/Models'
     ],
 
+    'scss'=>[
+        'path_input'=>'resources/scss',
+        'path_output'=>'public/css'
+    ],
+
     'views'=>[
         'path'=>'resources/views',
         'cache'=>'storage/framework/views',
