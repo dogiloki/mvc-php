@@ -50,7 +50,22 @@ require_once "libs/helpers.php";
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos
 $uri=$_SERVER['REQUEST_URI'];
-file_exists(Config::filesystem("public.path").$uri) && !is_dir(Config::filesystem("public.path").$uri) && die(file_get_contents(Config::filesystem("public.path").$uri));
+if(file_exists(Config::filesystem("public.path").$uri) && !is_dir(Config::filesystem("public.path").$uri)){
+	$ext=explode(".",$uri)[1];
+	$mime=match($ext){
+		"css"=>"text/css",
+		"js"=>"text/javascript",
+		"png"=>"image/png",
+		"jpg"=>"image/jpg",
+		"jpeg"=>"image/jpeg",
+		"gif"=>"image/gif",
+		"svg"=>"image/svg+xml",
+		default=>"text/plain"
+	};
+	header("Content-Type: ".$mime);
+	echo file_get_contents(Config::filesystem("public.path").$uri);
+	exit;
+}
 unset($uri);
 // Enrutadores
 use libs\Router\Router;
