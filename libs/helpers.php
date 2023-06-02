@@ -6,6 +6,7 @@ use libs\Session\Session;
 use libs\Env;
 use libs\Config;
 use Leafo\ScssPhp\Compiler;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 
 Env::singleton("config.env");
 
@@ -45,10 +46,6 @@ function user(){
     return Auth::user();
 }
 
-function urlPublic($text){
-    return Config::filesystem('public.url')."/".$text;
-}
-
 function storagePath($text=""){
     return Config::filesystem('storage.path')."/".$text;
 }
@@ -72,7 +69,8 @@ function scss($path){
             
         }
     }
-    return url($file_output);
+    $path=Config::filesystem('scss.path_public')."/".str_replace(".scss",".css",$path);
+    return url($path);
 }
 
 // Functions from Response::class

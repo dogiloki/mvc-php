@@ -3,7 +3,7 @@
 <head>
     <title>{{$title}}</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{urlPublic('css/normalize.css')}}">
+    <link rel="stylesheet" href="{{url('css/normalize.css')}}">
     <link rel="stylesheet" href="{{scss('font/colors.scss')}}">
 </head>
 <body>
