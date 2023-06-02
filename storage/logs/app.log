@@ -1,4 +1,0 @@
-[2023-05-21 22:24:06] [DEBUG] sql: SELECT * FROM `user` params: []
-[2023-05-21 22:24:06] [DEBUG] sql:  VALUES () params: []
-[2023-05-21 22:24:44] [DEBUG] sql: SELECT * FROM `user` params: []
-[2023-05-21 22:24:44] [DEBUG] sql:  VALUES () LIMIT 0,1 params: []
