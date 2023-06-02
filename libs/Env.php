@@ -11,6 +11,7 @@ class Env{
 	private static $instance=null;
 
 	private function __construct($file=null){
+		dd($_ENV);
 		$this->vars=[];
 		$this->positions=[];
 		$this->file=$file;
