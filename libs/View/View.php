@@ -42,6 +42,7 @@ class View{
         }
         $handler=fopen($path,"r");
         $content=fread($handler,filesize($path));
+        $content.=PHP_EOL;
         $patterns=[];
         // Constructs statements with parentheses
         foreach(View::$statementsWithParentheses as $statement){
