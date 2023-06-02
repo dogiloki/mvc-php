@@ -34,6 +34,7 @@ class Env{
 				$value=substr($line,$pos_value_index,$pos_value_end);
 				$this->positions[$count]=trim($key);
 				$this->vars[$key]=trim($value);
+				$_ENV[$key]=trim($value);
 			}
 			$count++;
 		}
@@ -57,6 +58,7 @@ class Env{
 	public static function set($key,$value){
 		$config=Env::singleton();
 		$config->vars[$key]=$value;
+		$_ENV[$key]=$value;
 	}
 
 	public static function get($key){
