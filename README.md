@@ -4,8 +4,8 @@ Es un pequeño prototipo de un Framework que cuenta con enrutamiento, ORM (senci
 Tiene librerías para almacenar archivos en servidor, hacer peticiones HTTP, Servidor de Socket (sencillo inspirado en Socket.io) y envío de correo electrónico.
 Implementa un básico sistema de migración que consiste en ejecutar archivos ubicados en database/migrations
 
-# Instalar librerías
-- composer install
+# Instalar
+- composer create-project dogiloki/mvc-php
 
 # Iniciar servidor
 Utiliza el servidor web integrado de php para pruebas locales con:
