@@ -1,5 +1,11 @@
 <?php
 
+function url($text=""){
+    //\dirname($_SERVER['PHP_SELF'])
+    $text=trim($text,"/");
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
+}
+
 spl_autoload_register(function($clase){
 	$path=str_replace("\\","/",$clase).".php";
 	if(file_exists($path)){
@@ -9,10 +15,26 @@ spl_autoload_register(function($clase){
 
 require "vendor/autoload.php";
 require_once("libs/helpers.php");
+use libs\Config;
 
 $command=$argv[1]??null;
 
 switch($command){
+	case 'create':{
+		$folders=Config::filesystem('create.folders');
+		$files=Config::filesystem('create.files');
+		foreach($folders as $dir){
+			if(!file_exists($dir)){
+				mkdir($dir,0777,true);
+			}
+		}
+		foreach($files as $file){
+			if(!file_exists($file['path'])){
+				file_put_contents($file['path'],$file['content']);
+			}
+		}
+		break;
+	}
 	case 'migrate':{
 		$argv[2]??=null;
 		if($argv[2]=='rollback'){

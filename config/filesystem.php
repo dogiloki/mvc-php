@@ -24,11 +24,11 @@ return [
     ],
 
     'controllers'=>[
-        'path'=>'app/Controllers'
+        'path'=>'app/controllers'
     ],
 
     'models'=>[
-        'path'=>'app/Models'
+        'path'=>'app/models'
     ],
 
     'scss'=>[
@@ -43,7 +43,7 @@ return [
     ],
 
     'components'=>[
-        'path'=>'app/Components',
+        'path'=>'app/components',
     ],
 
     'logs'=>[
@@ -80,6 +80,25 @@ return [
     'cache'=>[
         'path'=>'storage/framework/cache',
         'file'=>'files.json'
+    ],
+
+    'create'=>[
+        'folders'=>[
+            'storage',
+            'storage/app',
+            'storage/app/public',
+            'storage/logs',
+            'storage/framework',
+            'storage/framework/cache',
+            'storage/framework/sessions',
+            'storage/framework/views'
+        ],
+        'files'=>[
+            [
+                'path'=>'config.env',
+                'content'=>file_get_contents('config.env.example')
+            ]
+        ]
     ]
 
 ];

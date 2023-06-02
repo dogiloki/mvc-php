@@ -17,6 +17,9 @@ class Env{
 		if($file==null){
 			return;
 		}
+		if(!file_exists($file)){
+			return;
+		}
 		$fp=fopen($file,"r");
 		$count=0;
 		while(!feof($fp)){
