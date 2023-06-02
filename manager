@@ -74,7 +74,7 @@ switch($command){
 	case 'serve':{
 		$argv[2]??=8000;
 		//exec('php -S 127.0.0.1:'.$argv[2].' -t public');v
-		exec('php -S 127.0.0.1:'.$argv[2]);
+		exec('php -S 127.0.0.1:'.$argv[2]." index.php");
 		break;
 	}
 	case null: Raau::msg("Se requieren parámetros"); break;
