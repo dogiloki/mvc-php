@@ -2,4 +2,4 @@ Options -Indexes
 
 RewriteEngine On
 
-RewriteRule ^(.*)$ index.php
+RewriteRule ^(.*)$ public/index.php
