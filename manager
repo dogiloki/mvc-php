@@ -26,11 +26,13 @@ switch($command){
 		foreach($folders as $dir){
 			if(!file_exists($dir)){
 				mkdir($dir,0777,true);
+				Raau::msg("Se creó el directorio ".$dir);
 			}
 		}
 		foreach($files as $file){
 			if(!file_exists($file['path'])){
 				file_put_contents($file['path'],$file['content']);
+				Raau::msg("Se creó el archivo ".$file['path']);
 			}
 		}
 		break;

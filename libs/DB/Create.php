@@ -79,7 +79,7 @@ class Create{
 
     public function timestamps(){
         $this->add('created_at','timestamp')->default('CURRENT_TIMESTAMP')->index();
-        $this->add('updated_at','timestamp')->nullable()->index();
+        $this->add('updated_at','timestamp')->default('CURRENT_TIMESTAMP')->nullable()->index();
     }
 
     /**

@@ -24,7 +24,7 @@ class DB extends \PDO{
 	public static function execute($sql,$params=[]){
 		//echo "<pre>".print_r($sql,"<br>")."</pre>";
 		//echo "<pre>".print_r($params,"<br>")."</pre>";
-		//Log::channel("debug","sql: ".$sql." params: ".json_encode($params)," | DB | execute()");
+		Log::channel("debug","sql: ".$sql." params: ".json_encode($params)," | DB | execute()");
 		$db=self::singleton();
 		if($db==null){
 			return null;
