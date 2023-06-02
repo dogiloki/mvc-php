@@ -1,7 +1,5 @@
 <?php
 
-chdir('../');
-
 function url($text=""){
     //\dirname($_SERVER['PHP_SELF'])
     $text=trim($text,"/");
