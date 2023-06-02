@@ -11,7 +11,6 @@ class Env{
 	private static $instance=null;
 
 	private function __construct($file=null){
-		dd($_ENV);
 		$this->vars=[];
 		$this->positions=[];
 		$this->file=$file;
@@ -35,7 +34,7 @@ class Env{
 				$value=substr($line,$pos_value_index,$pos_value_end);
 				$this->positions[$count]=trim($key);
 				$this->vars[$key]=trim($value);
-				$_ENV[$key]=trim($value);
+				$_ENV[$key]??=trim($value);
 			}
 			$count++;
 		}
@@ -64,7 +63,7 @@ class Env{
 
 	public static function get($key){
 		$config=Env::singleton();
-		return $config->vars[$key]??null;
+		return $_ENV[$key]??null;
 	}
 
 	public static function singleton($file=null){
