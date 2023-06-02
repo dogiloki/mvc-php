@@ -6,7 +6,7 @@ Implementa un básico sistema de migración que consiste en ejecutar archivos ub
 
 # Instalar
 - composer create-project dogiloki/mvc-php
-
+- php manager create (crea las carpetas y archivo necesarios para inciar el proyecto)
 # Iniciar servidor
 Utiliza el servidor web integrado de php para pruebas locales con:
 - php manager serve
