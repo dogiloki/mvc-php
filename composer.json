@@ -1,4 +1,18 @@
 {
+    "name":"dogiloki/mvc-php",
+    "type":"project",
+    "description":"MVC PHP",
+    "keywords":[
+        "mvc",
+        "php"
+    ],
+    "license":"MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dogiloki/mvc-php"
+        }
+    ],
     "require": {
         "guzzlehttp/guzzle": "^7.5",
         "phpmailer/phpmailer": "^6.8",
