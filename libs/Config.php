@@ -15,7 +15,7 @@ class Config{
             foreach($keys as $key){
                 $value=$value[$key]??null;
             }
-            return Config::ACTIVE_REPLACE?str_replace("/","\\",$value):$value;
+            return Config::ACTIVE_REPLACE?str_replace("/","\\",$value??""):$value;
         }
         throw new \Exception("File not found: ".$filename);
     }
