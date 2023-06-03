@@ -47,6 +47,7 @@ class Session{
 
     public function start(){
         if($this->sync()){
+            $this->started=true;
             return;
         }
         $this->session_id=Secure::random();
