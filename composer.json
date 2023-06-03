@@ -6,6 +6,19 @@
         "mvc",
         "php"
     ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "dogiloki",
+            "email": "wolftri2002@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dogiloki/mvc-php"
+        }
+    ],
     "require": {
         "php": ">=8.0",
         "guzzlehttp/guzzle": "^7.5",
@@ -13,12 +26,5 @@
         "intervention/image": "^2.7",
         "fakerphp/faker": "^1.21",
         "scssphp/scssphp": "^1.11"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "dogiloki",
-            "email": "wolftri2002@gmail.com"
-        }
-    ]
+    }
 }
