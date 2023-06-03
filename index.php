@@ -21,9 +21,10 @@ spl_autoload_register(function($clase){
 		$path=explode("/",$path);
 		$json=array_merge($json,listDirectory(join("/",array_slice($path,0,count($path)-1))));
 		file_put_contents($cache_file,json_encode($json));
-		
 	}
-	require_once $json[$slug];
+	if(file_exists($json[$slug])){
+		require_once $json[$slug];
+	}
 });
 
 function listDirectory($path){

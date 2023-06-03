@@ -24,11 +24,11 @@ return [
     ],
 
     'controllers'=>[
-        'path'=>'app/controllers'
+        'path'=>'app/Controllers'
     ],
 
     'models'=>[
-        'path'=>'app/models'
+        'path'=>'app/Models'
     ],
 
     'scss'=>[
@@ -43,7 +43,7 @@ return [
     ],
 
     'components'=>[
-        'path'=>'app/components',
+        'path'=>'app/Components',
     ],
 
     'logs'=>[
@@ -97,6 +97,10 @@ return [
             [
                 'path'=>'config.env',
                 'content'=>file_get_contents('config.env.example')
+            ],
+            [
+                'path'=>'storage/framework/cache/files.json',
+                'content'=>''
             ]
         ]
     ]
