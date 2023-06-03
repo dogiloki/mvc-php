@@ -70,7 +70,7 @@ class Route{
             echo $action($request);
         }else{
             $controller=explode('@',$action);
-            $controller[0]=Config::filesystem('controllers')."\\".$controller[0];
+            $controller[0]=Config::filesystem('controllers.path')."\\".$controller[0];
             $obj=new $controller[0];
             echo $obj->{$controller[1]}($request);
         }
