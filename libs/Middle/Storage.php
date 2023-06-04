@@ -56,19 +56,29 @@ class Storage{
         $image->save($path,self::$compress_image_level);
     }
 
+    public static function url($file,$disk){
+        return url("storage1/".$disk."?file=".$file);
+    }
+
     public static function get($file,$disk){
+        Config::$ACTIVE_REPLACE=false;
         $dir=Config::filesystem('storage.'.$disk)."/";
+        Config::$ACTIVE_REPLACE=true;
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
         if(file_exists($path)){
             header("Content-type: ".mime_content_type($path));
             readfile($path);
+        }else{
+            abort(404);
         }
     }
     
     public static function delete($file,$disk){
+        Config::$ACTIVE_REPLACE=false;
         $dir=Config::filesystem('storage.'.$disk)."/";
+        Config::$ACTIVE_REPLACE=true;
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;

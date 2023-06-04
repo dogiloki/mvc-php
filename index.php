@@ -28,6 +28,9 @@ spl_autoload_register(function($clase){
 });
 
 function listDirectory($path){
+	if(!is_dir($path) || !file_exists($path) || !is_readable($path) || $path==""){
+		return [];
+	}
 	$json=[];
 	foreach(scandir($path) as $file){
 		if($file=="." || $file==".." || $file=="vendor" || $file==".git"){
@@ -72,6 +75,10 @@ unset($uri);
 use libs\Router\Router;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
+// Rutas predeterminadas
+$router->get('/storage1/{disk}',function($request){
+	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
+});
 foreach($directory as $file){
 	if($file=='.' || $file=='..'){
 		continue;
