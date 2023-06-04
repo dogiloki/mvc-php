@@ -8,7 +8,7 @@ use libs\HTTP\Request;
 class Route{
 
     public static function formatUri(string $uri){
-        $uri=explode("?",$uri)[0];
+        $uri=explode("/?",$uri)[0];
         $uri=trim(preg_replace('#(/)+#','/',$uri),"/");
         return $uri;
     }

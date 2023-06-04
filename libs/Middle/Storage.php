@@ -57,7 +57,7 @@ class Storage{
     }
 
     public static function url($file,$disk){
-        return url("storage1/".$disk."?file=".$file);
+        return url("storage1/".$disk."/?file=".$file);
     }
 
     public static function get($file,$disk){
