@@ -36,7 +36,7 @@ class Cookie{
 
     public function _set($name, $value, $time=null, $path=null, $domain=null, $secure=null, $httponly=null){
         $time??=Config::session('cookie.lifetime')*60;
-        $path??=Config::session('cookie.path');
+        $path??=Config::session('cookie.path')??"/";
         $domain??=Config::session('cookie.domain')??parse_url($_SERVER['HTTP_HOST'],PHP_URL_HOST)??"/";
         $secure??=Config::session('cookie.secure');
         $httponly??=Config::session('cookie.httponly');

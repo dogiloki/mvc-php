@@ -13,8 +13,10 @@ class Storage{
     public static $compress_image=false;
     public static $compress_image_level=70;
 
-    public static function upload($file){
-        $dir=Config::filesystem('storage.app')."/";
+    public static function upload($file,$disk){
+        Config::$ACTIVE_REPLACE=false;
+        $dir=Config::filesystem('storage.'.$disk)."/";
+        Config::$ACTIVE_REPLACE=true;
         if($file==null){
             return null;
         }
@@ -54,8 +56,8 @@ class Storage{
         $image->save($path,self::$compress_image_level);
     }
 
-    public static function get($file){
-        $dir=Config::filesystem('storage.app')."/";
+    public static function get($file,$disk){
+        $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
@@ -65,8 +67,8 @@ class Storage{
         }
     }
     
-    public static function delete($file){
-        $dir=Config::filesystem('storage.app')."/";
+    public static function delete($file,$disk){
+        $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;

@@ -77,10 +77,19 @@ class Session{
             $path=Config::session('file.path');
             $file=$path."/".$session_id;
             if(file_exists($file)){
+                $values_current=$this->values;
+                $values_file=unserialize(file_get_contents($file))??[];
                 $this->values=array_merge(
-                    unserialize(file_get_contents($file))??[],
+                    $values_file,
                     $this->values
                 );
+                if(count($values_current)>0){
+                    foreach($this->values as $key=>$value){
+                        if(!isset($values_current[$key])){
+                            unset($this->values[$key]);
+                        }
+                    }
+                }
                 $this->session_id=$session_id;
                 // Sobreescribir el archivo de session
                 if(Config::session('driver')=='file'){
@@ -165,6 +174,12 @@ class Session{
     public function _forget($name){
         unset($this->values[$name]);
         $this->sync();
+    }
+
+    public function _pull($name){
+        $value=$this->get($name);
+        $this->forget($name);
+        return $value;
     }
 
     public function _flush(){

@@ -41,6 +41,10 @@ function auth(){
     return Auth::check();
 }
 
+function session(){
+    return Session::singleton();
+}
+
 function user(){
     return Auth::user();
 }

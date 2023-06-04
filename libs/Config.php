@@ -4,7 +4,7 @@ namespace libs;
 
 class Config{
 
-    public const ACTIVE_REPLACE=true;
+    public static $ACTIVE_REPLACE=true;
 
     public static function __callStatic($name,$keys){
         $keys=explode(".",$keys[0]);
@@ -15,7 +15,7 @@ class Config{
             foreach($keys as $key){
                 $value=$value[$key]??null;
             }
-            return Config::ACTIVE_REPLACE?str_replace("/","\\",$value??""):$value;
+            return Config::$ACTIVE_REPLACE?str_replace("/","\\",$value??""):$value;
         }
         throw new \Exception("File not found: ".$filename);
     }
