@@ -25,6 +25,10 @@ function folderRoot($path=""){
     return join("/",array_slice($folder,0,count($folder)-1))."/".$path;
 }
 
+function vars(){
+    return get_defined_vars();
+}
+
 function env($key,$default=null){
     $value=Env::get($key);
     if($value==null){

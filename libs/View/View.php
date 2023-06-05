@@ -29,14 +29,26 @@ class View{
         "/@break/"=>"<?php break; ?>",
         "/@continue/"=>"<?php continue; ?>",
         "/@end(.*?)\s/m"=>"<?php } ?>",
-        "/@extends\((.*?)\)\s/m"=>"<?php view($1); ?>",
+        "/@include\((.*?)\)\s/m"=>"<?php
+            \$_=[
+                'value'=><<<'EOD'
+                    $1
+                EOD
+            ];
+            \$_['array']=explode(',',\$_['value'],2);
+            \$_=[
+                'path'=>(string)\$_['array'][0]??'',
+                'params'=>\$_['array'][1]??'[]'
+            ];
+            \$_['params']=json_decode(str_replace(['[',']','=>'],['{','}',':'],\$_['params']),true)??[];
+            view(\$_['path'],array_merge(\$_['params'],get_defined_vars()['params']??[])); unset(\$_); ?>",
         "/@(.*?)\)\s/m"=>"<?php if($1)){ ?>",
         "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
 
     public static function render($path){
         $name=str_replace(["/","\\"],".",$path);
-        $path_cache=Config::filesystem('views.cache')."/".$name;
+        $path_cache=Config::filesystem('views.cache')."\\".$name;
         if(file_exists($path_cache) && filemtime($path_cache)>filemtime($path)){
             return $path_cache;
         }
@@ -64,7 +76,6 @@ class View{
         $m=fopen($path_cache,"w");
         fwrite($m,$content);
         fclose($m);
-
         return $path_cache;
     }
 
