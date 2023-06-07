@@ -40,7 +40,7 @@ class Cookie{
         $domain??=Config::session('cookie.domain')??parse_url($_SERVER['HTTP_HOST'],PHP_URL_HOST)??"/";
         $secure??=Config::session('cookie.secure');
         $httponly??=Config::session('cookie.httponly');
-        if(setcookie($name,$value,time()+$time,"/",$domain,$secure,$httponly)){
+        if(setcookie($name,$value,time()+$time)){
             $_COOKIE[$name]=$value;
             return true;
         }
