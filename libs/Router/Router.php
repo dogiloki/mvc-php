@@ -139,7 +139,7 @@ class Router{
 				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 				$request->{$key_request}=$value_request;
 			}
-			$route->middlewares=array_merge($route->middlewares,(array)Config::middleware('routers.'.$route->name_file)??[]);
+			$route->middlewares=array_merge((array)Config::middleware('routers.'.$route->name_file)??[],$route->middlewares);
 			$route->call($request);
 			return;
 		}

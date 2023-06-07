@@ -50,7 +50,9 @@ class Route{
             $this->callAction($request);
             exit;
         }
-        if(!($middleware=new $middleware())){
+        if(class_exists($middleware)){
+            $middleware=new $middleware();
+        }else{
             $middleware=new (Config::middleware("alias.".$middleware))();
         }
         try{
@@ -64,7 +66,7 @@ class Route{
             $middleware->report($ex);
         }
     }
-
+    
     private function callAction(Request $request){
         $action=$this->action;
         if($action instanceof \Closure){
