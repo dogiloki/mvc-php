@@ -83,7 +83,9 @@ class Storage{
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
         if($file!=null){
-            unlink($path);
+            if(file_exists($path)){
+                unlink($path);
+            }
             return true;
         }else{
             return false;
