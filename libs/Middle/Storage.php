@@ -14,9 +14,7 @@ class Storage{
     public static $compress_image_level=70;
 
     public static function upload($file,$disk){
-        Config::$ACTIVE_REPLACE=false;
         $dir=Config::filesystem('storage.'.$disk)."/";
-        Config::$ACTIVE_REPLACE=true;
         if($file==null){
             return null;
         }
@@ -61,9 +59,7 @@ class Storage{
     }
 
     public static function get($file,$disk){
-        Config::$ACTIVE_REPLACE=false;
         $dir=Config::filesystem('storage.'.$disk)."/";
-        Config::$ACTIVE_REPLACE=true;
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
@@ -76,9 +72,7 @@ class Storage{
     }
     
     public static function delete($file,$disk){
-        Config::$ACTIVE_REPLACE=false;
         $dir=Config::filesystem('storage.'.$disk)."/";
-        Config::$ACTIVE_REPLACE=true;
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;

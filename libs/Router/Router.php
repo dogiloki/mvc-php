@@ -61,7 +61,7 @@ class Router{
 		$path=str_replace(".","/",$path);
 		$path=str_replace(['"',"'"," "],"",$path);
 		foreach(Router::$ext_views as $value){
-			$require_path=Config::filesystem('views.path')."\\".$path.".".$value;
+			$require_path=Config::filesystem('views.path')."/".$path.".".$value;
 			if(file_exists($require_path)){
 				foreach($params as $key=>$param){
 					$$key=$param;

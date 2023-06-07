@@ -22,7 +22,7 @@ spl_autoload_register(function($clase){
 		$json=array_merge($json,listDirectory(join("/",array_slice($path,0,count($path)-1))));
 		file_put_contents($cache_file,json_encode($json));
 	}
-	if(file_exists($json[$slug])){
+	if(file_exists($json[$slug]??"")){
 		require_once $json[$slug];
 	}
 });
@@ -51,6 +51,8 @@ function slug($text){
 
 require "vendor/autoload.php";
 require_once "libs/helpers.php";
+// Activar mostrar errores
+ini_set('display_errors',env('APP_DEPLOY')?1:0);
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos
 $uri=$_SERVER['REQUEST_URI'];

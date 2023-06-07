@@ -49,7 +49,7 @@ class View{
 
     public static function render($path){
         $name=str_replace(["/","\\"],".",$path);
-        $path_cache=Config::filesystem('views.cache')."\\".$name;
+        $path_cache=Config::filesystem('views.cache')."/".$name;
         if(file_exists($path_cache) && filemtime($path_cache)>filemtime($path)){
             return $path_cache;
         }

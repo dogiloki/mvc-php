@@ -5,7 +5,7 @@ namespace libs\Middle;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-use libs\config;
+use libs\Config;
 
 class Email{
 
@@ -16,15 +16,15 @@ class Email{
 			// Configuración del servidor
 			$mail->SMTPDebug=SMTP::DEBUG_SERVER;
 			$mail->isSMTP();
-			$mail->Host=config::email('host');
+			$mail->Host=Config::email('host');
 			$mail->SMTPAuth=true;
-			$mail->Username=config::email('username');
-			$mail->Password=config::email('password');
+			$mail->Username=Config::email('username');
+			$mail->Password=Config::email('password');
 			$mail->SMTPSecure=PHPMailer::ENCRYPTION_STARTTLS;
-			$mail->Port=config::email('port');
+			$mail->Port=Config::email('port');
 
 			// Contenido
-			$mail->setFrom(config::email('from'),$title); // Título del remitente
+			$mail->setFrom(Config::email('from'),$title); // Título del remitente
 			$mail->addAddress($email); // Email del receptor
 			$mail->isHTML(true);
 			$mail->Subject=$subject;
