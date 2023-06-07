@@ -29,7 +29,7 @@ class View{
         "/@break/"=>"<?php break; ?>",
         "/@continue/"=>"<?php continue; ?>",
         "/@end(.*?)\s/m"=>"<?php } ?>",
-        "/@include\((.*?)\)\s/m"=>"<?php
+        "/@extends\((.*?)\)\s/m"=>"<?php
             \$_=[
                 'value'=><<<'EOD'
                     $1
@@ -42,6 +42,7 @@ class View{
             ];
             \$_['params']=json_decode(str_replace(['[',']','=>'],['{','}',':'],\$_['params']),true)??[];
             view(\$_['path'],array_merge(\$_['params'],get_defined_vars()['params']??[])); unset(\$_); ?>",
+        "/@include\((.*?)\)\s/m"=>"<?php view($1); ?>",
         "/@(.*?)\)\s/m"=>"<?php if($1)){ ?>",
         "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
