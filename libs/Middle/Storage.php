@@ -2,8 +2,6 @@
 
 namespace libs\Middle;
 
-require 'vendor/autoload.php';
-
 use Intervention\Image\ImageManagerStatic as Image;
 use libs\Middle\Secure;
 use libs\Config;
