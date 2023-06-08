@@ -57,7 +57,6 @@ class Auth{
 
     public function _logout(){
         Session::forget($this->name_session);
-        Session::regenerate();
     }
 
     public function _user(){
