@@ -92,5 +92,6 @@ foreach($directory as $file){
 	require_once(Config::filesystem("routes.path")."/".$file);
 }
 $router->controller();
+$kernel=new \app\Kernel();
 
 ?>
