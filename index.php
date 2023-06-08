@@ -75,8 +75,10 @@ if(file_exists(Config::filesystem("public.path").$uri) && !is_dir(Config::filesy
 unset($uri);
 // Enrutadores
 use libs\Router\Router;
+use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
+$kernel=new Kernel();
 // Rutas predeterminadas
 $router->get('/storage1/{disk}',function($request){
 	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
@@ -92,6 +94,5 @@ foreach($directory as $file){
 	require_once(Config::filesystem("routes.path")."/".$file);
 }
 $router->controller();
-$kernel=new \app\Kernel();
 
 ?>
