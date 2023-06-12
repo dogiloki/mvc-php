@@ -292,8 +292,6 @@ class Table{
 	public function first(){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
-		$query=$this->execute();
-		return $query->fetch();
 	}
 
 	public function execute($execute=true){
