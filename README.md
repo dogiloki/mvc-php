@@ -5,7 +5,7 @@ Tiene librerías para almacenar archivos en servidor, hacer peticiones HTTP, Ser
 Implementa un básico sistema de migración que consiste en ejecutar archivos ubicados en database/migrations
 
 # Instalar
-- composer create-project dogiloki/mvc-php
+- composer create-project dogiloki/mvc-php mvc-php v1.0.0.x-dev
 - php manager create (crea las carpetas y archivo necesarios para inciar el proyecto)
 # Iniciar servidor
 Utiliza el servidor web integrado de php para pruebas locales con:
