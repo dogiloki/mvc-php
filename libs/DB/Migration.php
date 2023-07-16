@@ -2,9 +2,9 @@
 
 namespace libs\DB;
 
-use libs\DB\Create;
+use libs\DB\Scheme;
 
-abstract class Migration extends Create{
+abstract class Migration extends Scheme{
 
     public function up(){}
 

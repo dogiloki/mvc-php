@@ -5,14 +5,24 @@ namespace libs\DB;
 use libs\DB\Column;
 use libs\Config;
 
-class Create{
+class Scheme{
+
+    // Tipos de sentencias
+	private $type_query=null;
+	private const CREATE=0;
+    private const ALTER=[
+        'ADD'=>1,
+        'CHANGE'=>2,
+        'DROP'=>3,
+        'MODIFY'=>4
+    ];
 
     private $engine=null;
     private $charset=null;
     private $name_table=null;
     private $columns=[];
     private $prev_column=null;
-    private $sql="";
+    private $sql=null;
 
     public function __construct(){
 		
@@ -22,7 +32,6 @@ class Create{
         $this->engine=Config::database('engine');
         $this->charset=Config::database('charset');
         $this->name_table="`".$name_table."`";
-        $this->sql="CREATE TABLE IF NOT EXISTS ".$this->name_table;
         if($action instanceof \Closure){
             $action($this,explode("/",implode("/",array_slice(func_get_args(),2))));
         }
@@ -52,6 +61,7 @@ class Create{
      * @param int $size Tamaño del dato
      */
     public function add($name, $type, $size=null){
+        $this->type_query=self::CREATE;
         if($type=="varchar"){
             $size=255;
         }
@@ -83,6 +93,18 @@ class Create{
     }
 
     /**
+     * Eliminar columna
+     * @param string $column Nombre de la columna
+     */
+    public function dropColumn($column){
+        $this->type_query=self::ALTER['DROP'];
+        $column=new Column($column);
+        $this->columns[]=$column;
+        $this->prev_column=$column;
+        return $column;
+    }
+
+    /**
      * Elimina una tabla de la base de datos
      * @param string $table Nombre de la tabla a eliminar
      */
@@ -100,16 +122,34 @@ class Create{
      * Ejecutar sql
      */
     public function execute(){
-        $sql="(";
-        foreach($this->columns as $column){
-            $sql.=$column->sql();
+        $sql="";
+        switch($this->type_query){
+            case self::CREATE:{
+                $sql="CREATE TABLE ".$this->name_table." ";
+                $sql.="(";
+                foreach($this->columns as $column){
+                    $sql.=$column->sql();
+                }
+                $sql=substr($sql,0,strlen($sql)-1);
+                $sql.=")";
+                $sql.="ENGINE=".$this->engine;
+                $sql.=" DEFAULT CHARSET=".$this->charset;
+                break;
+            }
+            case self::ALTER['DROP']:{
+                $sql="ALTER TABLE ".$this->name_table." DROP COLUMN ";
+                foreach($this->columns as $column){
+                    $column->nullable();
+                    $sql.=$column->sql();
+                }
+                $sql=substr($sql,0,strlen($sql)-1);
+                break;
+            }
         }
-        $sql=substr($sql,0,strlen($sql)-1);
-        $sql.=")";
-        $sql.="ENGINE=".$this->engine;
-        $sql.=" DEFAULT CHARSET=".$this->charset;
         $this->sql.=$sql;
-        return DB::execute($this->sql);
+        $query=DB::execute($this->sql);
+        $this->sql=null;
+        return $query;
     }
 
 

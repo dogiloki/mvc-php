@@ -13,7 +13,7 @@ class Column{
     private $default=null;
     private $comment=null;
 
-    public function __construct($name, $type, $size){
+    public function __construct($name, $type="", $size=null){
         $this->name=$name;
         $this->type=$type;
         $this->size=$size;
