@@ -259,6 +259,11 @@ class Table{
 		return $this;
 	}
 
+	public function orderBy($column, $value){
+		$this->orders[]=$column." ".$value;
+		return $this;
+	}
+
 	public function orderAsc($column){
 		$this->orders[]=$column." ASC ";
 		return $this;
@@ -292,6 +297,7 @@ class Table{
 	public function first(){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
+		return $this;
 	}
 
 	public function execute($execute=true){

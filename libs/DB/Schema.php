@@ -5,11 +5,12 @@ namespace libs\DB;
 use libs\DB\Column;
 use libs\Config;
 
-class Scheme{
+class Schema{
 
     // Tipos de sentencias
 	private $type_query=null;
 	private const CREATE=0;
+    private const CREATE_IF_NOT_EXISTS=1;
     private const ALTER=[
         'ADD'=>1,
         'CHANGE'=>2,
@@ -38,6 +39,11 @@ class Scheme{
         return $this->execute();
     }
 
+    public function tableIfNotExists($name_table, $action){
+        $this->type_query=self::CREATE_IF_NOT_EXISTS;
+        return $this->table($name_table,$action);
+    }
+
     /**
      * Motor de almacenamiento
      * @param string $name
@@ -61,7 +67,7 @@ class Scheme{
      * @param int $size Tamaño del dato
      */
     public function add($name, $type, $size=null){
-        $this->type_query=self::CREATE;
+        $this->type_query??=self::CREATE;
         if($type=="varchar"){
             $size=255;
         }
@@ -105,7 +111,7 @@ class Scheme{
     }
 
     /**
-     * Elimina una tabla de la base de datos
+     * Elimina una tabla de la base de datos si existe
      * @param string $table Nombre de la tabla a eliminar
      */
     public function dropIfExists(string $table){
@@ -119,13 +125,28 @@ class Scheme{
     }
 
     /**
+     * Elimina una tabla de la base de datos (da error si no existe)
+     * @param string $table Nombre de la tabla a eliminar
+     */
+    public function drop(string $table){
+        try{
+            $sql="DROP TABLE `$table"."`";
+            $this->sql=$sql;
+            DB::execute($this->sql);
+        }catch(\Exception $ex){
+			throw new \Exception($ex->getMessage());
+        }
+    }
+
+    /**
      * Ejecutar sql
      */
     public function execute(){
         $sql="";
         switch($this->type_query){
+            case self::CREATE_IF_NOT_EXISTS:
             case self::CREATE:{
-                $sql="CREATE TABLE ".$this->name_table." ";
+                $sql=($this->type_query==self::CREATE?"CREATE TABLE ":"CREATE TABLE IF NOT EXISTS ").$this->name_table." ";
                 $sql.="(";
                 foreach($this->columns as $column){
                     $sql.=$column->sql();
