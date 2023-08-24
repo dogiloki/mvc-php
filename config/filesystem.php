@@ -42,10 +42,6 @@ return [
         'cache'=>'storage/framework/views',
     ],
 
-    'components'=>[
-        'path'=>'app/Components',
-    ],
-
     'logs'=>[
         'path'=>'storage/logs',
         'file'=>'storage/logs/app.log',
