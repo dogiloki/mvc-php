@@ -79,10 +79,10 @@ use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
 $kernel=new Kernel();
-$router->post('/component/{name}',function($request){
+$router->post('/component/{name}',function($request){ 
 	$name=ucfirst($request->input('name'));
 	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
-	$instance->syncInput($request->post());
+	$instance->init($request->post);
 	return $instance->render();
 });
 /* Rutas predeterminadas

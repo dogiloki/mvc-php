@@ -33,10 +33,6 @@ class Request{
 		return self::$instance;
 	}
 
-	public function __set($name,$value){
-		$this->add('POST',$name,$value);
-	}
-
 	public static function clear(){
 		self::$instance=null;
 		return self::singleton();

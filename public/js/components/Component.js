@@ -32,7 +32,8 @@ class Component{
                             let attributes=Array.from(element_event.attributes);
                             attributes.forEach((attribute)=>{
                                 let object=attribute.value.split(':');
-                                this.params[attribute.name]=document.getElementById(object[0])[object[1]??'value'];
+                                let value=document.getElementById(object[0])[object[1]??'value'];
+                                this.params[attribute.name]=value;
                                 this.render();
                             }); 
                         });
@@ -49,7 +50,11 @@ class Component{
         },{
             'Content-Type':'application/json',
             'Accept':'text/html',
-            'body':new URLSearchParams(this.params)
+            'body':new URLSearchParams({
+                json:JSON.stringify({
+                    params:this.params
+                })
+            })
         });
     }
 

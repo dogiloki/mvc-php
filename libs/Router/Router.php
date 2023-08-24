@@ -127,7 +127,6 @@ class Router{
 				}
 				if($param!=null){
 					$params[$param['name']]=$uri;
-					$request->{$param['name']}=$uri;
 					$request->add('VAR',$param['name'],$uri);
 				}
 				$count_uri_found++;
