@@ -3,57 +3,66 @@ class Component{
     constructor(name,element){
         this.name=name;
         this.element=element;
-        this.params=this.getParams();
+        this.params={};
+        this.elements_json=JSON.parse(this.element.textContent);
+        this.getParams();
         this.loadEvents();
         this.render();
     }
 
     getParams(){
-        let params={};
         let collection=Array.from(this.element.attributes);
         collection.forEach((attribute)=>{
-            params[attribute.name]=attribute.value;
+            this.params[attribute.name]=attribute.value;
         });
-        return params;
     }
 
     loadEvents(){
-        let events={};
-        let collection=Array.from(this.element.getElementsByTagName('*'));
-        collection.forEach((element)=>{
-            if(element.tagName.startsWith("ON:")){
-                let event=(element.tagName.substring(3)).toLowerCase();
-                let collection_events=Array.from(element.getElementsByTagName("*"));
-                collection_events.forEach((element_event)=>{
-                    if(element_event.tagName.startsWith("ID:")){
-                        let id=(element_event.tagName.substring(3)).toLowerCase();
-                        let element_apply_event=document.getElementById(id);
-                        element_apply_event.addEventListener(event,(evt)=>{
-                            let attributes=Array.from(element_event.attributes);
-                            attributes.forEach((attribute)=>{
-                                let object=attribute.value.split(':');
-                                let value=document.getElementById(object[0])[object[1]??'value'];
-                                this.params[attribute.name]=value;
-                                this.render();
-                            }); 
-                        });
-                    }
+        if(this.elements_json.events!=null){
+            this.elements_json.events.forEach((event)=>{
+                document.getElementById(event.id).addEventListener(event.event,(evt)=>{
+                    this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
+                        this.params[value_ley]=document.getElementById(id)[id_key];
+                    });
+                    this.render({
+                        name:event.method,
+                        params:event.params??[]
+                    });
                 });
-            }
-        });
-        return events;
+            });
+        }
     }
 
-    render(){
+    loadWires(data,action){
+        data??={};
+        let wires_id=Object.keys(data);
+        let wires_param=Object.values(data);
+        wires_id.forEach((wire_id,wire_index)=>{
+            let wire_id_split=wire_id.split('.');
+            let id=wire_id_split[0];
+            let id_key=wire_id_split[1];
+            let value_ley=wires_param[wire_index];
+            action(id,id_key,value_ley);
+        });
+    }
+
+    render(method){
+        let json_send={
+            params:this.params,
+            method:method
+        };
         Fetch.post('component/'+this.name,(data)=>{
-            this.element.innerHTML=data;
+            let json=JSON.parse(data);
+            this.element.innerHTML=json.html;
+            this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
+                document.getElementById(id)[id_key]=json.params[value_ley];
+            });
+            this.params=json.params;
         },{
             'Content-Type':'application/json',
             'Accept':'text/html',
             'body':new URLSearchParams({
-                json:JSON.stringify({
-                    params:this.params
-                })
+                json:JSON.stringify(json_send)
             })
         });
     }

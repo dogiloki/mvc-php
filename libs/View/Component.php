@@ -11,10 +11,14 @@ abstract class Component{
 
     public function init($params=[]){
         $json=json_decode($params['json']??[]);
-        $this->params=(array)$json->params??[];
+        $this->params=(array)($json->params??[]);
         foreach($this->params as $name=>$value){
             $this->$name=$value;
             $this->updating($name,$value);
+        }
+        $method=(array)($json->method??[]);
+        if(isset($method['name'])){
+            $this->{$method['name']}(...($method['params']??[]));
         }
         $reflection=new \ReflectionClass($this);
         $properties=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
@@ -32,6 +36,10 @@ abstract class Component{
         }
         $this->$name=$value;
         return $value;
+    }
+
+    public function getParams(){
+        return $this->params;
     }
 
     public function updating($name,$value){

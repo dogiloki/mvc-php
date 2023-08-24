@@ -10,7 +10,7 @@ class Vista extends Component{
     protected $render="components.vista";
 
     public $users=[];
-    public $search="";
+    public $search="hola";
     public $live_search=false;
 
     public function updating($name,$value){
@@ -24,7 +24,7 @@ class Vista extends Component{
         }
     }
 
-    public function search($search){
+    public function search($search=null){
         $search??=$this->search;
         $this->users=User::find(function($find)use($search){ 
             $find->like("name","%".$search."%");

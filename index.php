@@ -80,10 +80,17 @@ $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
 $kernel=new Kernel();
 $router->post('/component/{name}',function($request){ 
+	ob_start();
 	$name=ucfirst($request->input('name'));
 	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
 	$instance->init($request->post);
-	return $instance->render();
+	$instance->render();
+	$html=ob_get_clean();
+	$params=$instance->getParams();
+	return json([
+		"html"=>$html,
+		"params"=>$params
+	]);
 });
 /* Rutas predeterminadas
 $router->get('/storage1/{disk}',function($request){

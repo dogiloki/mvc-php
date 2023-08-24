@@ -7,13 +7,27 @@
 <input type="search" placeholder="Buscar por nombre" id="box-search">
 <button id="btn-search">Buscar</button>
 <component:vista>
-    <on:click>
-        <id:btn-search search="box-search"/>
-        <id:check-live-search live_search="check-live-search:checked"/>
-    </on:click>
-    <on:keyup>
-        <id:box-search search="box-search"/>
-    </on:keyup>
+    {
+        "wires":{
+            "box-search.value":"search",
+            "check-live-search.checked":"live_search"
+        },
+        "events":[
+            {
+                "id":"btn-search",
+                "event":"click",
+                "method":"search"
+            },
+            {
+                "id":"box-search",
+                "event":"keyup"
+            },
+            {
+                "id":"check-live-search",
+                "event":"change"
+            }
+        ]    
+    }
 </component:vista>
 @extends('layouts.footer')
 @spa
