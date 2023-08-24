@@ -21,20 +21,22 @@ class Component{
         let events={};
         let collection=Array.from(this.element.getElementsByTagName('*'));
         collection.forEach((element)=>{
-            if(element.tagName.startsWith("EVENT-")){
-                let id_element=element.tagName.substring(6).toLowerCase();
-                let element_event=document.getElementById(id_element);
-                let collection_events=Array.from(element.getElementsByTagName('*'));
-                collection_events.forEach((element_on)=>{
-                    let event_name=(element_on.tagName).replace("ON-","").toLowerCase();
-                    let id_on=element_on.getAttribute('on_id');
-                    let emit=element_on.getAttribute('emit');
-                    let on_attribute=element_on.getAttribute('on_attrib')??'value';
-                    element_event.addEventListener(event_name,(evt)=>{
-                        let element_on=document.getElementById(id_on);
-                        this.params[emit]=element_on[on_attribute];
-                        this.render();
-                    });
+            if(element.tagName.startsWith("ON:")){
+                let event=(element.tagName.substring(3)).toLowerCase();
+                let collection_events=Array.from(element.getElementsByTagName("*"));
+                collection_events.forEach((element_event)=>{
+                    if(element_event.tagName.startsWith("ID:")){
+                        let id=(element_event.tagName.substring(3)).toLowerCase();
+                        let element_apply_event=document.getElementById(id);
+                        element_apply_event.addEventListener(event,(evt)=>{
+                            let attributes=Array.from(element_event.attributes);
+                            attributes.forEach((attribute)=>{
+                                let object=attribute.value.split(':');
+                                this.params[attribute.name]=document.getElementById(object[0])[object[1]??'value'];
+                                this.render();
+                            }); 
+                        });
+                    }
                 });
             }
         });
