@@ -20,7 +20,8 @@
             },
             {
                 "id":"box-search",
-                "event":"keyup"
+                "event":"keyup",
+                "delay":1000
             },
             {
                 "id":"check-live-search",

@@ -5,6 +5,7 @@ class Component{
         this.element=element;
         this.params={};
         this.elements_json=JSON.parse(this.element.textContent);
+        this.active_events={};
         this.getParams();
         this.loadEvents();
         this.render();
@@ -20,15 +21,22 @@ class Component{
     loadEvents(){
         if(this.elements_json.events!=null){
             this.elements_json.events.forEach((event)=>{
-                document.getElementById(event.id).addEventListener(event.event,(evt)=>{
-                    this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
-                        this.params[value_ley]=document.getElementById(id)[id_key];
-                    });
-                    this.render({
-                        name:event.method,
-                        params:event.params??[]
-                    });
+                let listener=document.getElementById(event.id).addEventListener(event.event,(evt)=>{
+                    if(this.active_events[listener]){
+                        this.active_events[listener]=false;
+                        setTimeout(()=>{
+                            this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
+                                this.params[value_ley]=document.getElementById(id)[id_key];
+                            });
+                            this.render({
+                                name:event.method,
+                                params:event.params??[]
+                            });
+                            this.active_events[listener]=true;
+                        },event.delay??0);
+                    }
                 });
+                this.active_events[listener]=true;
             });
         }
     }
