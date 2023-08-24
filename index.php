@@ -79,10 +79,17 @@ use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singletong();
 $kernel=new Kernel();
-// Rutas predeterminadas
+$router->post('/component/{name}',function($request){
+	$name=ucfirst($request->input('name'));
+	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
+	$instance->syncInput($request->post());
+	return $instance->render();
+});
+/* Rutas predeterminadas
 $router->get('/storage1/{disk}',function($request){
 	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
 });
+*/
 foreach($directory as $file){
 	if($file=='.' || $file=='..'){
 		continue;

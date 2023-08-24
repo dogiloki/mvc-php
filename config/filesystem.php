@@ -31,6 +31,10 @@ return [
         'path'=>'app/Models'
     ],
 
+    'components'=>[
+        'path'=>'app/Components'
+    ],
+
     'scss'=>[
         'path_input'=>'resources/scss',
         'path_output'=>'public/css',
