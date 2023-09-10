@@ -3,6 +3,7 @@
 namespace libs\HTTP;
 
 use libs\Router\Router;
+use libs\HTTP\Request;
 
 class Response{
 

@@ -77,7 +77,7 @@ unset($uri);
 use libs\Router\Router;
 use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
-$router=Router::singletong();
+$router=Router::singleton();
 $kernel=new Kernel();
 $router->post('/component/{name}',function($request){ 
 	ob_start();

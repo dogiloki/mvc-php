@@ -12,7 +12,6 @@ class Router{
 	private static $instance=null;
 	private $routes=[];
 	private $prev_route=null;
-	private $http_response_code=[];
 
 	private function __construct(){
 		/*foreach(glob('controllers/*.php') as $file){
@@ -20,7 +19,7 @@ class Router{
 		}*/
 	}
 	
-	public static function singletong(){
+	public static function singleton(){
 		if(self::$instance==null){
 			self::$instance=new Router();
 		}
@@ -48,9 +47,6 @@ class Router{
 	}
 	public function delete($url,$action=null,$private=false){
 		return $this->add('DELETE',$url,$action,$private);
-	}
-	public function error($code,$action=null){
-		return $this->http_response_code[$code]=$action;
 	}
 
 	public static $ext_views=["html","php"];
