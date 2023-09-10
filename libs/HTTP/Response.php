@@ -3,7 +3,6 @@
 namespace libs\HTTP;
 
 use libs\Router\Router;
-use libs\HTTP\Request;
 
 class Response{
 
@@ -38,7 +37,7 @@ class Response{
     }
 
     public static function route($name,...$params){
-        $router=Router::singletong();
+        $router=Router::singleton();
         $url="";
         foreach($router->getRoutes() as $route){
             if($route->name!=$name){

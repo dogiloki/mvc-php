@@ -2,9 +2,9 @@
 
 use libs\HTTP\Request;
 
-$router->get('/saludar/{nombre}/{edad?}',function(Request $request){
-    return view('');
-});
+$router->get('/',function(Request $request){
+    return route('home');
+})->name('home');
 
 
 ?>
