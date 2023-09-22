@@ -1,5 +1,5 @@
 @extends('layouts.header',["title"=>"Inicio"])
-<h1>Hola mundo</h1>
+<h1>{{__('welcome',['name'=>'Julio'])}}</h1>
 <label>
     Búsqueda en tiempo real
     <input type="checkbox" id="check-live-search">

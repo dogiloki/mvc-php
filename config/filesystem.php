@@ -35,6 +35,10 @@ return [
         'path'=>'app/Components'
     ],
 
+    'lang'=>[
+        'path'=>'resources/lang'
+    ],
+
     'scss'=>[
         'path_input'=>'resources/scss',
         'path_output'=>'public/css',

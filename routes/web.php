@@ -3,7 +3,7 @@
 use libs\HTTP\Request;
 
 $router->get('/',function(Request $request){
-    return route('home');
+    return view('index');
 })->name('home');
 
 

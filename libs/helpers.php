@@ -80,6 +80,33 @@ function scss($path){
     return url($path);
 }
 
+function locale($locale=null){
+    return $locale==null?Config::app('locale')??Session::get('locale'):Session::set('locale',$locale);
+}
+
+function __($key, $params=[]){
+    $locale=locale();
+    $file=Config::filesystem('lang.path')."/".$locale.".php";
+    if(file_exists($file)){
+        $lang=include($file);
+        $keys=explode(".",$key);
+        $value=$lang;
+        foreach($keys as $key){
+            $value=$value[$key]??$key;
+        }
+        if(is_array($value)){
+            $value=$key;
+        }
+        if(is_string($value)){
+            foreach($params as $key=>$param){
+                $value=str_replace(":".$key,$param,$value);
+            }
+        }
+        return $value;
+    }
+    return null;
+}
+
 // Functions from Response::class
 
 function response(){
