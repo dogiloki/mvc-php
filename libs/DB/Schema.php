@@ -94,8 +94,8 @@ class Schema{
     }
 
     public function timestamps(){
-        $this->add('created_at','timestamp')->default('CURRENT_TIMESTAMP')->index();
-        $this->add('updated_at','timestamp')->default('CURRENT_TIMESTAMP')->nullable()->index();
+        $this->add('created_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->index();
+        $this->add('updated_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->nullable()->index();
     }
 
     /**

@@ -8,10 +8,10 @@ return new class extends Migration{
 	 * Run the migrations.
 	 */
 	public function up(): void{
-		$this->table('session',function($table){
-			$table->add('id','varchar',40)->primary();
-			$table->idForeign('id_user')->foreign('user','id')->nullable();
-			$table->add('payload','text');
+		$this->table('access_token',function($table){
+			$table->id();
+			$table->idForeign('id_user')->foreign('user','id');
+			$table->add('token','varchar')->unique();
 			$table->add('expire_at','timestamp');
 			$table->timestamps();
 		});
@@ -21,7 +21,7 @@ return new class extends Migration{
 	 * Reverse the migrations.
 	 */
 	public function down(): void{
-		$this->dropIfExists('session');
+		$this->dropIfExists('access_token');
 	}
 	
 };

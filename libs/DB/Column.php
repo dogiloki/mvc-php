@@ -2,6 +2,8 @@
 
 namespace libs\DB;
 
+use libs\DB\Flat;
+
 class Column{
 
     private $name=null;
@@ -30,12 +32,12 @@ class Column{
     }
 
     public function default($value){
-        $this->default=$value;
+        $this->default=($value instanceof Flat)?($value->value):($value==null?$value:"'".$value."'");
         return $this;
     }
 
     public function comment($value){
-        $this->comment=$value;
+        $this->comment=($value instanceof Flat)?($value->value):($value==null?$value:"'".$value."'");
         return $this;
     }
 
