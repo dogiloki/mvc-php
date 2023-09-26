@@ -19,12 +19,12 @@ class Model{
 	private $with_attribs=[];
 	private $with_relations=[];
 
-	public function __construct($class=null){
+	public function __construct($class=null,$table=null){
 		$this->class=$class==null?$this:$class;
 		$reflection=new \ReflectionClass(get_class($this->class));
 		$annotation=new Annotation($reflection->getDocComment());
 		$this->annotation_class=$annotation;
-		$this->table=$annotation->get("Table");
+		$this->table=$table??$annotation->get("Table");
 		//self::$params=get_class_vars(get_class($class));
 		$this->getValues();
 	}
@@ -55,6 +55,11 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}
+	}
+
+	public function table($table){
+		$this->table=$table;
+		return $this;
 	}
 
 	public function _getTable(){

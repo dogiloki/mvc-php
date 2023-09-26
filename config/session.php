@@ -2,11 +2,15 @@
 
 return [
 
-    'driver'=>env('SESSION_DRIVER','file'),
+    'driver'=>env('SESSION_DRIVER','database'),
     'encrypt'=>env('SESSION_ENCRYPT',false),
 
     'file'=>[
         'path'=>env('SESSION_PATH',storagePath('framework/sessions')),
+    ],
+
+    'database'=>[
+        'table'=>env('SESSION_TABLE','session')
     ],
     
     'cookie'=>[
@@ -17,6 +21,9 @@ return [
         'secure'=>env('SESSION_COOKIE_SECURE',false),
         'httponly'=>env('SESSION_COOKIE_HTTPONLY',true),
         'samesite'=>env('SESSION_COOKIE_SAMESITE','lax'),
+        'payload'=>[
+            'csrf_token'=>'_csrf_token'
+        ]
     ]
 
 ];

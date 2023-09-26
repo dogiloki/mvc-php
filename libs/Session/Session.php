@@ -5,6 +5,8 @@ namespace libs\Session;
 use libs\Config;
 use libs\Middle\Secure;
 use libs\Cookie\Cookie;
+use libs\DB\DB;
+use libs\Auth\Auth;
 
 class Session{
 
@@ -32,10 +34,12 @@ class Session{
     private $name_session;
     private $session_id;
     private $values;
+    public static $key_csrf_token;
 
     private function __construct(){
         $this->name_session=Config::session('cookie.name');
         $this->values=[];
+        Session::$key_csrf_token=Config::session('cookie.payload.csrf_token');
     }
 
     public function __call($method,$params){
@@ -51,15 +55,30 @@ class Session{
             return;
         }
         $this->session_id=Secure::random();
-        $this->values['_token']=Session::token();
+        $this->values[Session::$key_csrf_token]=Session::token();
         // Crear archivo de session
-        if(Config::session('driver')=='file'){
-            $path=Config::session('file.path');
-            if(!is_dir($path)){
-                mkdir($path,0777,true);
+        switch(Config::session('driver')){
+            case 'file':{
+                $path=Config::session('file.path');
+                if(!is_dir($path)){
+                    mkdir($path,0777,true);
+                }
+                $file=$path."/".$this->session_id;
+                file_put_contents($file,$this->payload());
+                break;
             }
-            $file=$path."/".$this->session_id;
-            file_put_contents($file,serialize($this->values));
+            case 'database':{
+                $table=Config::session('database.table');
+                DB::table($table)->insert([
+                    'id'=>$this->session_id,
+                    'ip_address'=>Secure::ip(),
+                    'user_agent'=>Secure::userAgent(),
+                    'payload'=>Secure::encrypt($this->payload()),
+                    'last_activity'=>date('Y-m-d H:i:s'),
+                    'expire_at'=>date('Y-m-d H:i:s',strtotime('+'.Config::session('cookie.lifetime').' minutes'))
+                ]);
+                break;
+            }
         }
         $this->started=Cookie::set(
             $this->name_session,
@@ -73,40 +92,70 @@ class Session{
             return false;
         }
         // Leer archivo de session
-        if(Config::session('driver')=='file'){
-            $path=Config::session('file.path');
-            $file=$path."/".$session_id;
-            if(file_exists($file)){
-                $values_current=$this->values;
-                $values_file=unserialize(file_get_contents($file))??[];
-                $this->values=array_merge(
-                    $values_file,
-                    $this->values
-                );
-                if(count($values_current)>0){
-                    foreach($this->values as $key=>$value){
-                        if(!isset($values_current[$key])){
-                            unset($this->values[$key]);
+        switch(Config::session('driver')){
+            case 'file':{
+                $path=Config::session('file.path');
+                $file=$path."/".$session_id;
+                if(file_exists($file)){
+                    $values_current=$this->values;
+                    $values_file=unserialize(file_get_contents($file))??[];
+                    $this->values=array_merge(
+                        $values_file,
+                        $this->values
+                    );
+                    if(count($values_current)>0){
+                        foreach($this->values as $key=>$value){
+                            if(!isset($values_current[$key])){
+                                unset($this->values[$key]);
+                            }
                         }
                     }
-                }
-                $this->session_id=$session_id;
-                // Sobreescribir el archivo de session
-                if(Config::session('driver')=='file'){
+                    $this->session_id=$session_id;
+                    // Sobreescribir el archivo de session
                     $path=Config::session('file.path');
                     $file=$path."/".$this->session_id;
                     file_put_contents($file,serialize($this->values));
+                    return true;
                 }
-                return true;
+                break;
             }
-            $this->destroy();
-            return false;
+            case 'database':{
+                $values_current=$this->values;
+                $table=Config::session('database.table');
+                $rs=DB::table($table)->select()->where('id',$session_id)->execute();
+                $row=$rs->fetchAll();
+                if(count($row)>0){
+                    $values_file=unserialize(Secure::decrypt($row[0]['payload']));
+                    $this->values=array_merge(
+                        $values_file,
+                        $this->values
+                    );
+                    if(count($values_current)>0){
+                        foreach($this->values as $key=>$value){
+                            if(!isset($values_current[$key])){
+                                unset($this->values[$key]);
+                            }
+                        }
+                    }
+                    $this->session_id=$session_id;
+                    // Actualizar el registro de session
+                    DB::table($table)->update([
+                        'payload'=>Secure::encrypt($this->payload()),
+                        'last_activity'=>date('Y-m-d H:i:s'),
+                        'expire_at'=>date('Y-m-d H:i:s',strtotime('+'.Config::session('cookie.lifetime').' minutes'))
+                    ])->where('id',$this->session_id)->execute();
+                    return true;
+                }
+                break;
+            }
         }
+        $this->destroy();
+        return false;
     }
 
     public function _regenerateToken(){
         Cookie::delete("CSFR_TOKEN");
-        $this->put('_token',Session::token(true));
+        $this->put(Session::$key_csrf_token,Session::token(true));
     }
 
     public function _token($regenerate=false){
@@ -134,7 +183,7 @@ class Session{
             Secure::encrypt($this->session_id)
         );
         if($this->isStarted()){
-            $this->put('_token',Session::token());
+            $this->put(Session::$key_csrf_token,Session::token());
         }
     }
 
@@ -190,11 +239,19 @@ class Session{
     public function _destroy(){
         $this->values=[];
         // Eliminar archivo de session
-        if(Config::session('driver')=='file'){
-            $path=Config::session('file.path');
-            $file=$path."/".$this->session_id;
-            if($this->session_id!=null && file_exists($file)){
-                unlink($file);
+        switch(Config::session('driver')){
+            case 'file':{
+                $path=Config::session('file.path');
+                $file=$path."/".$this->session_id;
+                if($this->session_id!=null && file_exists($file)){
+                    unlink($file);
+                }
+                break;
+            }
+            case 'database':{
+                $table=Config::session('database.table');
+                DB::table($table)->delete()->where('id',$this->session_id)->execute();
+                break;
             }
         }
         Cookie::delete($this->name_session);

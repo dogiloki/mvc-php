@@ -5,6 +5,7 @@ namespace libs\Auth;
 use libs\Session\Session;
 use libs\Middle\Secure;
 use libs\Config;
+use libs\DB\DB;
 
 class Auth{
 
@@ -37,6 +38,12 @@ class Auth{
             return;
         }
         Session::put($this->name_session,$user->{$user->primary_key});
+        if(Config::session('driver')=='database'){
+            $table=Config::session('database.table');
+            DB::table($table)->update([
+                'id_user'=>$user->{$user->primary_key},
+            ])->where('id',Session::id())->execute();
+        }
     }
 
     public function _attempt($credentials, $password){
@@ -57,6 +64,12 @@ class Auth{
 
     public function _logout(){
         Session::forget($this->name_session);
+        if(Config::session('driver')=='database'){
+            $table=Config::session('database.table');
+            DB::table($table)->update([
+                'id_user'=>null,
+            ])->where('id',Session::id())->execute();
+        }
     }
 
     public function _user(){

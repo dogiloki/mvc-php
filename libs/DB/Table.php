@@ -93,7 +93,7 @@ class Table{
 		}else{
 			$this->values_update=is_array($values_update)?$values_update:func_get_args();
 		}
-		return $this->execute();
+		return $this;
 	}
 
 	/*
