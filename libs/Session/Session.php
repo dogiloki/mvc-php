@@ -74,8 +74,7 @@ class Session{
                     'ip_address'=>Secure::ip(),
                     'user_agent'=>Secure::userAgent(),
                     'payload'=>Secure::encrypt($this->payload()),
-                    'last_activity'=>date('Y-m-d H:i:s'),
-                    'expire_at'=>date('Y-m-d H:i:s',strtotime('+'.Config::session('cookie.lifetime').' minutes'))
+                    'last_activity'=>date('Y-m-d H:i:s')
                 ]);
                 break;
             }
@@ -141,8 +140,7 @@ class Session{
                     // Actualizar el registro de session
                     DB::table($table)->update([
                         'payload'=>Secure::encrypt($this->payload()),
-                        'last_activity'=>date('Y-m-d H:i:s'),
-                        'expire_at'=>date('Y-m-d H:i:s',strtotime('+'.Config::session('cookie.lifetime').' minutes'))
+                        'last_activity'=>date('Y-m-d H:i:s')
                     ])->where('id',$this->session_id)->execute();
                     return true;
                 }

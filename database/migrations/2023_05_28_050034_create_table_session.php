@@ -16,7 +16,6 @@ return new class extends Migration{
 			$table->add('user_agent','varchar',255);
 			$table->add('payload','text');
 			$table->add('last_activity','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
-			$table->add('expire_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
 		});
 	}
 		
