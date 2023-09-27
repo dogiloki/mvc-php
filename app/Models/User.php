@@ -3,11 +3,14 @@
 namespace app\Models;
 
 use libs\DB\Model;
+use libs\Auth\HasApiTokens;
 
 /**
  * @Table(user)
 **/
 class User extends Model{
+
+	use HasApiTokens;
 
 	/**
 	 * @ID(id)

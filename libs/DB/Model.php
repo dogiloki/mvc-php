@@ -57,6 +57,10 @@ class Model{
 		}
 	}
 
+	public function classType(){
+		return get_class($this->class);
+	}
+
 	public function table($table){
 		$this->table=$table;
 		return $this;

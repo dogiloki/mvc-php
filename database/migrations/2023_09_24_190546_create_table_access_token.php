@@ -1,6 +1,7 @@
 <?php
 
 use libs\DB\Migration;
+use libs\DB\DB;
 		
 return new class extends Migration{
 		
@@ -10,9 +11,13 @@ return new class extends Migration{
 	public function up(): void{
 		$this->table('access_token',function($table){
 			$table->id();
-			$table->idForeign('id_user')->foreign('user','id');
+			$table->add('id_tokenable','bigint');
+			$table->add('type_tokenable','varchar');
+			$table->add('name','varchar');
 			$table->add('token','varchar')->unique();
-			$table->add('expire_at','timestamp');
+			$table->add('abilities','text');
+			$table->add('last_activity','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
+			$table->add('expire_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
 			$table->timestamps();
 		});
 	}

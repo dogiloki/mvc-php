@@ -108,6 +108,19 @@ class Request{
 		return array_merge($this->get,$this->post,$this->put);
 	}
 
+	public function bearerToken(){
+		$authorization=$this->header('Authorization');
+		if($authorization){
+			$authorization=explode(' ',$authorization);
+			if(count($authorization)==2){
+				if($authorization[0]=='Bearer'){
+					return $authorization[1];
+				}
+			}
+		}
+		return null;
+	}
+
 }
 
 ?>
