@@ -31,22 +31,22 @@ class Router{
 	}
 
 	/*
-	@param $url -> Ruta del enrutamiento
+	@param $uri -> Ruta del enrutamiento
 	@param $action -> Acción del controlador. Ejemplo: ClaseController@metodoController
 	@param $private -> Necesita key en el encabezado
-	@return Function con paramtro Request de tipo GET, POST y variables de url amigable
+	@return Function con paramtro Request de tipo GET, POST y variables de uri amigable
 	*/
-	public function get($url,$action=null,$private=false){
-		return $this->add('GET',$url,$action,$private);
+	public function get($uri,$action=null,$private=false){
+		return $this->add('GET',$uri,$action,$private);
 	}
-	public function post($url,$action=null,$private=false){
-		return $this->add('POST',$url,$action,$private);
+	public function post($uri,$action=null,$private=false){
+		return $this->add('POST',$uri,$action,$private);
 	}
-	public function put($url,$action=null,$private=false){
-		return $this->add('PUT',$url,$action,$private);
+	public function put($uri,$action=null,$private=false){
+		return $this->add('PUT',$uri,$action,$private);
 	}
-	public function delete($url,$action=null,$private=false){
-		return $this->add('DELETE',$url,$action,$private);
+	public function delete($uri,$action=null,$private=false){
+		return $this->add('DELETE',$uri,$action,$private);
 	}
 
 	public static $ext_views=["html","php"];
@@ -82,9 +82,12 @@ class Router{
 		}
 	}
 
-	private function add($method,$url,$action=null,$private=false){
-		$route=new Route($method,$url,$action);
-		$route->name_file=explode(".",basename(debug_backtrace()[1]['file']))[0];
+	private function add($method,$uri,$action=null,$private=false){
+		$name_file=explode(".",basename(debug_backtrace()[1]['file']))[0];
+		if($name_file=="api"){
+			$uri="api/".$uri;
+		}
+		$route=new Route($method,$uri,$action);
 		$this->prev_route=$route;
 		$this->routes[]=$route;
 		return $this;
