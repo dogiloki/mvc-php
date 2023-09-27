@@ -6,6 +6,11 @@
 </label>
 <input type="search" placeholder="Buscar por nombre" id="box-search">
 <button id="btn-search">Buscar</button>
+<form action="{{route('test')}}" method="POST">
+    @csrf
+    <input type="text" name="name">
+    <input type="submit" value="Enviar">
+</form>
 <component:vista>
     {
         "wires":{

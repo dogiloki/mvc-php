@@ -48,6 +48,9 @@ class View{
             <script src=\"<?php echo url('js/components/Component.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/SPA.js') ?>\"></script>
         ",
+        "/@csrf/"=>"
+            <input type=\"hidden\" name=\"_token\" value=\"<?php echo csrfToken(); ?>\">
+        ",
         "/@(.*?)\)\s/m"=>"<?php if($1)){ ?>",
         "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
