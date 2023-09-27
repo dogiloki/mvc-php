@@ -88,6 +88,7 @@ class Router{
 			$uri="api/".$uri;
 		}
 		$route=new Route($method,$uri,$action);
+		$route->name_file=$name_file;
 		$this->prev_route=$route;
 		$this->routes[]=$route;
 		return $this;
