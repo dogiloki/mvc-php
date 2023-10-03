@@ -31,9 +31,7 @@ class Vista extends Component{
 
     public function search($search=null){
         $search??=$this->search;
-        $this->users=User::find(function($find)use($search){ 
-            $find->like("name","%".$search."%");
-        },[]);
+        $this->users=User::like("name","%".$search."%")->get();
     }
 
 }
