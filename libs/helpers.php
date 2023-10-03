@@ -25,6 +25,16 @@ function folderRoot($path=""){
     return join("/",array_slice($folder,0,count($folder)-1))."/".$path;
 }
 
+function url($text=""){
+    //\dirname($_SERVER['PHP_SELF'])
+    $text=trim($text,"/");
+    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
+}
+
+function slug($text){
+	return strtolower(preg_replace("/[^a-zA-Z0-9]+/","-",$text));
+}
+
 function vars(){
     return get_defined_vars();
 }

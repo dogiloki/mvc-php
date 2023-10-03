@@ -1,11 +1,5 @@
 <?php
 
-function url($text=""){
-    //\dirname($_SERVER['PHP_SELF'])
-    $text=trim($text,"/");
-    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
-}
-
 require_once "libs/Config.php";
 use libs\Config;
 
@@ -27,6 +21,9 @@ spl_autoload_register(function($clase){
 	}
 });
 
+require "vendor/autoload.php";
+require_once "libs/helpers.php";
+
 function listDirectory($path){
 	if(!is_dir($path) || !file_exists($path) || !is_readable($path) || $path==""){
 		return [];
@@ -45,12 +42,6 @@ function listDirectory($path){
 	return $json;
 }
 
-function slug($text){
-	return strtolower(preg_replace("/[^a-zA-Z0-9]+/","-",$text));
-}
-
-require "vendor/autoload.php";
-require_once "libs/helpers.php";
 // Activar mostrar errores
 ini_set('display_errors',env('APP_DEPLOY')?1:0);
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
