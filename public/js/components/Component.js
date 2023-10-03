@@ -61,6 +61,9 @@ class Component{
         };
         Fetch.post('component/'+this.name,(data)=>{
             let json=JSON.parse(data);
+            if(json.direct!=null){
+                window.location=json.direct;
+            }
             this.element.innerHTML=json.html;
             this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
                 document.getElementById(id)[id_key]=json.params[value_ley];

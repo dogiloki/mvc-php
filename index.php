@@ -74,13 +74,14 @@ $router->post('/component/{name}',function($request){
 	ob_start();
 	$name=ucfirst($request->input('name'));
 	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
-	$instance->init($request->post);
+	$done=$instance->init($request);
 	$instance->render();
 	$html=ob_get_clean();
 	$params=$instance->getParams();
 	return json([
-		"html"=>$html,
-		"params"=>$params
+		"html"=>$done?$html:"",
+		"params"=>$params,
+		"direct"=>$done?null:$instance->direct()
 	]);
 });
 /* Rutas predeterminadas

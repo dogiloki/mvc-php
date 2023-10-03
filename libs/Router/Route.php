@@ -19,9 +19,9 @@ class Route{
     public $action;
     public $params;
     public $name;
-    public $middlewares;
+    public $middlewares=[];
 
-    public function __construct(string $method, string $path, $action){
+    public function __construct(string $method=null, string $path=null, $action=null){
         $this->method=$method;
         $path=folderRoot($path);
         $this->path=Route::formatUri($path);
@@ -44,11 +44,15 @@ class Route{
         }
     }
 
-    public function call(Request $request, $index_middlewares=0){
+    public function call(Request $request, $index_middlewares=0, $do_call=true){
         $middleware=$this->middlewares[$index_middlewares]??null;
         if($middleware==null){
-            $this->callAction($request);
-            exit;
+            if($do_call){
+                $this->callAction($request);
+                exit;
+            }else{
+                return true;
+            }
         }
         if(class_exists($middleware)){
             $middleware=new $middleware();
@@ -65,6 +69,7 @@ class Route{
         }catch(\Exception $ex){
             $middleware->report($ex);
         }
+        return false;
     }
     
     private function callAction(Request $request){

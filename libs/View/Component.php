@@ -3,13 +3,21 @@
 namespace libs\View;
 
 use libs\HTTP\Request;
+use libs\Router\Route;
 
 abstract class Component{
 
     protected $render="";
     protected $params=[];
+    protected $middleware=[];
 
-    public function init($params=[]){
+    public function init(Request $request){
+        $route=new Route();
+        $route->middlewares=$this->middleware;
+        if(!$route->call($request,0,false)){
+            return false;
+        }   
+        $params=$request->post;
         $json=json_decode($params['json']??[]);
         $this->params=(array)($json->params??[]);
         foreach($this->params as $name=>$value){
@@ -27,6 +35,7 @@ abstract class Component{
             $value=$params[$name]??$this->$name;
             $this->params[$name]=$value;
         }
+        return true;
     }
 
     public function syncInput($name,$filter=null){
@@ -40,6 +49,10 @@ abstract class Component{
 
     public function getParams(){
         return $this->params;
+    }
+
+    public function direct(){
+        return url();
     }
 
     public function updating($name,$value){
