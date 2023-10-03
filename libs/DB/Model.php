@@ -38,14 +38,13 @@ class Model{
 	}
 
 	public static function __callStatic($method,$params){
+		$method_query=$method;
 		$method='_'.$method;
 		$instace=new static;
-		$method_query='_query';
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
-		}else
-		if(method_exists($instace,$method_query)){
-			return call_user_func_array([$instace,$method_query],$params);
+		}else{
+			return DB::table($instace->table)->select()->model(get_class($instace->class))->$method_query(...$params);
 		}
 	}
 
@@ -72,10 +71,6 @@ class Model{
 
 	public function _getPrimaryKey(){
 		return $this->primary_key;
-	}
-
-	public function _query(){
-		return DB::table($this->table)->select();
 	}
 
 	private function getValues(){
@@ -116,7 +111,7 @@ class Model{
 		//var_dump($this->params['columns']);
 	}
 
-	private function setValues($row){
+	public function setValues($row){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
@@ -192,7 +187,7 @@ class Model{
 		return $this;
 	}
 
-	private function callExtras($model){
+	public function callExtras($model){
 		foreach($this->with_attribs as $attrib){
 			foreach($attrib as $key=>$value){
 				$model->$key=$value;
@@ -218,7 +213,7 @@ class Model{
 			$find=DB::table($model->table);
 			$find->select();
 			$callback($find);
-			$rs=$find->get();
+			$rs=$find->execute()->fetchAll();
 			if($rs->rowCount()>0){
 				$rows=$rs->fetchAll();
 				if(is_array($type)){

@@ -44,6 +44,9 @@ class Table{
 	// Paginación de consulta - LIMIT
 	private $limit=null;
 
+	// Clase para convertir los registro de una array asociativo a una clase
+	private $model=null;
+
 	public function __construct($name_table=""){
 		$this->name_table="`".$name_table."`";
 	}
@@ -290,14 +293,31 @@ class Table{
 		return $this->execute(false);
 	}
 
+	public function model($class){
+		$this->model=$class;
+		return $this;
+	}
+
 	public function get(){
-		return $this->execute();
+		$rows=$this->execute()->fetchAll();
+		$class=[];
+		foreach($rows as $row){
+			$model=new ($this->model)();
+			$model->setValues($row);
+			$model=$model->callExtras($model);
+			$class[]=$model->class;
+		}
+		return $class;
 	}
 
 	public function first(){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
-		return $this;
+		$row=$this->execute()->fetch();
+		$model=new ($this->model)();
+		$model->setValues($row);
+		$model=$model->callExtras($model);
+		return $model->class;
 	}
 
 	public function execute($execute=true){
