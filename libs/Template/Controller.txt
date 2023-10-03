@@ -1,0 +1,9 @@
+<?php
+
+namespace {space};
+
+class {name}{
+    
+}
+
+?>

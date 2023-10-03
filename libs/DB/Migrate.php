@@ -3,7 +3,7 @@
 namespace libs\DB;
 
 use libs\DB\DB;
-use libs\DB\Scheme;
+use libs\Console\Console;
 
 class Migrate{
 
@@ -75,6 +75,7 @@ class Migrate{
     }
 
     public function migrate($type){
+        $console=new Console();
         $directory=$this->getMigrations($type);
         foreach($directory as $file){
 			if($file!='.' && $file!='..'){
@@ -85,21 +86,21 @@ class Migrate{
 						if($type=='up'){
 							$migration->up();
                             $this->addMigration($ext[0]);
-							echo "\n".$file." (up exitoso)\n";
+							$console->success($file." (up exitoso)");
 						}else
 						if($type=='down'){
 							$migration->down();
                             $this->removeMigration($ext[0]);
-							echo "\n".$file." (down exitoso)\n";
+							$console->success($file." (down exitoso)");
 						}
 					}catch(\Exception $ex){
 						if($type=='up'){
-							echo "\n".$file." (up fallido)\n";
+							$console->error($file." (up fallido)");
 						}else
 						if($type=='down'){
-							echo "\n".$file." (down fallido)\n";
+							$console->error($file." (down fallido)");
 						}
-						echo "\n".$ex->getMessage()."\n";
+						$console->error($ex->getMessage());
 						return;
 					}
 				}

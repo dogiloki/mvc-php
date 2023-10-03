@@ -31,6 +31,10 @@ return [
         'path'=>'app/Models'
     ],
 
+    'middlewares'=>[
+        'path'=>'app/Middlewares'
+    ],
+
     'components'=>[
         'path'=>'app/Components'
     ],

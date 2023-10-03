@@ -1,0 +1,11 @@
+<?php
+
+namespace {space};
+
+use libs\DB\Model;
+
+class {name} extends Model{
+    
+}
+
+?>

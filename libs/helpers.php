@@ -117,6 +117,13 @@ function __($key, $params=[]){
     return null;
 }
 
+function messageFormat($text,$args=[]){
+    return preg_replace_callback('/\{(\w+)\}/',function($matches)use($args){
+        $name=$matches[1];
+        return isset($args[$name])?$args[$name]:$matches[0];
+    },$text);
+}
+
 // Functions from Response::class
 
 function response(){

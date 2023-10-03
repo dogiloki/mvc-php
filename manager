@@ -10,230 +10,93 @@ spl_autoload_register(function($clase){
 require "vendor/autoload.php";
 require_once("libs/helpers.php");
 use libs\Config;
+use libs\Console\Manager;
 
-$command=$argv[1]??null;
+Manager::command("new {type} {name}",function($console,$type,$name){
+	$types=[
+		"controller"=>[
+			"filesystem"=>"controllers.path",
+			"message"=>"Controlador",
+			"template"=>"Controller.txt"
+		],
+		"model"=>[
+			"filesystem"=>"models.path",
+			"message"=>"Modelo",
+			"template"=>"Model.txt"
+		],
+		"migration"=>[
+			"filesystem"=>"database.migrations",
+			"message"=>"Migración",
+			"template"=>"Migration.txt"
+		],
+		"middleware"=>[
+			"filesystem"=>"middlewares.path",
+			"message"=>"Middleware",
+			"template"=>"Middleware.txt"
+		]
+	];
+	if(!isset($types[$type])){
+		$console->error("No existe el parámetro ".$type)->exit();
+	}
+	$date=date("Y_m_d_His");
+	if($type=="migration"){
+		$name=$date."_".$name;
+	}
+	$path=Config::filesystem($types[$type]["filesystem"])."/".$name;
+	$name=basename($path);
+	$path.=".php";
+	$dirname=dirname($path);
+	if(file_exists($path)){
+		$console->error("El ".$types[$type]["message"]." ".$path." ya existe")->exit();
+	}
+	if(!file_exists($dirname)){
+		mkdir($dirname,0755,true);
+	}
+	$space=str_replace("/","\\",$dirname);
+	$file=fopen($path,"w+b");
+	if(!$file){
+		$console->error("No se tiene acceso al archivo ".$path)->exit();
+	}
+	fwrite($file,messageFormat(file_get_contents("libs/Template/".$types[$type]["template"]),compact("name","space")));
+	fclose($file);
+	$console->success($types[$type]["message"]." creado ".$path)->exit();
+})->describe("Crear un nuevo archivo en base a una plantilla, ubicada en libs/Template");
 
-switch($command){
-	case 'create':{
-		$folders=Config::filesystem('create.folders');
-		$files=Config::filesystem('create.files');
-		foreach($folders as $dir){
-			if(!file_exists($dir)){
-				mkdir($dir,0777,true);
-				Raau::msg("Se creó el directorio ".$dir);
-			}
+Manager::command("create",function($console){
+	$folders=Config::filesystem('create.folders');
+	$files=Config::filesystem('create.files');
+	foreach($folders as $dir){
+		if(!file_exists($dir)){
+			mkdir($dir,0777,true);
+			$console->success("Se creó el directorio ".$dir);
 		}
+	}
 		foreach($files as $file){
-			if(!file_exists($file['path'])){
-				file_put_contents($file['path'],$file['content']);
-				Raau::msg("Se creó el archivo ".$file['path']);
-			}
+		if(!file_exists($file['path'])){
+			file_put_contents($file['path'],$file['content']);
+			$console->success("Se creó el archivo ".$file['path']);
 		}
-		break;
 	}
-	case 'migrate':{
-		$argv[2]??=null;
-		if($argv[2]=='rollback'){
-			Raau::migrate('down');
-		}else{
-			Raau::migrate('up');
-		}
-		break;
-	}
-	case 'seeder':{
-		Raau::seeder();
-		break;
-	}
-	case 'new':{
-		$argv[2]??=null;
-		$argv[3]??=null;
-		if($argv[2]=='controller'){
-			Raau::msg(Raau::newController($argv[3]));
-		}else
-		if($argv[2]=='model'){
-			Raau::msg(Raau::newModel($argv[3]));
-		}else
-		if($argv[2]=='cm'){
-			Raau::msg(Raau::newController($argv[3]));
-			Raau::msg(Raau::newModel($argv[3]));
-		}else
-		if($argv[2]=='migration'){
-			Raau::msg(Raau::newMigration($argv[3]));
-		}else
-		if($argv[2]=='middleware'){
-			Raau::msg(Raau::newMiddleware($argv[3]));
-		}
-		break;
-	}
-	case 'serve':{
-		$argv[2]??=8000;
-		//exec('php -S 127.0.0.1:'.$argv[2].' -t public');v
-		exec('php -S 127.0.0.1:'.$argv[2]." index.php");
-		break;
-	}
-	case null: Raau::msg("Se requieren parámetros"); break;
-	default: Raau::msg("No existe el parámetro ".$command); break;
-}
+})->describe("Crear carpetas y archivos iniciales para el framework");
 
-class Raau{
+Manager::command("migrate {type?}",function($console,$type){
+	$type??="up";
+	$migrate=new libs\DB\Migrate();
+	$migrate->init();
+	$migrate->migrate($type);
+});
 
-	public static function msg($msg){
-		echo "\n".$msg."\n";
-	}
+Manager::command("seeder",function($console){
+	$seeder=new database\seeders\DatabaseSeeder();
+	$seeder->run();
+});
 
-	public static function migrate($type="up"){
-		$migrate=new libs\DB\Migrate();
-		$migrate->init();
-		$migrate->migrate($type);
-	}
+Manager::command("server {port?}",function($console,$port){
+	$port??=8000;
+	//exec('php -S 127.0.0.1:'.$port.' -t public');v
+	exec('php -S 127.0.0.1:'.$port." index.php");
+});
 
-	public static function seeder(){
-		$seeder=new database\seeders\DatabaseSeeder();
-		$seeder->run();
-	}
-
-	public static function newMigration($name){
-		if($name==null){
-			$name=readline("Nombre de la migración: ");
-		}
-		$date=date("Y_m_d_His");
-		$name=strtolower($name);
-		$name=str_replace(" ","_",$name);
-		$file=fopen("database/migrations/".$date."_".$name.".php","w+b");
-		if(!$file){
-			return "Error al abrir archivo";
-		}
-		fwrite($file,
-"<?php
-
-use libs\DB\Migration;
-		
-return new class extends Migration{
-		
-	/**
-	 * Run the migrations.
-	 */
-	public function up(): void{
-		
-	}
-		
-	/**
-	 * Reverse the migrations.
-	 */
-	public function down(): void{
-		
-	}
-	
-};
-		
-?>");
-	}
-
-	public static function newController($name){
-		if($name==null){
-			$name=readline("Nombre del controlador: ");
-		}
-		if(file_exists("controllers/".$name.".php")){
-			return "El controlador ".$name." ya existe";
-		}
-		$file=fopen("controllers/".$name.".php","w+b");
-		if(!$file){
-			return "Error al abrir archivo";
-		}
-		fwrite($file,
-'<?php
-
-namespace controllers;
-
-class '.$name.'{
-
-}
-
-?>');
-		fclose($file);
-		return "Controlador creador. controllers/".$name.".php";
-	}
-
-	public static function newModel($name){
-		if($name==null){
-			$name=readline("Nombre del modelo: ");
-		}
-		if(file_exists("models/".$name.".php")){
-			return "El controlador ".$name." ya existe";
-		}
-		$file=fopen("models/".$name.".php","w+b");
-		if(!$file){
-			return "Error al abrir archivo";
-		}
-		fwrite($file,
-'<?php
-
-namespace models;
-
-use libs\DB\Model;
-
-class '.$name.' extends Model{
-
-	public function modelar(){
-		return "Hola, soy una modelado de datos";
-	}
-
-}
-
-?>');
-		fclose($file);
-		return "Modelo creador. models/".$name.".php";
-	}
-
-	public static function newMiddleware($name){
-		if($name==null){
-			$name=readline("Nombre del middleware: ");
-		}
-		if(file_exists("middlewares/".$name.".php")){
-			return "El middleware ".$name." ya existe";
-		}
-		$file=fopen("middlewares/".$name.".php","w+b");
-		if(!$file){
-			return "Error al abrir archivo";
-		}
-		fwrite($file,
-"<?php
-
-namespace middlewares;
-		
-use libs\Middle\Middle;
-		
-class ".$name." extends Middle{
-
-	/**
-     * Verificar si llamar a redirectTo()
-     * @return bool
-     */
-	public function handle(){
-		
-	}
-	
-	/**
-     * Redireccionar a una ruta
-     */
-	public function redirectTo(){
-		
-	}
-	
-	/**
-     * Ejecución al finalizar
-     */
-	public function terminate(){
-		
-	}
-		
-}
-		
-?>");
-		fclose($file);
-		return "Middleware creador. middlewares/".$name.".php";
-	}
-
-}
+Manager::call($argv);
 
 ?>
