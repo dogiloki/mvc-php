@@ -10,7 +10,7 @@ use libs\Middle\Cookie;
 use libs\Middle\Router;
 
 $router->get('/login',function($request){
-    
+    dd(User::where('id',1)->get());
 })->name('login');
 
 $router->get('/test',function($request){

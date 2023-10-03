@@ -75,7 +75,7 @@ class Model{
 	}
 
 	public function _query(){
-		return DB::table($this->table);
+		return DB::table($this->table)->select();
 	}
 
 	private function getValues(){
@@ -175,16 +175,6 @@ class Model{
 		}
 		return $value;
 	}
-	
-	/*
-	public static function create($row){
-		$self=self::class;
-		$static=static::class;
-		$model=new $self(new $static());
-		$model->setValues($row);
-		return $model->class;
-	}
-	*/
 
 	public function _each($action){
 		$this->action_each=$action;
