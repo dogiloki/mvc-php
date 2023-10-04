@@ -51,7 +51,6 @@ class Session{
 
     public function start(){
         if($this->sync()){
-            dd("sa");
             $this->started=Cookie::set(
                 $this->name_session,
                 Secure::encrypt($this->session_id)
