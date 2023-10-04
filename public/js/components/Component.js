@@ -8,6 +8,7 @@ class Component{
         this.active_events={};
         this.getParams();
         this.loadEvents();
+        this.element.innerHTML="";
         this.render();
     }
 
