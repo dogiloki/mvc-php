@@ -121,6 +121,14 @@ class Request{
 		return null;
 	}
 
+	public static function ip(){
+		return $_SERVER['REMOTE_ADDR'];
+	}
+
+	public static function userAgent(){
+		return $_SERVER['HTTP_USER_AGENT'];
+	}
+
 }
 
 ?>

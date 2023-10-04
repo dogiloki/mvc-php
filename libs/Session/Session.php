@@ -6,7 +6,7 @@ use libs\Config;
 use libs\Middle\Secure;
 use libs\Cookie\Cookie;
 use libs\DB\DB;
-use libs\Auth\Auth;
+use libs\HTTP\Request;
 
 class Session{
 
@@ -51,7 +51,11 @@ class Session{
 
     public function start(){
         if($this->sync()){
-            $this->started=true;
+            dd("sa");
+            $this->started=Cookie::set(
+                $this->name_session,
+                Secure::encrypt($this->session_id)
+            );
             return;
         }
         $this->session_id=Secure::random();
@@ -71,8 +75,8 @@ class Session{
                 $table=Config::session('database.table');
                 DB::table($table)->insert([
                     'id'=>$this->session_id,
-                    'ip_address'=>Secure::ip(),
-                    'user_agent'=>Secure::userAgent(),
+                    'ip_address'=>Request::ip(),
+                    'user_agent'=>Request::userAgent(),
                     'payload'=>Secure::encrypt($this->payload()),
                     'last_activity'=>date('Y-m-d H:i:s')
                 ]);

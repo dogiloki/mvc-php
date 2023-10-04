@@ -41,14 +41,6 @@ class Secure{
 		$iv=substr(base64_decode($text),0,openssl_cipher_iv_length('aes-256-cbc'));
 		return openssl_decrypt(substr(base64_decode($text),openssl_cipher_iv_length('aes-256-cbc')),'aes-256-cbc',$key,0,$iv);
 	}
-
-	public static function ip(){
-		return $_SERVER['REMOTE_ADDR'];
-	}
-
-	public static function userAgent(){
-		return $_SERVER['HTTP_USER_AGENT'];
-	}
 	
 }
 

@@ -11,8 +11,8 @@ class Vista extends Component{
     protected $middleware=['auth'];
 
     public $users=[];
-    public $search="hola";
-    public $live_search=false;
+    public $search="julio";
+    public $live_search=true;
 
     public function direct(){
         return route('test');
