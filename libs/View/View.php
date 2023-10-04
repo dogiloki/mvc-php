@@ -43,7 +43,7 @@ class View{
             \$_['params']=json_decode(str_replace(['[',']','=>'],['{','}',':'],\$_['params']),true)??[];
             view(\$_['path'],array_merge(\$_['params'],get_defined_vars()['params']??[])); unset(\$_); ?>",
         "/@include\((.*?)\)\s/m"=>"<?php view($1); ?>",
-        "/@spa/"=>"
+        "/@scriptsSPA/"=>"
             <script>var _token=\"<?php echo csrfToken(); ?>\"</script>
             <script src=\"<?php echo url('js/Fetch.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/Component.js') ?>\"></script>

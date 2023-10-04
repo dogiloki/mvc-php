@@ -67,7 +67,10 @@ class Component{
             }
             this.element.innerHTML=json.html;
             this.loadWires(this.elements_json.wires,(id,id_key,value_ley)=>{
-                document.getElementById(id)[id_key]=json.params[value_ley];
+                let element=document.getElementById(id);
+                if(element!=document.activeElement){
+                    element[id_key]=json.params[value_ley];
+                }
             });
             this.params=json.params;
         },{

@@ -26,7 +26,7 @@
             {
                 "id":"box-search",
                 "event":"keyup",
-                "delay":1000
+                "delay":500
             },
             {
                 "id":"check-live-search",
@@ -36,4 +36,4 @@
     }
 </component:vista>
 @extends('layouts.footer')
-@spa
+@scriptsSPA
