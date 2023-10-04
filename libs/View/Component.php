@@ -16,7 +16,7 @@ abstract class Component{
         $route->middlewares=$this->middleware;
         if(!$route->call($request,0,false)){
             return false;
-        }   
+        }
         $params=$request->post;
         $json=json_decode($params['json']??[]);
         $this->params=(array)($json->params??[]);

@@ -4,7 +4,7 @@ use libs\HTTP\Request;
 
 $router->get('/',function(Request $request){
     return view('index');
-})->name('home');
+})->name('home')->middleware('auth');
 
 
 ?>

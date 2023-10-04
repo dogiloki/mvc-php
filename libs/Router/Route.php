@@ -47,12 +47,11 @@ class Route{
     public function call(Request $request, $index_middlewares=0, $do_call=true){
         $middleware=$this->middlewares[$index_middlewares]??null;
         if($middleware==null){
-            if($do_call){
+            if($do_call==1){
                 $this->callAction($request);
-                exit;
-            }else{
-                return true;
+                exit;   
             }
+            return true;
         }
         if(class_exists($middleware)){
             $middleware=new $middleware();
@@ -60,14 +59,14 @@ class Route{
             $middleware=new (Config::middleware("alias.".$middleware))();
         }
         try{
-            $middleware->handle($request,function($request)use($index_middlewares){
-                $this->call($request,$index_middlewares+1);
+            return $middleware->handle($request,function($request)use($index_middlewares,$do_call){
+                return $this->call($request,$index_middlewares+1,$do_call);
             });
-            $middleware->terminate($request,function($request)use($index_middlewares){
-                $this->call($request,$index_middlewares+1);
+            return $middleware->terminate($request,function($request)use($index_middlewares,$do_call){
+                return $this->call($request,$index_middlewares+1,$do_call);
             });
         }catch(\Exception $ex){
-            $middleware->report($ex);
+            return $middleware->report($ex);
         }
         return false;
     }

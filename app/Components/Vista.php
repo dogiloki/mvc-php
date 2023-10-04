@@ -8,14 +8,14 @@ use app\Models\User;
 class Vista extends Component{
 
     protected $render="components.vista";
-    protected $middleware=[];
+    protected $middleware=['auth'];
 
     public $users=[];
     public $search="hola";
     public $live_search=false;
 
     public function direct(){
-        return route('login');
+        return route('test');
     }
 
     public function updating($name,$value){

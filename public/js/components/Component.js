@@ -72,6 +72,7 @@ class Component{
         },{
             'Content-Type':'application/json',
             'Accept':'text/html',
+            'credentials': 'include',
             'body':new URLSearchParams({
                 json:JSON.stringify(json_send)
             })

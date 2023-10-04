@@ -21,6 +21,7 @@ return [
     ],
     
     'alias'=>[
+        'session'=>libs\Session\Middleware\StartSession::class,
         'auth'=>app\Middlewares\Authenticate::class,
         'auth_api'=>app\Middlewares\AuthenticateApi::class,
         'guest'=>app\Middlewares\Guest::class,

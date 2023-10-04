@@ -70,7 +70,7 @@ use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singleton();
 $kernel=new Kernel();
-$router->post('/component/{name}',function($request){ 
+$router->post('/component/{name}',function($request){
 	ob_start();
 	$name=ucfirst($request->input('name'));
 	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
@@ -83,7 +83,7 @@ $router->post('/component/{name}',function($request){
 		"params"=>$params,
 		"direct"=>$done?null:$instance->direct()
 	]);
-});
+})->middleware('session');
 /* Rutas predeterminadas
 $router->get('/storage1/{disk}',function($request){
 	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
