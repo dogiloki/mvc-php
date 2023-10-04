@@ -44,6 +44,7 @@ class View{
             view(\$_['path'],array_merge(\$_['params'],get_defined_vars()['params']??[])); unset(\$_); ?>",
         "/@include\((.*?)\)\s/m"=>"<?php view($1); ?>",
         "/@spa/"=>"
+            <script>var _token=\"<?php echo csrfToken(); ?>\"</script>
             <script src=\"<?php echo url('js/Fetch.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/Component.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/SPA.js') ?>\"></script>

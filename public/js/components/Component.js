@@ -72,9 +72,10 @@ class Component{
         },{
             'Content-Type':'application/json',
             'Accept':'text/html',
-            'credentials': 'include',
+            'credentials':'include',
             'body':new URLSearchParams({
-                json:JSON.stringify(json_send)
+                json:JSON.stringify(json_send),
+                _token:_token
             })
         });
     }

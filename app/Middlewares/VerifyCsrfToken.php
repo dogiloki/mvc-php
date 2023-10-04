@@ -22,7 +22,7 @@ class VerifyCsrfToken extends Middleware{
                abort(419,"CSRF token invalid");
           }
           return $next($request);
-	}     
+	}
 
 }
 

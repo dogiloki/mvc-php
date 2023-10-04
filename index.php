@@ -83,7 +83,7 @@ $router->post('/component/{name}',function($request){
 		"params"=>$params,
 		"direct"=>$done?null:$instance->direct()
 	]);
-})->middleware('session');
+})->middleware('session','csrf');
 /* Rutas predeterminadas
 $router->get('/storage1/{disk}',function($request){
 	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
