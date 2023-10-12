@@ -50,6 +50,11 @@ class View{
                 ?>
             </div>
         ',
+        "/@componentNotRender\((.*?)\)\s/m"=>'
+            <?php
+            (new ("\\\\\\\\".str_replace("/","\\\\\\\\",config()->filesystem("components.path"))."\\\\\\\\".ucfirst($1))())->render();
+            ?>
+        ',
         "/@scriptsSPA/"=>"
             <script>var _token=\"<?php echo csrfToken(); ?>\"</script>
             <script src=\"<?php echo url('js/Fetch.js') ?>\"></script>
