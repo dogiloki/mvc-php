@@ -19,6 +19,10 @@ $router->get('/logout',function($request){
 
 $router->get('/test',function($request){
     dd(User::find(1)->name);
-})->name('test');
+})->name('test-get');
+
+$router->post('/test',function($request){
+    dd($request->name);
+})->name('test-post');
 
 ?>

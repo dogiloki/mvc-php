@@ -13,6 +13,7 @@ class Vista extends Component{
     public $users=[];
     public $search="julio";
     public $live_search=true;
+    public $temp;
 
     public function direct(){
         return route('test');
@@ -21,7 +22,7 @@ class Vista extends Component{
     public function updating($name,$value){
         switch($name){
             case "search":{
-                if($this->syncInput('live_search')){
+                if($this->sync('live_search')){
                     $this->search($value);
                 }
                 break;
@@ -30,8 +31,9 @@ class Vista extends Component{
     }
 
     public function search($search=null){
-        $search??=$this->search;
-        $this->users=User::like("name","%".$search."%")->get();
+        $search??=$this->sync('search');
+        $this->sync('users',User::like("name","%".$search."%")->get());
+        $this->sync('temp',"-".$search."-");
     }
 
 }

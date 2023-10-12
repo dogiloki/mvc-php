@@ -74,13 +74,13 @@ $router->post('/component/{name}',function($request){
 	ob_start();
 	$name=ucfirst($request->input('name'));
 	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
-	$done=$instance->init($request);
+	$done=$instance->syncRequest($request);
 	$instance->render();
 	$html=ob_get_clean();
-	$params=$instance->getParams();
+	$data=$instance->getData();
 	return json([
 		"html"=>$done?$html:"",
-		"params"=>$params,
+		"data"=>$data,
 		"direct"=>$done?null:$instance->direct()
 	]);
 })->middleware('session','csrf');

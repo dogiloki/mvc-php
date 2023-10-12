@@ -11,43 +11,49 @@ abstract class Component{
     protected $params=[];
     protected $middleware=[];
 
-    public function init(Request $request){
+    public function __construct(){
+        $this->getData();
+    }
+
+    public function syncRequest(Request $request){
         $route=new Route();
         $route->middlewares=$this->middleware;
         if(!$route->call($request,0,false)){
             return false;
         }
-        $params=$request->post;
-        $json=json_decode($params['json']??[]);
-        $this->params=(array)($json->params??[]);
-        foreach($this->params as $name=>$value){
+        $this->params=$request->data??[];
+        $index=0;
+        while($index<count($this->params)){
+            $name=key($this->params);
+            $value=current($this->params);
             $this->$name=$value;
             $this->updating($name,$value);
+            next($this->params);
+            $index++;
         }
-        $method=(array)($json->method??[]);
-        if(isset($method['name'])){
+        $method=$request->method??null;
+        if($method!=null && isset($method['name'])){
             $this->{$method['name']}(...($method['params']??[]));
-        }
-        $reflection=new \ReflectionClass($this);
-        $properties=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
-        foreach($properties as $property){
-            $name=$property->name;
-            $value=$params[$name]??$this->$name;
-            $this->params[$name]=$value;
         }
         return true;
     }
 
-    public function syncInput($name,$filter=null){
-        $value=$this->params[$name]??$this->$name;
-        if($filter!=null){
-            $value=filter_var($value,$filter);
+    public function sync($name,$value=null){
+        if(func_num_args()==1){
+            $value=$this->params[$name]??$this->$name;
         }
+        $this->params[$name]=$value;
         $this->$name=$value;
         return $value;
     }
 
-    public function getParams(){
+    public function getData(){
+        $reflection=new \ReflectionClass($this);
+        $properties=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
+        foreach($properties as $property){
+            $name=$property->name;
+            $this->params[$name]=$this->$name;
+        }
         return $this->params;
     }
 
@@ -61,7 +67,7 @@ abstract class Component{
 
 
     public function render(){
-        return view($this->render,$this->params);
+        return view($this->render,$this->getData());
     }
 
 }

@@ -9,6 +9,10 @@ use ScssPhp\ScssPhp\Compiler;
 
 Env::singleton("config.env");
 
+function config(){
+    return new Config();
+}
+
 function dd($obj){
     $trace=debug_backtrace();
     $file=$trace[0]['file'];

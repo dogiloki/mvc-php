@@ -43,9 +43,17 @@ class View{
             \$_['params']=json_decode(str_replace(['[',']','=>'],['{','}',':'],\$_['params']),true)??[];
             view(\$_['path'],array_merge(\$_['params'],get_defined_vars()['params']??[])); unset(\$_); ?>",
         "/@include\((.*?)\)\s/m"=>"<?php view($1); ?>",
+        "/@component\((.*?)\)\s/m"=>'
+            <div wire:render=$1>
+                <?php
+                (new ("\\\\\\\\".str_replace("/","\\\\\\\\",config()->filesystem("components.path"))."\\\\\\\\".ucfirst($1))())->render();
+                ?>
+            </div>
+        ',
         "/@scriptsSPA/"=>"
             <script>var _token=\"<?php echo csrfToken(); ?>\"</script>
             <script src=\"<?php echo url('js/Fetch.js') ?>\"></script>
+            <script src=\"<?php echo url('js/components/Wire.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/Component.js') ?>\"></script>
             <script src=\"<?php echo url('js/components/SPA.js') ?>\"></script>
         ",
