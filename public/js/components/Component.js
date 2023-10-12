@@ -71,12 +71,12 @@ class Component{
                 }
             }
         });
-        this.render();
+        this.render(null,false);
     }
 
-    loadWires(json){
+    loadWires(json,renderable=true){
         this.wires.forEach((wire)=>{
-            if(wire.renderable){
+            if(wire.renderable && renderable){
                 wire.element.innerHTML=json.html;
             }
             switch(wire.wire_event){
@@ -90,7 +90,7 @@ class Component{
         });
     }
 
-    render(method){
+    render(method,renderable=true){
         return new Promise((resolve,reject)=>{
             Fetch.post('component/'+this.name,(data)=>{
                 let json=JSON.parse(data);
@@ -98,7 +98,7 @@ class Component{
                     window.location=json.direct;
                 }
                 this.data=json.data;
-                this.loadWires(json);
+                this.loadWires(json,renderable);
                 resolve();
             },{
                 'Content-Type':'application/json',
