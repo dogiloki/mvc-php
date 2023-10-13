@@ -8,7 +8,6 @@ use app\Models\User;
 class Vista extends Component{
 
     protected $render="components.vista";
-    protected $middleware=['auth'];
 
     public $users=[];
     public $search="julio";

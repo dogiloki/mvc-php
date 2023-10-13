@@ -19,6 +19,9 @@ class Model{
 	private $with_attribs=[];
 	private $with_relations=[];
 
+	protected $hidden=[];
+	protected $visible=[];
+
 	public function __construct($class=null,$table=null){
 		$this->class=$class==null?$this:$class;
 		$reflection=new \ReflectionClass(get_class($this->class));
@@ -117,6 +120,14 @@ class Model{
 		}
 		$value_id=null;
 		foreach($this->params['attributes'] as $attrib=>$value){
+			if(count($this->visible)>0 && !in_array($attrib,$this->visible)){
+				unset($this->class->$attrib);
+				continue;
+			}
+			if(in_array($attrib,$this->hidden)){
+				unset($this->class->$attrib);
+				continue;
+			}
 			$value_original=$value;
 			$annotation=$this->annotation_attributes[$attrib]??null;
 			if($annotation==null){
@@ -176,6 +187,20 @@ class Model{
 		return $this;
 	}
 
+	public function _hidden(...$attribs){
+		foreach($attribs as $key=>$attrib){
+			$this->hidden[]=$attrib;
+		}
+		return $this;
+	}
+
+	public function _visible(...$attribs){
+		foreach($attribs as $key=>$attrib){
+			$this->visible[]=$attrib;
+		}
+		return $this;
+	}
+
 	public function _with(...$attribs){
 		foreach($attribs as $key=>$attrib){
 			if(is_array($attrib)){
@@ -213,12 +238,13 @@ class Model{
 			$find=DB::table($model->table);
 			$find->select();
 			$callback($find);
-			$rs=$find->execute()->fetchAll();
-			if($rs->rowCount()>0){
-				$rows=$rs->fetchAll();
+			$rows=$find->execute()->fetchAll();
+			if($rows->rowCount()>0){
 				if(is_array($type)){
 					foreach($rows as $row){
 						$model=new ($this->class)();
+						$model->hidden=$this->hidden;
+						$model->visible=$this->visible;
 						$model->setValues($row);
 						$model=$this->callExtras($model);
 						$class[]=$model->class;
@@ -263,6 +289,8 @@ class Model{
 			$class=[];
 			foreach($rows as $row){
 				$model=new ($this->class)();
+				$model->hidden=$this->hidden;
+				$model->visible=$this->visible;
 				$model->setValues($row);
 				$model=$this->callExtras($model);
 				$class[]=$model->class;
@@ -286,6 +314,8 @@ class Model{
 				$rows=$rs->fetchAll();
 				foreach($rows as $row){
 					$model=new ($this->class)();
+					$model->hidden=$this->hidden;
+					$model->visible=$this->visible;
 					$model->setValues($row);
 					$model=$this->callExtras($model);
 					$class[]=$model->class;
@@ -364,7 +394,6 @@ class Model{
 
 	public function delete(){
 		try{
-			$primary_key=$this->primary_key;
 			DB::table($this->table)
 			->delete()
 			->where($this->primary_key,$this->class->id)

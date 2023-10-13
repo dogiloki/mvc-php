@@ -12,6 +12,8 @@ class User extends Model{
 
 	use HasApiTokens;
 
+	protected $hidden=["password"];
+
 	/**
 	 * @ID(id)
 	 */

@@ -18,7 +18,11 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    dd(User::find(1)->name);
+    dd(User::visible("name","email")->each(function($model){
+        $model->name_full=$model->name." ".$model->email;
+    })->with([
+        'saludo'=>"Bienvenido"
+    ])->find(1));
 })->name('test-get');
 
 $router->post('/test',function($request){
