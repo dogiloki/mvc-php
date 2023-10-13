@@ -306,6 +306,9 @@ class Table{
 
 	public function get(){
 		$rows=$this->execute()->fetchAll();
+		if($this->model==null){
+			return $rows;
+		}
 		$class=[];
 		foreach($rows as $row){
 			$model=new ($this->model)();
@@ -320,6 +323,9 @@ class Table{
 		$this->limit['index']=0;
 		$this->limit['end']=1;
 		$row=$this->execute()->fetch();
+		if($this->model==null){
+			return $row;
+		}
 		$model=new ($this->model)();
 		$model->setValues($row);
 		$model=$model->callExtras($model);
