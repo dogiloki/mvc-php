@@ -81,6 +81,7 @@ Manager::command("create",function($console){
 
 Manager::command("migrate {type?}",function($console,$type){
 	$type??="up";
+	$type=$type=="rollback"?'down':'up';
 	$migrate=new libs\DB\Migrate();
 	$migrate->init();
 	$migrate->migrate($type);

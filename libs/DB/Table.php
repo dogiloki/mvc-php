@@ -277,6 +277,12 @@ class Table{
 		return $this;
 	}
 
+	public function limit($index,$end=1){
+		$this->limit['index']=$index;
+		$this->limit['end']=$end;
+		return $this;
+	}
+
 	public function paginate($max,$pag){
 		return $this->pagination($max,$pag);
 	}

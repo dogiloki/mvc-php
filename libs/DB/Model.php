@@ -114,19 +114,21 @@ class Model{
 		//var_dump($this->params['columns']);
 	}
 
-	public function setValues($row){
+	public function setValues($row,$ignore_protected=false){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
 		$value_id=null;
 		foreach($this->params['attributes'] as $attrib=>$value){
-			if(count($this->visible)>0 && !in_array($attrib,$this->visible)){
-				unset($this->class->$attrib);
-				continue;
-			}
-			if(in_array($attrib,$this->hidden)){
-				unset($this->class->$attrib);
-				continue;
+			if(!$ignore_protected){
+				if(count($this->visible)>0 && !in_array($attrib,$this->visible)){
+					unset($this->class->$attrib);
+					continue;
+				}
+				if(in_array($attrib,$this->hidden)){
+					unset($this->class->$attrib);
+					continue;
+				}
 			}
 			$value_original=$value;
 			$annotation=$this->annotation_attributes[$attrib]??null;
@@ -330,10 +332,11 @@ class Model{
 		}
 	}
 
-	public function _create($row){
+	public function _create($row,$ignore_protected=null){
+		$ignore_protected??=true;
 		$model=$this;
 		try{
-			$model->setValues($row);
+			$model->setValues($row,$ignore_protected);
 			$model->save();
 			return $model->class;
 		}catch(\Exception $ex){
