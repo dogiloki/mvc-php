@@ -34,13 +34,14 @@ class Cookie{
         }
     }
 
-    public function _set($name, $value, $time=null, $path=null, $domain=null, $secure=null, $httponly=null){
-        $time??=Config::session('cookie.lifetime')*60;
+    public function _set($name,$value,$expires=null,$path=null,$domain=null,$secure=null,$httponly=null,$samesite=null){
+        $expires??=time()+Config::session('cookie.lifetime')*60;
         $path??=Config::session('cookie.path')??"/";
         $domain??=Config::session('cookie.domain')??parse_url($_SERVER['HTTP_HOST'],PHP_URL_HOST)??"/";
         $secure??=Config::session('cookie.secure');
         $httponly??=Config::session('cookie.httponly');
-        if(setcookie($name,$value,time()+$time,"/")){
+        $samesite??=Config::session('cookie.samesite');
+        if(setcookie($name,$value,compact('expires','path','domain','secure','httponly','samesite'))){
             $_COOKIE[$name]=$value;
             return true;
         }

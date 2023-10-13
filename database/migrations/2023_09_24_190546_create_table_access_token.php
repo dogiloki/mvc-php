@@ -16,6 +16,8 @@ return new class extends Migration{
 			$table->add('name','varchar');
 			$table->add('token','varchar')->unique();
 			$table->add('abilities','text');
+			$table->add('ip_address','varchar');
+			$table->add('user_agent','varchar');
 			$table->add('last_activity','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
 			$table->add('expire_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
 			$table->timestamps();

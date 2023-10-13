@@ -20,7 +20,7 @@ return [
         'domain'=>env('SESSION_COOKIE_DOMAIN',null),
         'secure'=>env('SESSION_COOKIE_SECURE',false),
         'httponly'=>env('SESSION_COOKIE_HTTPONLY',true),
-        'samesite'=>env('SESSION_COOKIE_SAMESITE','lax'),
+        'samesite'=>env('SESSION_COOKIE_SAMESITE','Lax'),
         'payload'=>[
             'csrf_token'=>'_csrf_token'
         ]

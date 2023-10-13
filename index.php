@@ -70,6 +70,10 @@ use app\Kernel;
 $directory=scandir(Config::filesystem("routes.path"));
 $router=Router::singleton();
 $kernel=new Kernel();
+
+// Zona horaria
+date_default_timezone_set(env('TIMEZONE',Config::app('timezone')??date_default_timezone_get()));
+
 $router->post('/component/{name}',function($request){
 	ob_start();
 	$name=ucfirst($request->input('name'));
