@@ -3,6 +3,7 @@
 namespace libs\Auth;
 
 use libs\Middle\Secure;
+use libs\HTTP\Request;
 
 trait HasApiTokens{
     
@@ -13,6 +14,8 @@ trait HasApiTokens{
         $token->name=$name;
         $token->token=$this->generateToken();
         $token->abilities=json_encode(["*"]);
+        $token->ip_address=Request::ip();
+        $token->user_agent=Request::userAgent();
         $token->last_activity=date('Y-m-d H:i:s');
         $token->expire_at=date('Y-m-d H:i:s',strtotime('+1 year'));
         $token->save();

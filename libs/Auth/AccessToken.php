@@ -41,6 +41,16 @@ class AccessToken extends Model{
     public $abilities;
 
     /**
+     * @Column(ip_address)
+     */
+    public $ip_address;
+
+    /**
+     * @Column(user_agent)
+     */
+    public $user_agent;
+
+    /**
      * @Column(last_activity)
      */
     public $last_activity;
