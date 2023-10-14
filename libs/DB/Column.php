@@ -66,7 +66,7 @@ class Column{
         return $this;
     }
 
-    public function foreignKey($table, $column){
+    public function foreignKey($table, $column="id"){
         return $this->foreign($table, $column);
     }
     public function foreign($table, $column){

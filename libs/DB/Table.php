@@ -74,7 +74,9 @@ class Table{
 	*/
 	public function select($values_select=[]){
 		$this->type_query=self::SELECT;
-		$this->sql="SELECT ";
+		if($this->sql==""){
+			$this->sql="SELECT ";
+		}
 		if($values_select instanceof \Closure){
 			$values_select($this);
 		}else{
@@ -311,7 +313,7 @@ class Table{
 		}
 		$class=[];
 		foreach($rows as $row){
-			$model=new ($this->model)();
+			$model=$this->model;
 			$model->setValues($row);
 			$model=$model->callExtras($model);
 			$class[]=$model->class;
@@ -326,7 +328,7 @@ class Table{
 		if($this->model==null){
 			return $row;
 		}
-		$model=new ($this->model)();
+		$model=$this->model;
 		$model->setValues($row);
 		$model=$model->callExtras($model);
 		return $model->class;

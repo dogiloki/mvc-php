@@ -47,15 +47,18 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}else{
-			return DB::table($instace->table)->select()->model(get_class($instace->class))->$method_query(...$params);
+			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
 		}
 	}
 
 	public function __call($method,$params){
+		$method_query=$method;
 		$method='_'.$method;
 		$instace=$this;
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
+		}else{
+			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
 		}
 	}
 
@@ -98,7 +101,7 @@ class Model{
 				$this->params['attributes'][$attrib]=$value;
 				continue;
 			}
-			$column=$annotation->get('Column');
+			$column=$annotation->get('Column')??$attrib;
 			if($column==null){
 				continue;
 			}
@@ -136,7 +139,7 @@ class Model{
 				continue;
 			}
 			$id=$annotation->get('ID');
-			$column=$annotation->get('Column');
+			$column=$annotation->get('Column')??$attrib;
 			$relation=$annotation->get('HasOne')??$annotation->get('HasMany')??$annotation->get('ManyToMany');
 			if($column==null && $id==null){
 				if($relation==null){
@@ -166,19 +169,19 @@ class Model{
 
 	private function getReference($annotation,$reference,$value_id){
 		$value=null;
-		$model=new (str_replace("/","\\",Config::filesystem('models'))."\\".$reference[0])();
+		$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		$column=$reference[1];
 		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
 			$value=$model::find($value_id,$column,($annotation->get('HasOne')?null:[]));
 		}
 		if($annotation->get('ManyToMany')!=null){
-			$model_middle=new (str_replace("/","\\",Config::filesystem('models'))."\\".$reference[2])();
+			$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[2])();
 			//$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
 			$column_middle=$reference[3];
 			$value=$model::find(function($find)use($model,$model_middle,$column_middle,$value_id){
 				$find->select($model->getTable().".*");
-				$find->join($model_middle->getTable())->on($column_middle,$value_id);
+				$find->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle,$value_id);
 			},[]);
 		}
 		return $value;
@@ -206,7 +209,7 @@ class Model{
 	public function _with(...$attribs){
 		foreach($attribs as $key=>$attrib){
 			if(is_array($attrib)){
-				$this->with_attribs[]=$attrib;	
+				$this->with_attribs[]=$attrib;
 			}else{
 				$this->with_relations[]=$attrib;
 			}
@@ -221,7 +224,19 @@ class Model{
 			}
 		}
 		foreach($this->with_relations as $attrib){
-			$model->$attrib=$model->$attrib;
+			$attrib_split=explode(".",$attrib);
+			$model_attrib=$model;
+			foreach($attrib_split as $attrib2){
+				if(is_array($model_attrib)){
+					foreach($model_attrib as $model_attrib2){
+						$model_attrib2->$attrib2=$model_attrib2->$attrib2;
+					}
+					$model_attrib=$model_attrib2->$attrib2;
+					continue;
+				}
+				$model_attrib->$attrib2=$model_attrib->$attrib2;
+				$model_attrib=$model_attrib->$attrib2;
+			}
 		}
 		if($this->action_each instanceof \Closure){
 			$action=$this->action_each;
@@ -241,7 +256,7 @@ class Model{
 			$find->select();
 			$callback($find);
 			$rows=$find->execute()->fetchAll();
-			if($rows->rowCount()>0){
+			if(count($rows)>0){
 				if(is_array($type)){
 					foreach($rows as $row){
 						$model=new ($this->class)();
@@ -311,9 +326,8 @@ class Model{
 	public function _all(){
 		$model=$this;
 		try{
-			$rs=DB::table($model->table)->select()->execute();
-			if($rs->rowCount()>0){
-				$rows=$rs->fetchAll();
+			$rows=DB::table($model->table)->select()->execute()->fetchAll();
+			if(count($rows)>0){
 				foreach($rows as $row){
 					$model=new ($this->class)();
 					$model->hidden=$this->hidden;
