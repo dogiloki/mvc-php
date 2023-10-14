@@ -325,6 +325,9 @@ class Table{
 		$this->limit['index']=0;
 		$this->limit['end']=1;
 		$row=$this->execute()->fetch();
+		if($row==null){
+			return null;
+		}
 		if($this->model==null){
 			return $row;
 		}

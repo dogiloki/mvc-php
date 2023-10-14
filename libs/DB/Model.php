@@ -382,6 +382,9 @@ class Model{
 				$value=$this->class->$attrib;
 				if($value instanceof Model){
 					$value=$value->class->{$value->class->primary_key};
+				}else
+				if(is_array($value)){
+					continue;
 				}
 				$params[$column['column']]=$value;
 			}
