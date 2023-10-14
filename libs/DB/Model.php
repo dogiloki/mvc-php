@@ -171,17 +171,18 @@ class Model{
 		$value=null;
 		$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
 		//$attrib=$model->annotation_attributes[$reference[1]];
-		$column=$reference[1];
 		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
-			$value=$model::find($value_id,$column,($annotation->get('HasOne')?null:[]));
+			$value=$model::find($value_id,$model->primary_key,($annotation->get('HasOne')?null:[]));
 		}
 		if($annotation->get('ManyToMany')!=null){
-			$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[2])();
-			//$attrib_middle=$model_middle->annotation_attributes[$reference[3]];
-			$column_middle=$reference[3];
-			$value=$model::find(function($find)use($model,$model_middle,$column_middle,$value_id){
+			$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[1])();
+			//$attrib_middle=$model_middle->annotation_attributes[$reference[2]];
+			$column_middle1=$reference[2];
+			$column_middle2=$reference[3];
+			$value=$model::find(function($find)use($model,$model_middle,$column_middle1,$column_middle2,$value_id){
 				$find->select($model->getTable().".*");
-				$find->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle,$value_id);
+				$find->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle1,$value_id);
+				$find->whereColumn($model->getTable().".".$model->primary_key,$model_middle->getTable().".".$column_middle2);
 			},[]);
 		}
 		return $value;

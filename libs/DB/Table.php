@@ -155,6 +155,19 @@ class Table{
 	@param primitive Nombre del valor a comparar
 	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
 	*/
+	public function onColumn(){
+		$args=func_get_args();
+		$column=$args[0]??null;
+		$operator=$args[1]??null;
+		$value=$args[2]??null;
+		if($value==null){
+			$value=DB::flat($operator);
+			$this->on($column,$value);
+		}else{
+			$value=DB::flat($value);
+			$this->on($column,$operator,$value);
+		}
+	}
 	public function on(){
 		$args=func_get_args();
 		$column=$args[0]??null;
@@ -173,6 +186,19 @@ class Table{
 		return $this;
 	}
 
+	public function whereColumn(){
+		$args=func_get_args();
+		$column=$args[0]??null;
+		$operator=$args[1]??null;
+		$value=$args[2]??null;
+		if($value==null){
+			$value=DB::flat($operator);
+			$this->where($column,$value);
+		}else{
+			$value=DB::flat($value);
+			$this->where($column,$operator,$value);
+		}
+	}
 	public function where(){
 		$args=func_get_args();
 		$column=$args[0]??null;
