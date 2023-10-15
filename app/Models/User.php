@@ -4,7 +4,7 @@ namespace app\Models;
 
 use libs\DB\Model;
 use libs\Auth\HasApiTokens;
-use libs\Role\HasRoles;
+use libs\Permission\HasRoles;
 
 /**
  * @Table(user)

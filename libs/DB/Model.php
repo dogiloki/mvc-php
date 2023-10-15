@@ -33,6 +33,10 @@ class Model{
 	}
 
 	public function __get($attrib){
+		$instace=$this;
+		if(method_exists($instace,$attrib)){
+			return call_user_func([$instace,$attrib]);
+		}
 		$action=$this->class->calls[$attrib]??null;
 		if($action instanceof \Closure){
 			return $action();
@@ -167,15 +171,50 @@ class Model{
 		// }
 	}
 
+	protected function hasOne($table){
+		return $this->getReference("HasOne",[$table],$this->class->{$this->class->primary_key});
+	}
+
+	protected function hasMany($table){
+		return $this->getReference("HasMany",[$table],$this->class->{$this->class->primary_key});
+	}
+
+	protected function manyToMany($table,$table_middle,$id_table,$id_table_middle){
+		return $this->getReference("ManyToMany",[
+			$table,
+			$table_middle,
+			$id_table,
+			$id_table_middle
+		],$this->class->{$this->class->primary_key});
+	}
+
 	private function getReference($annotation,$reference,$value_id){
-		$value=null;
-		$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
-		//$attrib=$model->annotation_attributes[$reference[1]];
-		if($annotation->get('HasOne')!=null || $annotation->get('HasMany')!=null){
-			$value=$model::find($value_id,$model->primary_key,($annotation->get('HasOne')?null:[]));
+		if(is_string($annotation)){
+			$relation=$annotation;
+			$model=new ($reference[0])();
+		}else{
+			if($annotation->get("HasOne")){
+				$relation="HasOne";
+			}else
+			if($annotation->get("HasMany")){
+				$relation="HasMany";
+			}else
+			if($annotation->get('ManyToMany')){
+				$relation="ManyToMany";
+			}
+			$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
 		}
-		if($annotation->get('ManyToMany')!=null){
-			$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[1])();
+		$value=null;
+		//$attrib=$model->annotation_attributes[$reference[1]];
+		if($relation=="HasOne" || $relation=="HasMany"){
+			$value=$model::find($value_id,$model->primary_key,($relation=='HasOne'?null:[]));
+		}else
+		if($relation=="ManyToMany"){
+			if(is_string($annotation)){
+				$model_middle=new ($reference[1])();	
+			}else{
+				$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[1])();
+			}
 			//$attrib_middle=$model_middle->annotation_attributes[$reference[2]];
 			$column_middle1=$reference[2];
 			$column_middle2=$reference[3];
