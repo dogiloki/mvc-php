@@ -5,8 +5,20 @@ namespace libs\DB;
 use libs\Annotation;
 use libs\DB\DB;
 use libs\Config;
+use libs\DB\Relation;
 
 class Model{
+
+	public static function __callStatic($method,$params){
+		$method_query=$method;
+		$method='_'.$method;
+		$instace=new static;
+		if(method_exists($instace,$method)){
+			return call_user_func_array([$instace,$method],$params);
+		}else{
+			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
+		}
+	}
 
 	private $table;
 	private $primary_key;
@@ -36,10 +48,10 @@ class Model{
 		$instace=$this;
 		if(method_exists($instace,$attrib)){
 			$reference=call_user_func([$instace,$attrib]);
-			if($reference['relation']=="ManyToMany"){
-				return $reference['rs']->get();
+			if($reference->relation=="ManyToMany"){
+				return $reference->query->get();
 			}else{
-				return $reference['rs']->first();
+				return $reference->query->first();
 			}
 		}
 		$action=$this->class->calls[$attrib]??null;
@@ -47,17 +59,6 @@ class Model{
 			return $action();
 		}
 		return $this->class->$attrib;
-	}
-
-	public static function __callStatic($method,$params){
-		$method_query=$method;
-		$method='_'.$method;
-		$instace=new static;
-		if(method_exists($instace,$method)){
-			return call_user_func_array([$instace,$method],$params);
-		}else{
-			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
-		}
 	}
 
 	public function __call($method,$params){
@@ -204,15 +205,16 @@ class Model{
 			if($annotation->get("HasMany")){
 				$relation="HasMany";
 			}else
-			if($annotation->get('ManyToMany')){
+			if($annotation->get("ManyToMany")){
 				$relation="ManyToMany";
 			}
 			$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
 		}
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		if($relation=="HasOne" || $relation=="HasMany"){
+			$column=$reference[1];
 			$rs=$model::select($model->getTable().".*")
-			->join($this->class->getTable())->onColumn($this->class->getTable().".".$reference[1],$model->getTable().".".$model->primary_key);
+			->join($this->class->getTable())->onColumn($this->class->getTable().".".$column,$model->getTable().".".$model->primary_key);
 		}else
 		if($relation=="ManyToMany"){
 			if(is_string($annotation)){
@@ -227,7 +229,15 @@ class Model{
 			->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle1,$value_id)
 			->whereColumn($model->getTable().".".$model->primary_key,$model_middle->getTable().".".$column_middle2);
 		}
-		return compact('rs','relation');
+		$obj=new Relation();
+		$obj->query=$rs;
+		$obj->relation=$relation;
+		$obj->model_primary=$this;
+		$obj->model_secondary=$model;
+		$obj->model_middle=$model_middle;
+		$obj->model_primary_column=$column??$column_middle1;
+		$obj->model_secondary_column=$column_middle2;
+		return $obj;
 	}
 
 	public function _each($action){
@@ -389,8 +399,7 @@ class Model{
 		}
 	}
 
-	public function _create($row,$ignore_protected=null){
-		$ignore_protected??=true;
+	public function _create($row,$ignore_protected=true){
 		$model=$this;
 		try{
 			$model->setValues($row,$ignore_protected);
@@ -435,7 +444,7 @@ class Model{
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
 				DB::table($this->table)
-				->insert($params);
+				->insert($params)->execute();
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)

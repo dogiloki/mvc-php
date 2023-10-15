@@ -62,9 +62,9 @@ class Table{
 		if($values_insert instanceof \Closure){
 			$values_insert($this);
 		}else{
-			$this->values_insert=is_array($values_insert)?$values_insert:func_get_args();
+			$this->values_insert=is_array($values_insert[0]??null)?$values_insert:[$values_insert];
 		}
-		return $this->execute();
+		return $this;
 	}
 
 	/*
@@ -371,26 +371,35 @@ class Table{
 		$values="";
 		switch($this->type_query){
 			case self::INSERT:{
-				foreach($this->values_insert as $column=>$value){
-					if($value instanceof Flat){
-						$values.=$value->value.",";
-						if(!is_numeric($column)){
-							$columns.=$column.",";
-						}
-					}else{
-						if(is_numeric($column)){
-							$values.="?,";
+				foreach($this->values_insert as $index=>$value_insert){
+					$values.="(";
+					foreach($value_insert as $column=>$value){
+						if($value instanceof Flat){
+							$values.=$value->value.",";
+							if(!is_numeric($column)){
+								if($index==0){
+									$columns.=$column.",";
+								}
+							}
 						}else{
-							$values.=":".$column.",";
-							$columns.=$column.",";
+							if(is_numeric($column)){
+								$values.="?,";
+							}else{
+								$values.=":".$column."_".$index.",";
+								if($index==0){
+									$columns.=$column.",";
+								}
+							}
+							$params[$column."_".$index]=$value;
 						}
-						$params[$column]=$value;
 					}
+					$columns=trim($columns,",");
+					$values=trim($values,",");
+					$values.="),";
 				}
-				$columns=trim($columns,",");
 				$values=trim($values,",");
 				$columns=empty($columns)?"":"(".$columns.")";
-				$this->sql.=$columns." VALUES (".$values.")";
+				$this->sql.=$columns." VALUES ".$values;
 				break;
 			}
 			case self::SELECT:{
