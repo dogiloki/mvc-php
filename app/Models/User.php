@@ -40,11 +40,6 @@ class User extends Model{
 	 */
 	public $password;
 
-	/**
-	 * @ManyToMany(Role,UserRole,id_user,id_role)
-	 */
-	public $roles;
-
 }
 
 ?>

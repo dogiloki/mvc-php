@@ -4,6 +4,7 @@ namespace libs\Auth;
 
 use libs\Middle\Secure;
 use libs\HTTP\Request;
+use libs\Auth\Models\AccessToken;
 
 trait HasApiTokens{
     

@@ -1,6 +1,6 @@
 <?php
 
-namespace libs\Auth;
+namespace libs\Auth\Models;
 
 use libs\DB\Model;
 
