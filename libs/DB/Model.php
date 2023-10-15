@@ -35,7 +35,12 @@ class Model{
 	public function __get($attrib){
 		$instace=$this;
 		if(method_exists($instace,$attrib)){
-			return call_user_func([$instace,$attrib]);
+			$reference=call_user_func([$instace,$attrib]);
+			if($reference['relation']=="ManyToMany"){
+				return $reference['rs']->get();
+			}else{
+				return $reference['rs']->first();
+			}
 		}
 		$action=$this->class->calls[$attrib]??null;
 		if($action instanceof \Closure){
@@ -204,13 +209,10 @@ class Model{
 			}
 			$model=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[0])();
 		}
-		$value=null;
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		if($relation=="HasOne" || $relation=="HasMany"){
-			$value=$model::find(function($find)use($model,$reference){
-				$find->select($model->getTable().".*");
-				$find->join($this->class->getTable())->onColumn($this->class->getTable().".".$reference[1],$model->getTable().".".$model->primary_key);
-			},($relation=='HasOne'?null:[]));
+			$rs=$model::select($model->getTable().".*")
+			->join($this->class->getTable())->onColumn($this->class->getTable().".".$reference[1],$model->getTable().".".$model->primary_key);
 		}else
 		if($relation=="ManyToMany"){
 			if(is_string($annotation)){
@@ -221,13 +223,11 @@ class Model{
 			//$attrib_middle=$model_middle->annotation_attributes[$reference[2]];
 			$column_middle1=$reference[2];
 			$column_middle2=$reference[3];
-			$value=$model::find(function($find)use($model,$model_middle,$column_middle1,$column_middle2,$value_id){
-				$find->select($model->getTable().".*");
-				$find->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle1,$value_id);
-				$find->whereColumn($model->getTable().".".$model->primary_key,$model_middle->getTable().".".$column_middle2);
-			},[]);
+			$rs=$model::select($model->getTable().".*")
+			->join($model_middle->getTable())->on($model_middle->getTable().".".$column_middle1,$value_id)
+			->whereColumn($model->getTable().".".$model->primary_key,$model_middle->getTable().".".$column_middle2);
 		}
-		return $value;
+		return compact('rs','relation');
 	}
 
 	public function _each($action){
