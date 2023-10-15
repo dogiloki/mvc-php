@@ -171,12 +171,12 @@ class Model{
 		// }
 	}
 
-	protected function hasOne($table){
-		return $this->getReference("HasOne",[$table],$this->class->{$this->class->primary_key});
+	protected function hasOne($table,$id_table){
+		return $this->getReference("HasOne",[$table,$id_table],$this->class->{$this->class->primary_key});
 	}
 
-	protected function hasMany($table){
-		return $this->getReference("HasMany",[$table],$this->class->{$this->class->primary_key});
+	protected function hasMany($table,$id_table){
+		return $this->getReference("HasMany",[$table,$id_table],$this->class->{$this->class->primary_key});
 	}
 
 	protected function manyToMany($table,$table_middle,$id_table,$id_table_middle){
@@ -207,7 +207,10 @@ class Model{
 		$value=null;
 		//$attrib=$model->annotation_attributes[$reference[1]];
 		if($relation=="HasOne" || $relation=="HasMany"){
-			$value=$model::find($value_id,$model->primary_key,($relation=='HasOne'?null:[]));
+			$value=$model::find(function($find)use($model,$reference){
+				$find->select($model->getTable().".*");
+				$find->join($this->class->getTable())->onColumn($this->class->getTable().".".$reference[1],$model->getTable().".".$model->primary_key);
+			},($relation=='HasOne'?null:[]));
 		}else
 		if($relation=="ManyToMany"){
 			if(is_string($annotation)){
