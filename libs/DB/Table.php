@@ -167,6 +167,7 @@ class Table{
 			$value=DB::flat($value);
 			$this->on($column,$operator,$value);
 		}
+		return $this;
 	}
 	public function on(){
 		$args=func_get_args();
@@ -198,6 +199,7 @@ class Table{
 			$value=DB::flat($value);
 			$this->where($column,$operator,$value);
 		}
+		return $this;
 	}
 	public function where(){
 		$args=func_get_args();
