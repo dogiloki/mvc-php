@@ -334,6 +334,10 @@ class Table{
 		return $this;
 	}
 
+	public function exists(){
+		return $this->execute()->rowCount()!=0;
+	}
+
 	public function rows(){
 		return $this->execute()->fetchAll();
 	}
