@@ -20,6 +20,7 @@ class Relation{
     }
 
     public function attach($ids){
+        $ids=is_array($ids)?$ids:func_get_args();
         $data=[];
         if($this->relation=="ManyToMany"){
             foreach($ids as $id){
@@ -34,6 +35,7 @@ class Relation{
     }
 
     public function detach($ids){
+        $ids=is_array($ids)?$ids:func_get_args();
         if($this->relation=="ManyToMany"){
             $rs=DB::table($this->model_middle->getTable())->delete();
             foreach($ids as $index=>$id){
@@ -46,6 +48,29 @@ class Relation{
                 }
             }
             return $rs->execute();
+        }
+    }
+
+    public function sync($ids){
+        $ids=is_array($ids)?$ids:func_get_args();
+        if($this->relation=="ManyToMany"){
+            $db=DB::singleton();
+            try{
+                $db->beginTransaction();
+                $rs=DB::table($this->model_middle->getTable());
+                $rs->where($this->model_primary_column,$this->model_primary->class->{$this->model_primary->class->primary_key});
+                $rs->delete()->execute();
+                if($this->attach($ids)){
+                    $db->commit();
+                    return true;
+                }
+                throw new \Exception();
+            }catch(\Exception $ex){
+                if($db->inTransaction()){
+                    $db->rollback();
+                }
+            }
+            return false;
         }
     }
 

@@ -82,8 +82,8 @@ class DB extends \PDO{
 			}
 			if($autocommit && $db->inTransaction()){
 				$db->commit();
+				return true;
 			}
-			return true;
 		}catch(\Exception $ex){
 			if($db->inTransaction()){
 				$db->rollback();
