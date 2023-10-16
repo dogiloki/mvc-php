@@ -74,6 +74,10 @@ class Relation{
         }
     }
 
+    public function exists($ids=null){
+        $ids=is_array($ids)?$ids:func_get_args();
+    }
+
     public function associate($model){
         $id=($model instanceof Model)?$model->class->{$model->class->primary_key}:$model;
         $this->model_primary->class->{$this->model_secondary_column}=$id;

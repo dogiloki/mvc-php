@@ -334,8 +334,18 @@ class Table{
 		return $this;
 	}
 
+	public function rows(){
+		return $this->execute()->fetchAll();
+	}
+
+	public function row(){
+		$this->limit['index']=0;
+		$this->limit['end']=1;
+		return $this->execute()->fetch();
+	}
+
 	public function get(){
-		$rows=$this->execute()->fetchAll();
+		$rows=$this->rows();
 		if($this->model==null){
 			return $rows;
 		}
@@ -352,7 +362,7 @@ class Table{
 	public function first(){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
-		$row=$this->execute()->fetch();
+		$row=$this->row();
 		if($row==null){
 			return null;
 		}
