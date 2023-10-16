@@ -76,6 +76,19 @@ class Relation{
 
     public function exists($ids=null){
         $ids=is_array($ids)?$ids:func_get_args();
+        $rs=DB::table($this->model_middle->getTable())->select();
+        if($this->relation=="ManyToMany"){
+            foreach($ids as $index=>$id){
+                $rs->where(function($rs_where)use($id){
+                    $rs_where->where($this->model_primary_column,$this->model_primary->class->{$this->model_primary->class->primary_key})->and()
+                    ->where($this->model_secondary_column,$id);
+                });
+                if($index<count($ids)-1){
+                    $rs->or();
+                }
+            }
+            return $rs->exists();
+        }
     }
 
     public function associate($model){

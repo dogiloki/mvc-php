@@ -325,10 +325,6 @@ class Table{
 		return $this;
 	}
 
-	public function sql(){
-		return $this->execute(false);
-	}
-
 	public function model($class){
 		$this->model=$class;
 		return $this;
@@ -377,6 +373,14 @@ class Table{
 		$model->setValues($row);
 		$model=$model->callExtras($model);
 		return $model->class;
+	}
+
+	public function sql(){
+		return $this->execute(false);
+	}
+
+	public function query(){
+		return $this->execute();
 	}
 
 	public function execute($execute=true){
