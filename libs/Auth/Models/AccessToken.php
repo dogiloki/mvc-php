@@ -60,6 +60,25 @@ class AccessToken extends Model{
      */
     public $expire_at;
 
+    public function hasExpired(){
+        return strtotime($this->expire_at)<time();
+    }
+
+    public function can($ability){
+        $abilities=json_decode($this->abilities);
+        if($abilities){
+            foreach($abilities as $a){
+                if($a=="*"){
+                    return true;
+                }
+                if($a==$ability){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
 
 ?>

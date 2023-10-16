@@ -27,25 +27,6 @@ trait HasApiTokens{
         return Secure::hash();
     }
 
-    public function hasExpired(){
-        return strtotime($this->expire_at)<time();
-    }
-
-    public function can($ability){
-        $abilities=json_decode($this->abilities);
-        if($abilities){
-            foreach($abilities as $a){
-                if($a=="*"){
-                    return true;
-                }
-                if($a==$ability){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public function tokenable(){
         $class=$this->type_tokenable;
         return $class::find($this->id_tokenable);
