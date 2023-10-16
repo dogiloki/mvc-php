@@ -3,6 +3,7 @@
 namespace libs\DB;
 
 use libs\DB\DB;
+use libs\DB\Model;
 
 class Relation{
 
@@ -33,7 +34,6 @@ class Relation{
     }
 
     public function detach($ids){
-        $data=[];
         if($this->relation=="ManyToMany"){
             $rs=DB::table($this->model_middle->getTable())->delete();
             foreach($ids as $index=>$id){
@@ -47,6 +47,15 @@ class Relation{
             }
             return $rs->execute();
         }
+    }
+
+    public function associate($model){
+        $id=($model instanceof Model)?$model->class->{$model->class->primary_key}:$model;
+        $this->model_primary->class->{$this->model_secondary_column}=$id;
+    }
+
+    public function dissociate(){
+        $this->model_primary->class->{$this->model_secondary_column}=null;
     }
 
 }

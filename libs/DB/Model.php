@@ -234,9 +234,9 @@ class Model{
 		$obj->relation=$relation;
 		$obj->model_primary=$this;
 		$obj->model_secondary=$model;
-		$obj->model_middle=$model_middle;
-		$obj->model_primary_column=$column??$column_middle1;
-		$obj->model_secondary_column=$column_middle2;
+		$obj->model_middle=$model_middle??null;
+		$obj->model_primary_column=$column_middle1??null;
+		$obj->model_secondary_column=$column??$column_middle2??null;
 		return $obj;
 	}
 
@@ -430,7 +430,7 @@ class Model{
 			$primary_key=$this->primary_key;
 			$id=$this->class->$primary_key;
 			$params=[];
-			foreach($this->params['columns'] as $attrib=>$column){
+			foreach($this->params['columns']??[] as $attrib=>$column){
 				$value=$this->class->$attrib;
 				if($value instanceof Model){
 					$value=$value->class->{$value->class->primary_key};
@@ -449,7 +449,7 @@ class Model{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)
 				->where($primary_key,$this->class->id)
-				->update($row??$params);
+				->update($row??$params)->execute();
 			}
 			$primary_key=$this->primary_key;
 			$rs=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->execute();
