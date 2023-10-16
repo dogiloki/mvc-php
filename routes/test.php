@@ -19,7 +19,7 @@ $router->get('/logout',function($request){
 
 $router->get('/test',function($request){
     $data=app\Models\User::find(1);
-    dd($data);
+    dd($data->query());
     //return json($data);
 })->name('test-get');
 

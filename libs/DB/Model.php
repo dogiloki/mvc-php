@@ -299,16 +299,14 @@ class Model{
 	}
 
 	public function _find($value,$column=null,$type=null){
-		$model=$this;
+		$model=$this->class;
 		if($value instanceof \Closure){
 			$callback=$value;
 			if(is_array($column)){
 				$type=$column;
 			}
-			$find=DB::table($model->table);
-			$find->select();
-			$callback($find);
-			$rows=$find->execute()->fetchAll();
+			$callback($model);
+			$rows=$model->rows();
 			if(count($rows)>0){
 				if(is_array($type)){
 					foreach($rows as $row){
@@ -344,18 +342,14 @@ class Model{
 					return null;
 				}
 			}
-			$rs=DB::table($model->table)->select()
-			->where($column,$value)
-			->execute();
-			$rows=$rs->fetchAll();
-			if($rs==null || sizeof($rows)<=0){
+			$rows=$model::where($column,$value)->rows();
+			if(sizeof($rows)<=0){
 				if(is_array($type)){
 					return [];
 				}else{
 					return null;
 				}
 			}
-			$model->setValues($rows[0]);
 			$class=[];
 			foreach($rows as $row){
 				$model=new ($this->class)();
