@@ -47,7 +47,7 @@ class Table{
 	// Clase para convertir los registro de una array asociativo a una clase
 	private $model=null;
 
-	public function __construct($name_table=""){
+	public function __construct($name_table){
 		$this->name_table="`".$name_table."`";
 	}
 

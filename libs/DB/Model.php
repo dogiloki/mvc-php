@@ -428,7 +428,7 @@ class Model{
 		try{
 			$this->getValues();
 			$primary_key=$this->primary_key;
-			$id=null;
+			$id=$this->class->$primary_key;
 			$params=[];
 			foreach($this->params['columns'] as $attrib=>$column){
 				$value=$this->class->$attrib;
@@ -440,7 +440,7 @@ class Model{
 				}
 				$params[$column['column']]=$value;
 			}
-			if(self::find($this->class->$primary_key)==null){
+			if($id==null || self::find($id)==null){
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
 				DB::table($this->table)
@@ -450,7 +450,6 @@ class Model{
 				DB::table($this->table)
 				->where($primary_key,$this->class->id)
 				->update($row??$params);
-				$id=$this->class->$primary_key;
 			}
 			$primary_key=$this->primary_key;
 			$rs=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->execute();
