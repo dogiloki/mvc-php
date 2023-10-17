@@ -6,10 +6,10 @@ class Table{
 
 	// Tipos de sentencias
 	private $type_query=null;
-	private const INSERT=0;
-	private const SELECT=1;
-	private const UPDATE=2;
-	private const DELETE=3;
+	private const INSERT="INSERT";
+	private const SELECT="SELECT";
+	private const UPDATE="UPDATE";
+	private const DELETE="DELETE";
 
 	// Código sql
 	public $sql="";
