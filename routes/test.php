@@ -8,6 +8,7 @@ use libs\Middle\Log;
 use libs\Middle\Storage;
 use libs\Middle\Cookie;
 use libs\Middle\Router;
+use libs\Middle\Faker;
 
 $router->get('/login',function($request){
     Auth::login(User::find(1));
@@ -18,9 +19,10 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    $data=app\Models\User::find(1);
-    dd($data->name);
-    //return json($data);
+    $user=User::with('roles')->find(function($find){
+        $find->orderAsc('name');
+    },[]);
+    dd($user);
 })->name('test-get');
 
 $router->post('/test',function($request){

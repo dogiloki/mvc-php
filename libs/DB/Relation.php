@@ -25,7 +25,7 @@ class Relation{
         if($this->relation=="ManyToMany"){
             foreach($ids as $id){
                 $data[]=[
-                    $this->model_primary_column=>$this->model_primary->class->{$this->model_primary->class->primary_key},
+                    $this->model_primary_column=>$this->model_primary->{$this->model_primary->primary_key},
                     $this->model_secondary_column=>$id
                 ];
             }
@@ -40,7 +40,7 @@ class Relation{
             $rs=DB::table($this->model_middle->getTable())->delete();
             foreach($ids as $index=>$id){
                 $rs->where(function($rs_where)use($id){
-                    $rs_where->where($this->model_primary_column,$this->model_primary->class->{$this->model_primary->class->primary_key})->and()
+                    $rs_where->where($this->model_primary_column,$this->model_primary->{$this->model_primary->primary_key})->and()
                     ->where($this->model_secondary_column,$id);
                 });
                 if($index<count($ids)-1){
@@ -58,7 +58,7 @@ class Relation{
             try{
                 $db->beginTransaction();
                 $rs=DB::table($this->model_middle->getTable());
-                $rs->where($this->model_primary_column,$this->model_primary->class->{$this->model_primary->class->primary_key});
+                $rs->where($this->model_primary_column,$this->model_primary->{$this->model_primary->primary_key});
                 $rs->delete()->execute();
                 if($this->attach($ids)){
                     $db->commit();
@@ -80,7 +80,7 @@ class Relation{
         if($this->relation=="ManyToMany"){
             foreach($ids as $index=>$id){
                 $rs->where(function($rs_where)use($id){
-                    $rs_where->where($this->model_primary_column,$this->model_primary->class->{$this->model_primary->class->primary_key})->and()
+                    $rs_where->where($this->model_primary_column,$this->model_primary->{$this->model_primary->primary_key})->and()
                     ->where($this->model_secondary_column,$id);
                 });
                 if($index<count($ids)-1){
@@ -92,12 +92,12 @@ class Relation{
     }
 
     public function associate($model){
-        $id=($model instanceof Model)?$model->class->{$model->class->primary_key}:$model;
-        $this->model_primary->class->{$this->model_secondary_column}=$id;
+        $id=($model instanceof Model)?$model->{$model->primary_key}:$model;
+        $this->model_primary->{$this->model_secondary_column}=$id;
     }
 
     public function dissociate(){
-        $this->model_primary->class->{$this->model_secondary_column}=null;
+        $this->model_primary->{$this->model_secondary_column}=null;
     }
 
 }

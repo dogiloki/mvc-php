@@ -292,7 +292,7 @@ class Table{
 		return $this;
 	}
 
-	public function orderBy($column, $value){
+	public function orderBy($column,$value){
 		$this->orders[]=$column." ".$value;
 		return $this;
 	}
@@ -325,8 +325,8 @@ class Table{
 		return $this;
 	}
 
-	public function model($class){
-		$this->model=$class;
+	public function model($model){
+		$this->model=$model;
 		return $this;
 	}
 
@@ -335,13 +335,13 @@ class Table{
 	}
 
 	public function rows(){
-		return $this->execute()->fetchAll();
+		return $this->execute()->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	public function row(){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
-		return $this->execute()->fetch();
+		return $this->execute()->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	public function get(){
@@ -351,10 +351,10 @@ class Table{
 		}
 		$class=[];
 		foreach($rows as $row){
-			$model=$this->model;
+			$model=clone $this->model;
 			$model->setValues($row);
 			$model=$model->callExtras($model);
-			$class[]=$model->class;
+			$class[]=$model;
 		}
 		return $class;
 	}
@@ -372,7 +372,7 @@ class Table{
 		$model=$this->model;
 		$model->setValues($row);
 		$model=$model->callExtras($model);
-		return $model->class;
+		return $model;
 	}
 
 	public function sql(){

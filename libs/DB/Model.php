@@ -16,32 +16,29 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}else{
-			return DB::table($instace->table)->model($instace->class)->$method_query(...$params);
+			return DB::table($instace->table)->model($instace)->$method_query(...$params);
 		}
 	}
 
-	private $table;
-	private $primary_key;
-	private $class;
-	private $params;
+	
+	//private $params;
+	//private $annotation_attributes;
+	//private $calls=[];
 	private $annotation_class;
-	private $annotation_attributes;
-	private $calls=[];
 	private $action_each=null;
 	private $with_attribs=[];
 	private $with_relations=[];
 
+	protected $table=null;
+	protected $primary_key="id";
 	protected $hidden=[];
 	protected $visible=[];
 
-	public function __construct($class=null,$table=null){
-		$this->class=$class==null?$this:$class;
-		$reflection=new \ReflectionClass(get_class($this->class));
+	public function __construct(){
+		$reflection=new \ReflectionClass(get_class($this));
 		$annotation=new Annotation($reflection->getDocComment());
 		$this->annotation_class=$annotation;
-		$this->table=$table??$annotation->get("Table");
-		//self::$params=get_class_vars(get_class($class));
-		$this->getValues();
+		$this->table??=$annotation->get("Table");
 	}
 
 	public function __get($attrib){
@@ -54,11 +51,7 @@ class Model{
 				return $reference->query->first();
 			}
 		}
-		$action=$this->class->calls[$attrib]??null;
-		if($action instanceof \Closure){
-			return $action();
-		}
-		return $this->class->$attrib;
+		return $this->$attrib;
 	}
 
 	public function __call($method,$params){
@@ -68,12 +61,12 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}else{
-			return DB::table($instace->table)->model($instace->class)->$method_query(...$params);
+			return DB::table($instace->table)->model($instace)->$method_query(...$params);
 		}
 	}
 
 	public function classType(){
-		return get_class($this->class);
+		return get_class($this);
 	}
 
 	public function table($table){
@@ -89,100 +82,31 @@ class Model{
 		return $this->primary_key;
 	}
 
-	private function getValues(){
-		foreach($this->class as $attrib=>$value){
-			if(property_exists(get_class($this->class),$attrib)){
-				$visibility=(new \ReflectionProperty(get_class($this->class),$attrib))->isPublic();
-				if(!$visibility){
-					continue;
-				}
-			}
-			$prop=null;
-			try{
-				$prop=new \ReflectionProperty(get_class($this->class),$attrib);
-			}catch(\Exception $ex){
-				continue;
-			}
-			$annotation=new Annotation($prop->getDocComment());
-			$this->annotation_attributes[$attrib]=$annotation;
-			$id=$annotation->get('ID');
-			if($id!=null){
-				$this->primary_key=$id;
-				$this->params['attributes'][$attrib]=$value;
-				continue;
-			}
-			$column=$annotation->get('Column')??$attrib;
-			if($column==null){
-				continue;
-			}
-			if($value instanceof Model){
-				$value=$value->class->{$value->class->primary_key};
-			}
-			$this->params['columns'][$attrib]=[
-				'column'=>$column,
-				'value'=>$value
-			];
-			$this->params['attributes'][$attrib]=$value;
-		}
-		//var_dump($this->params['columns']);
-	}
-
 	public function setValues($row,$ignore_protected=false){
 		if($row==null || sizeof($row)<=0){
 			return;
 		}
-		$value_id=null;
-		foreach($this->params['attributes'] as $attrib=>$value){
+		foreach($row as $column=>$value){
 			if(!$ignore_protected){
-				if(count($this->visible)>0 && !in_array($attrib,$this->visible)){
-					unset($this->class->$attrib);
+				if(count($this->visible)>0 && !in_array($column,$this->visible)){
+					unset($this->$column);
 					continue;
 				}
-				if(in_array($attrib,$this->hidden)){
-					unset($this->class->$attrib);
-					continue;
-				}
-			}
-			$value_original=$value;
-			$annotation=$this->annotation_attributes[$attrib]??null;
-			if($annotation==null){
-				continue;
-			}
-			$id=$annotation->get('ID');
-			$column=$annotation->get('Column')??$attrib;
-			$relation=$annotation->get('HasOne')??$annotation->get('HasMany')??$annotation->get('ManyToMany');
-			if($column==null && $id==null){
-				if($relation==null){
+				if(in_array($column,$this->hidden)){
+					unset($this->$column);
 					continue;
 				}
 			}
-			$value=$row[$id??$column]??null;
-			$value_id??=$row[$id]??null;
-			//($value==null && $ignore_relation)
-			if($relation==null){
-				$this->class->$attrib=$value??$value_original??null;
-				unset($row[$id??$column]);
-			}else{
-				$value_id=$row[$column]??$value_id;
-				$reference=explode(',',$relation);
-				$this->class->calls[$attrib]=fn()=>$this->getReference($annotation,$reference,$value_id);
-				unset($this->class->$attrib);
-			}
+			$this->$column=$value;
 		}
-		// Llenar los atributos que no estan en la clase
-		// foreach($row as $column=>$value){
-		// 	if(!is_numeric($column)){
-		// 		$this->class->$column=$value;
-		// 	}
-		// }
 	}
 
 	protected function hasOne($table,$id_table){
-		return $this->getReference("HasOne",[$table,$id_table],$this->class->{$this->class->primary_key});
+		return $this->getReference("HasOne",[$table,$id_table],$this->{$this->primary_key});
 	}
 
 	protected function hasMany($table,$id_table){
-		return $this->getReference("HasMany",[$table,$id_table],$this->class->{$this->class->primary_key});
+		return $this->getReference("HasMany",[$table,$id_table],$this->{$this->primary_key});
 	}
 
 	protected function manyToMany($table,$table_middle,$id_table,$id_table_middle){
@@ -191,7 +115,7 @@ class Model{
 			$table_middle,
 			$id_table,
 			$id_table_middle
-		],$this->class->{$this->class->primary_key});
+		],$this->{$this->primary_key});
 	}
 
 	private function getReference($annotation,$reference,$value_id){
@@ -214,7 +138,7 @@ class Model{
 		if($relation=="HasOne" || $relation=="HasMany"){
 			$column=$reference[1];
 			$rs=$model::select($model->getTable().".*")
-			->join($this->class->getTable())->onColumn($this->class->getTable().".".$column,$model->getTable().".".$model->primary_key);
+			->join($this->getTable())->onColumn($this->getTable().".".$column,$model->getTable().".".$model->primary_key);
 		}else
 		if($relation=="ManyToMany"){
 			if(is_string($annotation)){
@@ -222,7 +146,6 @@ class Model{
 			}else{
 				$model_middle=new (str_replace("/","\\",Config::filesystem('models.path'))."\\".$reference[1])();
 			}
-			//$attrib_middle=$model_middle->annotation_attributes[$reference[2]];
 			$column_middle1=$reference[2];
 			$column_middle2=$reference[3];
 			$rs=$model::select($model->getTable().".*")
@@ -299,98 +222,22 @@ class Model{
 	}
 
 	public function _find($value,$column=null,$type=null){
-		$model=$this->class;
+		$model=$this;
 		if($value instanceof \Closure){
+			$type=$column;
 			$callback=$value;
-			if(is_array($column)){
-				$type=$column;
-			}
+			$model=DB::table($this->table)->model($model);
 			$callback($model);
-			$rows=$model->rows();
-			if(count($rows)>0){
-				if(is_array($type)){
-					foreach($rows as $row){
-						$model=new ($this->class)();
-						$model->hidden=$this->hidden;
-						$model->visible=$this->visible;
-						$model->setValues($row);
-						$model=$this->callExtras($model);
-						$class[]=$model->class;
-					}
-					return $class;
-				}else{
-					$model->setValues($rows[0]);
-					return $model->class;
-				}
-			}else{
-				if(is_array($type)){
-					return [];
-				}else{
-					return null;
-				}
-			}
+			return is_array($type)?$model->get():$model->first();
 		}
 		if($column==null){
 			$column=$model->primary_key;
 		}
-		try{
-			$rs=null;
-			if($value==null){
-				if(is_array($type)){
-					return [];
-				}else{
-					return null;
-				}
-			}
-			$rows=$model::where($column,$value)->rows();
-			if(sizeof($rows)<=0){
-				if(is_array($type)){
-					return [];
-				}else{
-					return null;
-				}
-			}
-			$class=[];
-			foreach($rows as $row){
-				$model=new ($this->class)();
-				$model->hidden=$this->hidden;
-				$model->visible=$this->visible;
-				$model->setValues($row);
-				$model=$this->callExtras($model);
-				$class[]=$model->class;
-			}
-			if(is_array($type)){
-				return $class;
-			}else{
-				return $model->class;
-			}
-		}catch(\Exception $ex){
-			//echo $ex->getMessage();
-			throw new \Exception($ex);
-		}
+		return is_array($type)?$model::where($column,$value)->get():$model::where($column,$value)->first();
 	}
 
 	public function _all(){
-		$model=$this;
-		try{
-			$rows=DB::table($model->table)->select()->execute()->fetchAll();
-			if(count($rows)>0){
-				foreach($rows as $row){
-					$model=new ($this->class)();
-					$model->hidden=$this->hidden;
-					$model->visible=$this->visible;
-					$model->setValues($row);
-					$model=$this->callExtras($model);
-					$class[]=$model->class;
-				}
-				return $class;
-			}else{
-				return [];
-			}
-		}catch(\Exception $ex){
-			//echo $ex->getMessage();
-			throw new \Exception($ex);
-		}
+		return $this::select()->get();
 	}
 
 	public function _create($row,$ignore_protected=true){
@@ -398,7 +245,7 @@ class Model{
 		try{
 			$model->setValues($row,$ignore_protected);
 			$model->save();
-			return $model->class;
+			return $model;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
 			throw new \Exception($ex);
@@ -410,7 +257,7 @@ class Model{
 		$model=$this;
 		try{
 			$model->save($row);
-			return $model->class;
+			return $model;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
 			throw new \Exception($ex);
@@ -420,19 +267,18 @@ class Model{
 
 	public function save($row=null){
 		try{
-			$this->getValues();
+			$attributes=get_object_vars($this);
 			$primary_key=$this->primary_key;
-			$id=$this->class->$primary_key;
+			$id=$this->$primary_key;
 			$params=[];
-			foreach($this->params['columns']??[] as $attrib=>$column){
-				$value=$this->class->$attrib;
+			foreach($attributes as $attrib=>$value){
 				if($value instanceof Model){
-					$value=$value->class->{$value->class->primary_key};
+					$value=$value->{$value->primary_key};
 				}else
 				if(is_array($value)){
 					continue;
 				}
-				$params[$column['column']]=$value;
+				$params[$attrib]=$value;
 			}
 			if($id==null || self::find($id)==null){
 				$params['created_at']=date('Y-m-d H:i:s');
@@ -442,13 +288,11 @@ class Model{
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)
-				->where($primary_key,$this->class->id)
+				->where($primary_key,$this->id)
 				->update($row??$params)->execute();
 			}
-			$primary_key=$this->primary_key;
-			$rs=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->execute();
-			$rows=$rs->fetchAll()[0];
-			$this->setValues($rows);
+			$row=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->row();
+			$this->setValues($row);
 			return true;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
@@ -459,9 +303,11 @@ class Model{
 
 	public function delete(){
 		try{
+			$primary_key=$this->primary_key;
+			$id=$this->$primary_key;
 			DB::table($this->table)
 			->delete()
-			->where($this->primary_key,$this->class->id)
+			->where($primary_key,$id)
 			->execute();
 			return true;
 		}catch(\Exception $ex){
