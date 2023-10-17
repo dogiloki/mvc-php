@@ -30,7 +30,7 @@ class Relation{
                 ];
             }
             return DB::table($this->model_middle->getTable())
-            ->insert($data)->execute();
+            ->insert($data);
         }
     }
 

@@ -54,9 +54,9 @@ class Table{
 	/*
 	Insertar registro en la table
 	@param array $values_insert Puede ser un array asociativo indicand el nombre de las columnas
-	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	@return Devuelve el el conexto actual, para ejecutar otro método compatible
 	*/
-	public function insert($values_insert=[]){
+	public function insert($values_insert=[],$execute=true){
 		$this->type_query=self::INSERT;
 		$this->sql="INSERT INTO ".$this->name_table;
 		if($values_insert instanceof \Closure){
@@ -64,13 +64,13 @@ class Table{
 		}else{
 			$this->values_insert=is_array($values_insert[0]??null)?$values_insert:[$values_insert];
 		}
-		return $this;
+		return $execute?$this->execute():$this;
 	}
 
 	/*
 	Obtener registro de la tabla
 	@param array $values_select Array con el nombre de las columnas a mostra, si no es envía se mostrar todas las columnas de consulta
-	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	@return Devuelve el el conexto actual, para ejecutar otro método compatible
 	*/
 	public function select($values_select=[]){
 		$this->type_query=self::SELECT;
@@ -88,7 +88,7 @@ class Table{
 	/*
 	Obtener registro de la tabla
 	@param array $values_update Puede ser un array asociativo indicand el nombre de las columnas y el valor a cambiar en la columna
-	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	@return Devuelve el el conexto actual, para ejecutar otro método compatible
 	*/
 	public function update($values_update=[]){
 		$this->type_query=self::UPDATE;
@@ -113,7 +113,7 @@ class Table{
 	/*
 	Indica que se unirá una table en la consulta (select)
 	@param string $table Nombre de la tabla
-	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	@return Devuelve el el conexto actual, para ejecutar otro método compatible
 	*/
 	public function join($table){
 		$this->joins[]=[
@@ -153,7 +153,7 @@ class Table{
 	@param string Nombre de la columna
 	@param string operador Operación aritmética (opcional)
 	@param primitive Nombre del valor a comparar
-	@return Devuelve el el conexto actual, para ejecutar otro metodo compatible
+	@return Devuelve el el conexto actual, para ejecutar otro método compatible
 	*/
 	public function onColumn(){
 		$args=func_get_args();
@@ -387,6 +387,9 @@ class Table{
 		$params=[];
 		$columns="";
 		$values="";
+		if($this->type_query==null){
+			$this->select();
+		}
 		switch($this->type_query){
 			case self::INSERT:{
 				foreach($this->values_insert as $index=>$value_insert){

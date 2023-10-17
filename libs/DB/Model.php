@@ -16,7 +16,7 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}else{
-			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
+			return DB::table($instace->table)->model($instace->class)->$method_query(...$params);
 		}
 	}
 
@@ -68,7 +68,7 @@ class Model{
 		if(method_exists($instace,$method)){
 			return call_user_func_array([$instace,$method],$params);
 		}else{
-			return DB::table($instace->table)->select()->model($instace->class)->$method_query(...$params);
+			return DB::table($instace->table)->model($instace->class)->$method_query(...$params);
 		}
 	}
 
@@ -438,7 +438,7 @@ class Model{
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
 				DB::table($this->table)
-				->insert($params)->execute();
+				->insert($params);
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)

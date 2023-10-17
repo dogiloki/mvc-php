@@ -71,7 +71,7 @@ Manager::command("create",function($console){
 			$console->success("Se creó el directorio ".$dir);
 		}
 	}
-		foreach($files as $file){
+	foreach($files as $file){
 		if(!file_exists($file['path'])){
 			file_put_contents($file['path'],$file['content']);
 			$console->success("Se creó el archivo ".$file['path']);
