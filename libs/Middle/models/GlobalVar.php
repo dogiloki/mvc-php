@@ -4,11 +4,9 @@ namespace libs\Middle\Models;
 
 use libs\DB\Model;
 
-/**
- * @Table(global_var)
- */
 class GlobalVar extends Model{
 
+    protected $table='global_var';
     protected $primary_key='key';
 
     public static function __callStatic($method,$params){
