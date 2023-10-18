@@ -2,6 +2,7 @@
 
 namespace libs\DB;
 
+use League\CommonMark\Reference\Reference;
 use libs\Annotation;
 use libs\DB\DB;
 use libs\Config;
@@ -35,7 +36,7 @@ class Model{
 	protected $visible=[];
 
 	public function __construct(){
-		$reflection=new \ReflectionClass(get_class($this));
+		$reflection=new \ReflectionClass($this);
 		$annotation=new Annotation($reflection->getDocComment());
 		$this->annotation_class=$annotation;
 		$this->table??=$annotation->get("Table");
@@ -267,20 +268,26 @@ class Model{
 
 	public function save($row=null){
 		try{
-			$attributes=get_object_vars($this);
 			$primary_key=$this->primary_key;
 			$id=$this->$primary_key;
 			$params=[];
-			foreach($attributes as $attrib=>$value){
+			foreach(get_object_vars($this) as $property=>$value){
+				try{
+					$reflection=new \ReflectionProperty($this,$property);
+				}catch(\Exception $ex){
+					continue;
+				}
+				if(!$reflection->isPublic()){
+					continue;
+				}
 				if($value instanceof Model){
 					$value=$value->{$value->primary_key};
 				}else
-				if(is_array($value)){
-					continue;
-				}
-				$params[$attrib]=$value;
+				if(!is_array($value)){
+					$params[$property]=$value;
+				}	
 			}
-			if($id==null || self::find($id)==null){
+			if($id==null || $this::find($id)==null){
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
 				DB::table($this->table)
@@ -288,7 +295,7 @@ class Model{
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
 				DB::table($this->table)
-				->where($primary_key,$this->id)
+				->where($primary_key,$id)
 				->update($row??$params)->execute();
 			}
 			$row=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->row();

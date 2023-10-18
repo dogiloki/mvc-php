@@ -399,7 +399,7 @@ class Table{
 							$values.=$value->value.",";
 							if(!is_numeric($column)){
 								if($index==0){
-									$columns.=$column.",";
+									$columns.="`".$column."`".",";
 								}
 							}
 						}else{
@@ -408,7 +408,7 @@ class Table{
 							}else{
 								$values.=":".$column."_".$index.",";
 								if($index==0){
-									$columns.=$column.",";
+									$columns.="`".$column."`".",";
 								}
 							}
 							$params[$column."_".$index]=$value;
@@ -425,7 +425,7 @@ class Table{
 			}
 			case self::SELECT:{
 				foreach($this->values_select as $value){
-					$columns.=$value.",";
+					$columns.="`".$value."`".",";
 				}
 				$columns=empty($columns)?"*":$columns;
 				$columns=trim($columns,",");
@@ -438,7 +438,7 @@ class Table{
 						continue;
 					}
 					if(is_array($on)){
-						$this->sql.=" ON ".$on['column'].$on['operator'];
+						$this->sql.=" ON "."`".$on['column']."`".$on['operator'];
 						if($on['value'] instanceof Flat){
 							$this->sql.=$on['value']->value." ";
 						}else{
@@ -457,9 +457,9 @@ class Table{
 				foreach($this->values_update as $column=>$value){
 					if(!is_numeric($column)){
 						if($value instanceof Flat){
-							$columns.=$column."=".$value->value.",";
+							$columns.="`".$column."`"."=".$value->value.",";
 						}else{
-							$columns.=$column."=:".$column.",";
+							$columns.="`".$column."`"."=:".$column.",";
 							$params[$column]=$value;
 						}
 					}
@@ -473,7 +473,7 @@ class Table{
 			$this->sql.=" WHERE ";
 			foreach($this->wheres as $key=>$where){
 				if(is_array($where)){
-					$this->sql.=$where['column'].$where['operator'];
+					$this->sql.="`".$where['column']."`".$where['operator'];
 					if($where['value'] instanceof Flat){
 						$this->sql.=$where['value']->value;
 					}else{
@@ -489,7 +489,7 @@ class Table{
 		if(sizeof($this->groups)>0){
 			$group_by=" GROUP BY ";
 			foreach($this->groups as $group){
-				$group_by.=$group.",";
+				$group_by.="`".$group."`".",";
 			}
 			$group_by=substr($group_by,0,strlen($group_by)-1);
 			$this->sql.=$group_by;
@@ -499,7 +499,7 @@ class Table{
 			$this->sql.=" HAVING ";
 			foreach($this->havings as $key=>$having){
 				if(is_array($having)){
-					$this->sql.=$having['column'].$having['operator'];
+					$this->sql.="`".$having['column']."`".$having['operator'];
 					if($having['value'] instanceof Flat){
 						$this->sql.=$having['value']->value;
 					}else{
@@ -516,7 +516,7 @@ class Table{
 			$this->sql.=" ORDER BY ";
 			$orders="";
 			foreach($this->orders as $order){
-				$orders.=$order.",";
+				$orders.="`".$order."`".",";
 			}
 			$orders=trim($orders,",");
 			$this->sql.=$orders;

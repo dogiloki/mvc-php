@@ -79,8 +79,8 @@ class Schema{
 
     // Funcionalidades
 
-    public function id(){
-        $this->add('id','bigint')->primary()->autoIncrement();
+    public function id($name_column='id'){
+        $this->add($name_column,'bigint')->primary()->autoIncrement();
     }
 
     /*

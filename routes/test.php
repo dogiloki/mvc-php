@@ -9,6 +9,7 @@ use libs\Middle\Storage;
 use libs\Middle\Cookie;
 use libs\Middle\Router;
 use libs\Middle\Faker;
+use libs\Middle\Models\GlobalVar;
 
 $router->get('/login',function($request){
     Auth::login(User::find(1));
@@ -19,10 +20,8 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    $user=User::with('roles')->find(function($find){
-        $find->orderAsc('name');
-    },[]);
-    dd($user);
+    $data=GlobalVar::has('email');
+    dd($data);
 })->name('test-get');
 
 $router->post('/test',function($request){
