@@ -100,7 +100,7 @@ class Session{
                 $file=$path."/".$session_id;
                 if(file_exists($file)){
                     $values_current=$this->values;
-                    $values_file=unserialize(file_get_contents($file))??[];
+                    $values_file=unserialize(file_get_contents($file)??"")??[];
                     $this->values=array_merge(
                         $values_file,
                         $this->values

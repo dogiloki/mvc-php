@@ -20,7 +20,7 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    $data=GlobalVar::has('email');
+    $data=app\Models\User::where('id','5')->or()->whereRaw('id=:1',[":1"=>1])->get();
     dd($data);
 })->name('test-get');
 

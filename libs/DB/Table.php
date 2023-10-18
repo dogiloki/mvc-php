@@ -187,6 +187,33 @@ class Table{
 		return $this;
 	}
 
+	public function whereRaw($sql,$params=[]){
+		$this->wheres[]=[
+			"sql"=>$sql,
+			"params"=>$params
+		];
+		return $this;
+	}
+	public function whereNotBetween($column,$range){
+		$range=is_array($range)?$range:func_get_args();
+		$this->wheres[]=[
+			"column"=>$column,
+			"operator"=>" NOT BETWEEN ",
+			"values"=>$range,
+			"value_separator"=>" AND "
+		];
+		return $this;
+	}
+	public function whereBetween($column,$range){
+		$range=is_array($range)?$range:func_get_args();
+		$this->wheres[]=[
+			"column"=>$column,
+			"operator"=>" BETWEEN ",
+			"values"=>$range,
+			"value_separator"=>" AND "
+		];
+		return $this;
+	}
 	public function whereColumn(){
 		$args=func_get_args();
 		$column=$args[0]??null;
@@ -250,7 +277,7 @@ class Table{
 		$this->wheres[]=" OR ";
 		return $this;
 	}
-	public function like($column,$value){
+	public function whereLike($column,$value){
 		$this->wheres[]=[
 			"column"=>$column,
 			"operator"=>" LIKE ",
@@ -471,14 +498,32 @@ class Table{
 		// Where
 		if(sizeof($this->wheres)>0){
 			$this->sql.=" WHERE ";
-			foreach($this->wheres as $key=>$where){
+			$key=0;
+			foreach($this->wheres as $where){
 				if(is_array($where)){
+					if(isset($where['sql'])){
+						$this->sql.=$where['sql'];
+						$params=$params+$where['params'];
+						continue;
+					}
 					$this->sql.="`".$where['column']."`".$where['operator'];
-					if($where['value'] instanceof Flat){
-						$this->sql.=$where['value']->value;
-					}else{
-						$this->sql.=":where_".$key;
-						$params["where_".$key]=$where['value'];
+					if(isset($where['value'])){
+						$values=[$where['value']];
+					}else
+					if(isset($where['values'])){
+						$values=$where['values'];
+					}
+					foreach($values as $index_value=>$value){
+						if($value instanceof Flat){
+							$this->sql.=$value->value;
+						}else{
+							$this->sql.=":where_".$key;
+							$params["where_".$key]=$value;
+						}
+						if($index_value<count($values)-1){
+							$this->sql.=$where['value_separator']??"";
+						}
+						$key++;
 					}
 				}else{
 					$this->sql.=$where;
