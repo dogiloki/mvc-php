@@ -29,19 +29,27 @@ class Schema{
 		
 	}
 
-    public function table($name_table, $action){
+    public function __call($name,$arguments){
+        return $this->add($arguments[0],$name,$arguments[1]??null);
+    }
+
+    public function table($name_table,$action){
+        return $this->_table($name_table,self::CREATE,$action);
+    }
+
+    public function tableIfNotExists($name_table,$action){
+        return $this->_table($name_table,self::CREATE_IF_NOT_EXISTS,$action);
+    }
+
+    private function _table($name_table,$type_query,$action){
+        $this->type_query=$type_query;
         $this->engine=Config::database('engine');
         $this->charset=Config::database('charset');
         $this->name_table="`".$name_table."`";
         if($action instanceof \Closure){
-            $action($this,explode("/",implode("/",array_slice(func_get_args(),2))));
+            $action($this);
         }
         return $this->execute();
-    }
-
-    public function tableIfNotExists($name_table, $action){
-        $this->type_query=self::CREATE_IF_NOT_EXISTS;
-        return $this->table($name_table,$action);
     }
 
     /**
@@ -66,12 +74,11 @@ class Schema{
      * @param string $type Tipo de dato
      * @param int $size Tamaño del dato
      */
-    public function add($name, $type, $size=null){
-        $this->type_query??=self::CREATE;
+    public function add($name,$type,$size=null){
         if($type=="varchar"){
             $size=255;
         }
-        $column=new Column($name, $type, $size);
+        $column=new Column($name,$type,$size);
         $this->columns[]=$column;
         $this->prev_column=$column;
         return $column;

@@ -20,7 +20,8 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    $data=app\Models\User::where('id','5')->or()->whereRaw('id=:1',[":1"=>1])->get();
+    $date=app\Models\User::find(1)->created_at;
+    $data=app\Models\User::whereBetween('created_at',$date,$date)->get();
     dd($data);
 })->name('test-get');
 

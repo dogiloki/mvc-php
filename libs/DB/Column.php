@@ -15,7 +15,7 @@ class Column{
     private $default=null;
     private $comment=null;
 
-    public function __construct($name, $type="", $size=null){
+    public function __construct($name,$type="",$size=null){
         $this->name=$name;
         $this->type=$type;
         $this->size=$size;
@@ -66,10 +66,10 @@ class Column{
         return $this;
     }
 
-    public function foreignKey($table, $column="id"){
-        return $this->foreign($table, $column);
+    public function foreignKey($table,$column="id"){
+        return $this->foreign($table,$column);
     }
-    public function foreign($table, $column){
+    public function foreign($table,$column){
         $this->indices[]="FOREIGN KEY (`".$this->name."`) REFERENCES `".$table."`(`".$column."`)";
         return $this;
     }

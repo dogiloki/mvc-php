@@ -320,17 +320,17 @@ class Table{
 	}
 
 	public function orderBy($column,$value){
-		$this->orders[]=$column." ".$value;
+		$this->orders[]="`".$column."`"." ".$value;
 		return $this;
 	}
 
 	public function orderAsc($column){
-		$this->orders[]=$column." ASC ";
+		$this->orders[]="`".$column."`"." ASC ";
 		return $this;
 	}
 
 	public function orderDesc($column){
-		$this->orders[]=$column." DESC ";
+		$this->orders[]="`".$column."`"." DESC ";
 		return $this;
 	}
 
@@ -561,7 +561,7 @@ class Table{
 			$this->sql.=" ORDER BY ";
 			$orders="";
 			foreach($this->orders as $order){
-				$orders.="`".$order."`".",";
+				$orders.=$order.",";
 			}
 			$orders=trim($orders,",");
 			$this->sql.=$orders;

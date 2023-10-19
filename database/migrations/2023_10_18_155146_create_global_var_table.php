@@ -9,8 +9,8 @@ return new class extends Migration{
 	 */
 	public function up(): void{
 		$this->table('global_var',function($table){
-			$table->add('key','varchar')->primary();
-			$table->add('value','text');
+			$table->varchar('key')->primary();
+			$table->text('value');
 			$table->timestamps();
 		});
 	}
