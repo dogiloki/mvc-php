@@ -21,7 +21,7 @@ $router->get('/logout',function($request){
 
 $router->get('/test',function($request){
     $user=User::with('roles')->whereBetween('id',[1,3])->get();
-    return json($user);
+    //return json($user);
 })->name('test-get');
 
 $router->post('/test',function($request){

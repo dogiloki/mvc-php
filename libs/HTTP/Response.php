@@ -101,6 +101,12 @@ class Response{
         exit;
     }
 
+    public function error(...$params){
+        foreach($params as $key=>$param){
+            echo $param."\n";
+        }
+    }
+
 }
 
 ?>

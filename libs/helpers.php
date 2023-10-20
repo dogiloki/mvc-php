@@ -159,5 +159,8 @@ function reload(...$params){
 function exception(...$params){
     return response()->exception(...$params);
 }
+function error(...$params){
+    return response()->error(...$params);
+}
 
 ?>
