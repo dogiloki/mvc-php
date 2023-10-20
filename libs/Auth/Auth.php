@@ -56,12 +56,13 @@ class Auth{
         }
     }
 
-    public function _attempt($credentials, $password){
+    public function _attempt($credentials,$password){
         $user=$this->model_user::find(function($find)use($credentials){
             $find->where($credentials);
         });
         if($user){
             if(Secure::verifyPassword($password,$user->password)){
+                Auth::login($user);
                 return true;
             }
         }
