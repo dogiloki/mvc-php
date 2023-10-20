@@ -43,7 +43,23 @@ function listDirectory($path){
 }
 
 // Activar mostrar errores
-ini_set('display_errors',env('APP_DEPLOY')?1:0);
+if(config()->app('debug')){
+	error_reporting(E_ALL);
+	ini_set('display_errors',1);
+}else{
+	ini_set('display_errors',0);
+}
+function exception($ex){
+    if(config()->app('debug')){
+        echo "Message: ".$ex->getMessage()."<br>";
+		echo "File: ".$ex->getFile()."<br>";
+		echo "Line: ".$ex->getLine();
+    }else{
+        abort(500);
+    }
+	exit;
+}
+set_exception_handler("exception");
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos
 $uri=$_SERVER['REQUEST_URI'];

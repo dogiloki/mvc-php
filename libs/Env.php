@@ -5,13 +5,19 @@ namespace libs;
 
 class Env{
 
-	private $vars;
+	public static function singleton($file=null){
+		if(self::$instance==null){
+			self::$instance=new Env($file);
+		}
+		return self::$instance;
+	}
+
 	private $positions;
 	private $file;
 	private static $instance=null;
 
 	private function __construct($file=null){
-		$this->vars=[];
+		$_ENV=[];
 		$this->positions=[];
 		$this->file=$file;
 		if($file==null){
@@ -33,7 +39,6 @@ class Env{
 				$key=substr($line,$pos_key_index,$pos_key_end);
 				$value=substr($line,$pos_value_index,$pos_value_end);
 				$this->positions[$count]=trim($key);
-				$this->vars[$key]=trim($value);
 				$_ENV[$key]??=trim($value);
 			}
 			$count++;
@@ -57,20 +62,22 @@ class Env{
 
 	public static function set($key,$value){
 		$config=Env::singleton();
-		$config->vars[$key]=$value;
 		$_ENV[$key]=$value;
 	}
 
 	public static function get($key){
 		$config=Env::singleton();
-		return $_ENV[$key]??null;
+		$value=$_ENV[$key]??null;
+		$return=filter_var($value,FILTER_VALIDATE_BOOLEAN,FILTER_NULL_ON_FAILURE);
+		if($return===null){
+			$return=$value;
+		}
+		return $return;
 	}
 
-	public static function singleton($file=null){
-		if(self::$instance==null){
-			self::$instance=new Env($file);
-		}
-		return self::$instance;
+	public static function has($key){
+		$config=Env::singleton();
+		return isset($_ENV[$key]);
 	}
 
 }

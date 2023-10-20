@@ -53,8 +53,7 @@ class DB extends \PDO{
 				self::$instance=new \PDO($connection,Config::database('user'),Config::database('password'));
 				self::$instance->query('SET NAMES '.Config::database('charset'));
 			}catch(\PDOException $ex){
-				echo $ex->getMessage();
-				return http_response_code(400);
+				exception($ex);
 			}
 		}
 		return self::$instance;

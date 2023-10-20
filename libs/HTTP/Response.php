@@ -15,6 +15,15 @@ class Response{
         return Router::view($path,$params);
     }
 
+    public static function file($path,$params=[]){
+        if(file_exists($path)){
+            readfile($path);
+            exit;
+        }else{
+            abort(500);
+        }
+    }
+
     public static function component($name,$params=[]){
         return Router::component($name,$params);
     }

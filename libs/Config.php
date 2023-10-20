@@ -12,12 +12,12 @@ class Config{
         return self::call($name,$arguments);
     }
 
-    public static function __callStatic($name,$keys){
-        return self::call($name,$keys);
+    public static function __callStatic($name,$arguments){
+        return self::call($name,$arguments);
     }
 
     public static function call($name,$keys){
-        $keys=explode(".",$keys[0]);
+        $keys=explode(".",$keys[0]??"");
         $filename="config/".$name.".php";
         $cfg=require($filename);
         if(file_exists($filename)){

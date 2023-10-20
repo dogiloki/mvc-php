@@ -44,8 +44,7 @@ function vars(){
 }
 
 function env($key,$default=null){
-    $value=Env::get($key);
-    if($value==null){
+    if(!Env::has($key)){
         Env::set($key,$default);
     }
     return Env::get($key);
