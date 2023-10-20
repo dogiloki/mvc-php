@@ -24,7 +24,7 @@ function dd($obj){
     echo "<pre>".print_r($obj,"<br>")."</pre>";
 }
 
-function folderRoot($path=""){
+function base_path($path=""){
     $folder=explode("/",explode(".",$_SERVER['PHP_SELF'])[0]??"/");
     return join("/",array_slice($folder,0,count($folder)-1))."/".$path;
 }

@@ -21,10 +21,9 @@ class Route{
     public $name;
     public $middlewares=[];
 
-    public function __construct(string $method=null, string $path=null, $action=null){
+    public function __construct(string $method=null,string $path=null,$action=null){
         $this->method=$method;
-        $path=folderRoot($path);
-        $this->path=Route::formatUri($path);
+        $this->path=Route::formatUri($path??"");
         $this->action=$action;
         $this->params=[];
         $this->middlewares=[];
