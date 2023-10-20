@@ -2,6 +2,7 @@
 
 namespace libs\DB;
 
+use libs\DB\DB;
 use libs\DB\Column;
 use libs\Config;
 
@@ -45,7 +46,7 @@ class Schema{
         $this->type_query=$type_query;
         $this->engine=Config::database('engine');
         $this->charset=Config::database('charset');
-        $this->name_table="`".$name_table."`";
+        $this->name_table=DB::sqlQuote($name_table);
         if($action instanceof \Closure){
             $action($this);
         }
@@ -123,7 +124,7 @@ class Schema{
      */
     public function dropIfExists(string $table){
         try{
-            $sql="DROP TABLE IF EXISTS `$table"."`";
+            $sql="DROP TABLE IF EXISTS ".DB::sqlQuote($table);
             $this->sql=$sql;
             DB::execute($this->sql);
         }catch(\Exception $ex){
@@ -137,7 +138,7 @@ class Schema{
      */
     public function drop(string $table){
         try{
-            $sql="DROP TABLE `$table"."`";
+            $sql="DROP TABLE ".DB::sqlQuote($table);
             $this->sql=$sql;
             DB::execute($this->sql);
         }catch(\Exception $ex){

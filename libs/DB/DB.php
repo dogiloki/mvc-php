@@ -15,6 +15,10 @@ class DB extends \PDO{
 
 	public static $create_db=false;
 
+	public static function sqlQuote($value){
+		return (strpos($value,".") || strpos($value,"`"))?$value:"`".$value."`";
+	}
+
 	/*
 	Ejecuta una sentencia sql, puede ser metida en un try-catch y obtener el error
 	una descripción del error al ejecutar la sentencia sql.

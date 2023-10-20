@@ -2,6 +2,7 @@
 
 namespace libs\DB;
 
+use libs\DB\DB;
 use libs\DB\Flat;
 
 class Column{
@@ -47,22 +48,22 @@ class Column{
         return $this->primary();
     }
     public function primary(){
-        $this->indices[]="PRIMARY KEY (`".$this->name."`)";
+        $this->indices[]="PRIMARY KEY (".DB::sqlQuote($this->name).")";
         return $this;
     }
 
     public function unique(){
-        $this->indices[]="UNIQUE (`".$this->name."`)";
+        $this->indices[]="UNIQUE (".DB::sqlQuote($this->name).")";
         return $this;
     }
 
     public function index(){
-        $this->indices[]="INDEX (`".$this->name."`)";
+        $this->indices[]="INDEX (".DB::sqlQuote($this->name).")";
         return $this;
     }
 
     public function fullText(){
-        $this->indices[]="FULLTEXT (`".$this->name."`)";
+        $this->indices[]="FULLTEXT (".DB::sqlQuote($this->name).")";
         return $this;
     }
 
@@ -70,14 +71,14 @@ class Column{
         return $this->foreign($table,$column);
     }
     public function foreign($table,$column){
-        $this->indices[]="FOREIGN KEY (`".$this->name."`) REFERENCES `".$table."`(`".$column."`)";
+        $this->indices[]="FOREIGN KEY (".DB::sqlQuote($this->name).") REFERENCES ".DB::sqlQuote($table)."(".DB::sqlQuote($column).")";
         return $this;
     }
 
     // Generación del sql
     
     public function sql(){
-        $sql="`".$this->name."` ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
+        $sql=DB::sqlQuote($this->name)." ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
         if(!$this->null){
             $sql.=" NOT NULL";
         }

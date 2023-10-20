@@ -2,6 +2,8 @@
 
 namespace libs\DB;
 
+use libs\DB\DB;
+
 class Table{
 
 	// Tipos de sentencias
@@ -48,7 +50,7 @@ class Table{
 	private $model=null;
 
 	public function __construct($name_table){
-		$this->name_table="`".$name_table."`";
+		$this->name_table=DB::sqlQuote($name_table);
 	}
 
 	/*
@@ -318,17 +320,17 @@ class Table{
 	}
 
 	public function orderBy($column,$value){
-		$this->orders[]="`".$column."`"." ".$value;
+		$this->orders[]=DB::sqlQuote($column)." ".$value;
 		return $this;
 	}
 
 	public function orderAsc($column){
-		$this->orders[]="`".$column."`"." ASC ";
+		$this->orders[]=DB::sqlQuote($column)." ASC ";
 		return $this;
 	}
 
 	public function orderDesc($column){
-		$this->orders[]="`".$column."`"." DESC ";
+		$this->orders[]=DB::sqlQuote($column)." DESC ";
 		return $this;
 	}
 
@@ -424,7 +426,7 @@ class Table{
 							$values.=$value->value.",";
 							if(!is_numeric($column)){
 								if($index==0){
-									$columns.="`".$column."`".",";
+									$columns.=DB::sqlQuote($column).",";
 								}
 							}
 						}else{
@@ -433,7 +435,7 @@ class Table{
 							}else{
 								$values.=":".$column."_".$index.",";
 								if($index==0){
-									$columns.="`".$column."`".",";
+									$columns.=DB::sqlQuote($column).",";
 								}
 							}
 							$params[$column."_".$index]=$value;
@@ -453,7 +455,7 @@ class Table{
 					if(strpos($value,".")){
 						$columns.=$value.",";
 					}else{
-						$columns.="`".$value."`".",";
+						$columns.=DB::sqlQuote($value).",";
 					}
 				}
 				$columns=empty($columns)?"*":$columns;
@@ -467,7 +469,7 @@ class Table{
 						continue;
 					}
 					if(is_array($on)){
-						$this->sql.=" ON "."`".$on['column']."`".$on['operator'];
+						$this->sql.=" ON ".DB::sqlQuote($on['column']).$on['operator'];
 						if($on['value'] instanceof Flat){
 							$this->sql.=$on['value']->value." ";
 						}else{
@@ -486,9 +488,9 @@ class Table{
 				foreach($this->values_update as $column=>$value){
 					if(!is_numeric($column)){
 						if($value instanceof Flat){
-							$columns.="`".$column."`"."=".$value->value.",";
+							$columns.=DB::sqlQuote($column)."=".$value->value.",";
 						}else{
-							$columns.="`".$column."`"."=:".$column.",";
+							$columns.=DB::sqlQuote($column)."=:".$column.",";
 							$params[$column]=$value;
 						}
 					}
@@ -508,7 +510,7 @@ class Table{
 						$params=$params+$where['params'];
 						continue;
 					}
-					$this->sql.="`".$where['column']."`".$where['operator'];
+					$this->sql.=DB::sqlQuote($where['column']).$where['operator'];
 					$values=[];
 					if(isset($where['values'])){
 						$values=$where['values'];
@@ -537,7 +539,7 @@ class Table{
 		if(sizeof($this->groups)>0){
 			$group_by=" GROUP BY ";
 			foreach($this->groups as $group){
-				$group_by.="`".$group."`".",";
+				$group_by.=DB::sqlQuote($group).",";
 			}
 			$group_by=substr($group_by,0,strlen($group_by)-1);
 			$this->sql.=$group_by;
@@ -547,7 +549,7 @@ class Table{
 			$this->sql.=" HAVING ";
 			foreach($this->havings as $key=>$having){
 				if(is_array($having)){
-					$this->sql.="`".$having['column']."`".$having['operator'];
+					$this->sql.=DB::sqlQuote($having['column']).$having['operator'];
 					if($having['value'] instanceof Flat){
 						$this->sql.=$having['value']->value;
 					}else{
