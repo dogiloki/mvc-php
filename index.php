@@ -49,7 +49,6 @@ if(config()->app('debug')){
 }
 set_exception_handler("exception");
 set_error_handler("error");
-echo $hola;
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos
 $uri=$_SERVER['REQUEST_URI'];
