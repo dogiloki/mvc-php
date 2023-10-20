@@ -9,7 +9,7 @@ use ScssPhp\ScssPhp\Compiler;
 
 Env::singleton("config.env");
 
-function config(){
+function config(): Config{
     return new Config();
 }
 
@@ -85,8 +85,8 @@ function scss($path){
                 mkdir($path_output,0777,true);
             }
             file_put_contents($file_output,$css);
-        }catch(Exception $e){
-            
+        }catch(Exception $ex){
+            exception($ex);
         }
     }
     $path=Config::filesystem('scss.path_public')."/".str_replace(".scss",".css",$path);
@@ -129,32 +129,32 @@ function messageFormat($text,$args=[]){
 
 // Functions from Response::class
 
-function response(){
-    return Response::class;
+function response(): Response{
+    return new Response();
 }
 function json(...$params){
-    return Response::json(...$params);
+    return response()->json(...$params);
 }
 function view(...$params){
-    return Response::view(...$params);
+    return response()->view(...$params);
 }
 function component(...$params){
-    return Response::component(...$params);
+    return response()->component(...$params);
 }
 function abort(...$params){
-    return Response::abort(...$params);
+    return response()->abort(...$params);
 }
 function route(...$params){
-    return Response::route(...$params);
+    return response()->route(...$params);
 }
 function redirect(...$params){
-    return Response::redirect(...$params);
+    return response()->redirect(...$params);
 }
 function back(...$params){
-    return Response::back(...$params);
+    return response()->back(...$params);
 }
 function reload(...$params){
-    return Response::reload(...$params);
+    return response()->reload(...$params);
 }
 
 ?>

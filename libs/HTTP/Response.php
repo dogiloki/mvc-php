@@ -2,20 +2,25 @@
 
 namespace libs\HTTP;
 
+use libs\View\View;
 use libs\Router\Router;
 
 class Response{
 
-    public static function json($array){
+    public function __construct(){
+        
+    }
+
+    public function json($array){
         header("Content-type: application/json");
         return json_encode($array);
     }
 
-    public static function view($path,$params=[]){
-        return Router::view($path,$params);
+    public function view($path,$params=[]){
+        return (new View())->make($path,$params);
     }
 
-    public static function file($path,$params=[]){
+    public function file($path,$params=[]){
         if(file_exists($path)){
             readfile($path);
             exit;
@@ -24,11 +29,11 @@ class Response{
         }
     }
 
-    public static function component($name,$params=[]){
-        return Router::component($name,$params);
+    public function component($name,$params=[]){
+        return (new View())->component($name,$params);
     }
 
-    public static function abort($code,$message=null){
+    public function abort($code,$message=null){
         http_response_code($code);
         if($message==null){
             $message=match($code){
@@ -45,7 +50,7 @@ class Response{
         exit;
     }
 
-    public static function route($name,...$params){
+    public function route($name,...$params){
         $router=Router::singleton();
         $url="";
         foreach($router->getRoutes() as $route){
@@ -67,7 +72,7 @@ class Response{
         return url($url);
     }
 
-    public static function redirect($url=null){
+    public function redirect($url=null){
         if($url==null){
             $url=url("");
         }
@@ -75,12 +80,12 @@ class Response{
         exit;
     }
 
-    public static function back(){
+    public function back(){
         header("Location: ".$_SERVER['HTTP_REFERER']);
         exit;
     }
 
-    public static function reload(){
+    public function reload(){
         header("Location: ".$_SERVER['REQUEST_URI']);
         exit;
     }

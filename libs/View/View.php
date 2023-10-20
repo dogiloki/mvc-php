@@ -69,7 +69,42 @@ class View{
         "/@(.*?)\s/m"=>"<?php if($1()){ ?>"
     ];
 
-    public static function render($path){
+    public $ext_views=["html","php"];
+
+	public function make($path,$params=[],$once=false){
+		if(!is_bool($once)){
+			$once=false;
+		}
+		$path=str_replace(".","/",$path);
+		$path=str_replace(['"',"'"," "],"",$path);
+		foreach($this->ext_views as $value){
+			$require_path=Config::filesystem('views.path')."/".$path.".".$value;
+			if(file_exists($require_path)){
+				foreach($params as $key=>$param){
+					$$key=$param;
+				}
+				/*eval("?>".View::render($require_path)."<?php");*/
+				if($once){
+					require_once($this->render($require_path));
+				}else{
+					require($this->render($require_path));
+				}
+				return;
+			}
+		}
+	}
+
+	public function component($name){
+		$name=str_replace(".","/",$name);
+		foreach($this->ext_views as $value){
+			$class=Config::filesystem('components.path')."/".$name;
+			$class=str_replace("/","\\",$class);
+			$component=new $class();
+			return $component;
+		}
+	}
+
+    public function render($path){
         $name=str_replace(["/","\\"],".",$path);
         $path_cache=Config::filesystem('views.cache')."/".$name;
         if(file_exists($path_cache) && filemtime($path_cache)>filemtime($path)){
@@ -102,7 +137,7 @@ class View{
         return $path_cache;
     }
 
-    static function getParentheses($text, $content){
+    private function getParentheses($text,$content){
         preg_match("/@".$text."\((.*?)\)\s/m",$content,$matches);
         return $matches[1]??"";
     }

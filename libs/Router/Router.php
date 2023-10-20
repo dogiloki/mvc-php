@@ -2,8 +2,6 @@
 
 namespace libs\Router;
 
-use libs\Router\Route;
-use libs\View\View;
 use libs\HTTP\Request;
 use libs\Config;
 
@@ -47,39 +45,6 @@ class Router{
 	}
 	public function delete($uri,$action=null,$private=false){
 		return $this->add('DELETE',$uri,$action,$private);
-	}
-
-	public static $ext_views=["html","php"];
-	public static function view($path,$params=[],$once=false){
-		if(!is_bool($once)){
-			$once=false;
-		}
-		$path=str_replace(".","/",$path);
-		$path=str_replace(['"',"'"," "],"",$path);
-		foreach(Router::$ext_views as $value){
-			$require_path=Config::filesystem('views.path')."/".$path.".".$value;
-			if(file_exists($require_path)){
-				foreach($params as $key=>$param){
-					$$key=$param;
-				}
-				/*eval("?>".View::render($require_path)."<?php");*/
-				if($once){
-					require_once(View::render($require_path));
-				}else{
-					require(View::render($require_path));
-				}
-				return;
-			}
-		}
-	}
-	public static function component($name){
-		$name=str_replace(".","/",$name);
-		foreach(Router::$ext_views as $value){
-			$class=Config::filesystem('components.path')."/".$name;
-			$class=str_replace("/","\\",$class);
-			$component=new $class();
-			return $component;
-		}
 	}
 
 	private function add($method,$uri,$action=null,$private=false){
