@@ -22,17 +22,21 @@ class DB extends \PDO{
 	@param array $params[] -> Parametros para la consulta sql (remplaza los ? por valores del array, de forma estructurada)
 	*/
 	public static function execute($sql,$params=[]){
-		//echo "<pre>".print_r($sql,"<br>")."</pre>";
-		//echo "<pre>".print_r($params,"<br>")."</pre>";
-		Log::channel("debug","sql: ".$sql." params: ".json_encode($params)," | DB | execute()");
-		$db=self::singleton();
-		if($db==null){
-			return null;
-		}
-		$query=$db->prepare($sql);
-		self::$sql=$sql;
-		if(!$query->execute($params)){
-			throw new \Exception($query->ErrorInfo()[2]);
+		try{
+			//echo "<pre>".print_r($sql,"<br>")."</pre>";
+			//echo "<pre>".print_r($params,"<br>")."</pre>";
+			Log::channel("debug","sql: ".$sql." params: ".json_encode($params)," | DB | execute()");
+			$db=self::singleton();
+			if($db==null){
+				return null;
+			}
+			$query=$db->prepare($sql);
+			self::$sql=$sql;
+			if(!$query->execute($params)){
+				throw new \Exception($query->ErrorInfo()[2]);
+			}
+		}catch(\Exception $ex){
+			exception($ex);
 		}
 		return $query;
 	}

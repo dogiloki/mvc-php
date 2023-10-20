@@ -49,16 +49,6 @@ if(config()->app('debug')){
 }else{
 	ini_set('display_errors',0);
 }
-function exception($ex){
-    if(config()->app('debug')){
-        echo "Message: ".$ex->getMessage()."<br>";
-		echo "File: ".$ex->getFile()."<br>";
-		echo "Line: ".$ex->getLine();
-    }else{
-        abort(500);
-    }
-	exit;
-}
 set_exception_handler("exception");
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos

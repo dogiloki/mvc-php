@@ -3,7 +3,7 @@
 use app\Models\User;
 use libs\Middle\Secure;
 use libs\Auth\Auth;
-use libs\Middle\Session;
+use libs\Session\Session;
 use libs\Middle\Log;
 use libs\Middle\Storage;
 use libs\Middle\Cookie;
@@ -20,9 +20,7 @@ $router->get('/logout',function($request){
 })->name('logout');
 
 $router->get('/test',function($request){
-    $date=app\Models\User::find(1)->created_at;
-    $data=app\Models\User::whereBetween('created_at',$date,$date)->get();
-    dd($data);
+    
 })->name('test-get');
 
 $router->post('/test',function($request){

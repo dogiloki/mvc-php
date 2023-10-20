@@ -44,7 +44,7 @@ class Route{
         }
     }
 
-    public function call(Request $request, $index_middlewares=0, $do_call=true){
+    public function call(Request $request,$index_middlewares=0,$do_call=true){
         $middleware=$this->middlewares[$index_middlewares]??null;
         if($middleware==null){
             if($do_call==1){
@@ -57,6 +57,9 @@ class Route{
             $middleware=new $middleware();
         }else{
             $middleware=new (Config::middleware("alias.".$middleware))();
+        }
+        if($middleware===null){
+            return $this->call($request,$index_middlewares+1,$do_call);
         }
         try{
             return $middleware->handle($request,function($request)use($index_middlewares,$do_call){

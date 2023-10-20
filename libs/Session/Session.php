@@ -20,13 +20,22 @@ class Session{
     }
 
     public static function __callStatic($method,$params){
-        $method='_'.$method;
-        $instance=Session::singleton();
-        if(!$instance->isStarted()){
-            throw new \Exception("Session not started");
-        }
-        if(method_exists($instance,$method)){
-            return call_user_func_array([$instance,$method],$params);
+        try{
+            $method='_'.$method;
+            $instance=Session::singleton();
+            if($method=="_isStarted"){
+                if(method_exists($instance,$method)){
+                    return call_user_func_array([$instance,$method],$params);
+                }
+            }
+            if(!$instance->isStarted()){
+                throw new \Exception("Session not started");
+            }
+            if(method_exists($instance,$method)){
+                return call_user_func_array([$instance,$method],$params);
+            }
+        }catch(\Exception $ex){
+            exception($ex);
         }
     }
 

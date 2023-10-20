@@ -195,7 +195,6 @@ class Table{
 		return $this;
 	}
 	public function whereNotBetween($column,$range){
-		$range=is_array($range)?$range:func_get_args();
 		$this->wheres[]=[
 			"column"=>$column,
 			"operator"=>" NOT BETWEEN ",
@@ -205,7 +204,6 @@ class Table{
 		return $this;
 	}
 	public function whereBetween($column,$range){
-		$range=is_array($range)?$range:func_get_args();
 		$this->wheres[]=[
 			"column"=>$column,
 			"operator"=>" BETWEEN ",
@@ -452,7 +450,11 @@ class Table{
 			}
 			case self::SELECT:{
 				foreach($this->values_select as $value){
-					$columns.="`".$value."`".",";
+					if(strpos($value,".")){
+						$columns.=$value.",";
+					}else{
+						$columns.="`".$value."`".",";
+					}
 				}
 				$columns=empty($columns)?"*":$columns;
 				$columns=trim($columns,",");
@@ -507,11 +509,12 @@ class Table{
 						continue;
 					}
 					$this->sql.="`".$where['column']."`".$where['operator'];
-					if(isset($where['value'])){
-						$values=[$where['value']];
-					}else
+					$values=[];
 					if(isset($where['values'])){
 						$values=$where['values'];
+					}else
+					if(isset($where['value']) || $where['value']===null){
+						$values=[$where['value']];
 					}
 					foreach($values as $index_value=>$value){
 						if($value instanceof Flat){

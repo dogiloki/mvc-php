@@ -4,6 +4,7 @@ namespace libs\Auth;
 
 use libs\Session\Session;
 use libs\Middle\Secure;
+use libs\Auth\Models\AccessToken;
 use libs\Config;
 use libs\DB\DB;
 
@@ -19,9 +20,11 @@ class Auth{
     private static $instance;
     private $name_session;
     private $model_user;
+    private $user;
 
     public function __construct(){
         $this->name_session='auth';
+        $this->name_session_token='token';
         $this->model_user=Config::auth('web.model');
     }
 
@@ -33,8 +36,15 @@ class Auth{
 		}
     }
 
-    public function _login($user){
+    public function _login($user,$access_token=null){
         if($user==null){
+            return;
+        }
+        if(!Session::isStarted()){
+            $this->user=$user;
+            if($access_token!==null){
+                $this->user->token=$access_token;
+            }
             return;
         }
         Session::put($this->name_session,$user->{$user->primary_key});
@@ -59,10 +69,14 @@ class Auth{
     }
 
     public function _check(){
-        return Session::has($this->name_session);
+        return Session::isStarted()?Session::has($this->name_session):$this->user!==null;
     }
 
     public function _logout(){
+        if(!Session::isStarted()){
+            $this->user=null;
+            return;
+        }
         Session::forget($this->name_session);
         if(Config::session('driver')=='database'){
             $table=Config::session('database.table');
@@ -73,12 +87,15 @@ class Auth{
     }
 
     public function _user(){
+        if(!Session::isStarted()){
+            return $this->user;
+        }
         $id=Session::get($this->name_session);
         return $this->model_user::find($id);
     }
 
     public function _id(){
-        return Session::get($this->name_session);
+        return Session::isStarted()?Session::get($this->name_session):$this->user->{$this->user->primary_key};
     }
 
 }

@@ -27,11 +27,6 @@ trait HasApiTokens{
         return Secure::hash();
     }
 
-    public function tokenable(){
-        $class=$this->type_tokenable;
-        return $class::find($this->id_tokenable);
-    }
-
     public function tokens(){
         return AccessToken::find(function($find){
             $find->where('id_tokenable',$this->id)->and();
@@ -39,7 +34,10 @@ trait HasApiTokens{
         },[]);
     }
 
-    public function token($name){
+    public function token($name=null){
+        if($name===null){
+            return $this->token;
+        }
         return AccessToken::find(function($find)use($name){
             $find->where('id_tokenable',$this->id)->and();
             $find->where('type_tokenable',$this->classType())->and();

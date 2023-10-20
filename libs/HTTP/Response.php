@@ -90,6 +90,17 @@ class Response{
         exit;
     }
 
+    public function exception($ex){
+        if(config()->app('debug')){
+            echo "Message: ".$ex->getMessage()."<br>";
+            echo "File: ".$ex->getFile()."<br>";
+            echo "Line: ".$ex->getLine();
+        }else{
+            abort(500);
+        }
+        exit;
+    }
+
 }
 
 ?>

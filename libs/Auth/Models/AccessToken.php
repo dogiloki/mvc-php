@@ -10,6 +10,11 @@ use libs\DB\Model;
 **/
 class AccessToken extends Model{
 
+    public function tokenable(){
+        $class=$this->type_tokenable;
+        return $class::find($this->id_tokenable);
+    }
+
     public function hasExpired(){
         return strtotime($this->expire_at)<time();
     }

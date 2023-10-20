@@ -6,7 +6,7 @@ return [
     'host'=>env('APP_HOST'),
     'key'=>env('APP_KEY'),
     'locale'=>env('APP_LOCALE','es'),
-    'timezone'=>env('APP_TIMEZONE','UTC')
+    'timezone'=>env('APP_TIMEZONE','America/Mexico_City')
 
 ];
 
