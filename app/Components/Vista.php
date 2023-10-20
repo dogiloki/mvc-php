@@ -31,7 +31,7 @@ class Vista extends Component{
 
     public function search($search=null){
         $search??=$this->sync('search');
-        $this->sync('users',User::like("name","%".$search."%")->get());
+        $this->sync('users',User::whereLike("name","%".$search."%")->get());
         $this->sync('temp',"-".$search."-");
     }
 

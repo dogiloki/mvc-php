@@ -52,7 +52,7 @@ class Model{
 				return $reference->query->first();
 			}
 		}
-		return $this->$attrib;
+		return isset($this->$attrib)?$this->$attrib:null;
 	}
 
 	public function __call($method,$params){
@@ -248,8 +248,7 @@ class Model{
 			$model->save();
 			return $model;
 		}catch(\Exception $ex){
-			//echo $ex->getMessage();
-			throw new \Exception($ex);
+			exception($ex);
 		}
 		return null;
 	}
@@ -260,8 +259,7 @@ class Model{
 			$model->save($row);
 			return $model;
 		}catch(\Exception $ex){
-			//echo $ex->getMessage();
-			throw new \Exception($ex);
+			exception($ex);
 		}
 		return null;
 	}
@@ -269,7 +267,7 @@ class Model{
 	public function save($row=null){
 		try{
 			$primary_key=$this->primary_key;
-			$id=$this->$primary_key;
+			$id=$this->$primary_key ;
 			$params=[];
 			foreach(get_object_vars($this) as $property=>$value){
 				try{
@@ -287,7 +285,7 @@ class Model{
 					$params[$property]=$value;
 				}	
 			}
-			if($id==null || $this::find($id)==null){
+			if($id===null || $this::find($id)==null){
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
 				DB::table($this->table)
@@ -302,10 +300,9 @@ class Model{
 			$this->setValues($row);
 			return true;
 		}catch(\Exception $ex){
-			//echo $ex->getMessage();
-			throw new \Exception($ex);
-			return false;
+			exception($ex);
 		}
+		return false;
 	}
 
 	public function delete(){
