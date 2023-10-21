@@ -21,6 +21,7 @@ class Auth{
     private $name_session;
     private $model_user;
     private $user;
+    private $token;
 
     public function __construct(){
         $this->name_session='auth';
@@ -40,10 +41,11 @@ class Auth{
         if($user==null){
             return;
         }
-        if(!Session::isStarted()){
+        if(!Session::isStarted() || $access_token!==null){
+            echo "paso por aquí";
             $this->user=$user;
             if($access_token!==null){
-                $this->user->token=$access_token;
+                $this->token=$access_token;
             }
             return;
         }
@@ -70,14 +72,11 @@ class Auth{
     }
 
     public function _check(){
-        return Session::isStarted()?Session::has($this->name_session):$this->user!==null;
+        return ($this->user===null?Session::has($this->name_session):$this->user)!==null;
     }
 
     public function _logout(){
-        if(!Session::isStarted()){
-            $this->user=null;
-            return;
-        }
+        $this->user=null;
         Session::forget($this->name_session);
         if(Config::session('driver')=='database'){
             $table=Config::session('database.table');
@@ -88,7 +87,7 @@ class Auth{
     }
 
     public function _user(){
-        if(!Session::isStarted()){
+        if($this->user!==null){
             return $this->user;
         }
         $id=Session::get($this->name_session);
@@ -96,7 +95,11 @@ class Auth{
     }
 
     public function _id(){
-        return Session::isStarted()?Session::get($this->name_session):$this->user->{$this->user->primary_key};
+        return $this->user===null?Session::get($this->name_session):$this->user->{$this->user->primary_key};
+    }
+
+    public function _token(){
+        return $this->token;
     }
 
 }
