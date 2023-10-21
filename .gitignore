@@ -1,4 +1,7 @@
-vendor
-storage
+/node_modules
+/vendor
+/storage/*.key
 *.env
+/.idea
+/.vscode
 /nbproject/private/
