@@ -1,31 +1,13 @@
 <?php
 
-use app\Models\User;
-use libs\Middle\Secure;
-use libs\Auth\Auth;
-use libs\Session\Session;
-use libs\Middle\Log;
-use libs\Middle\Storage;
-use libs\Middle\Cookie;
-use libs\Middle\Router;
-use libs\Middle\Faker;
-use libs\Middle\Models\GlobalVar;
+use libs\HTTP\Request;
 
-$router->get('/login',function($request){
-    Auth::login(User::find(1));
-})->name('login');
-
-$router->get('/logout',function($request){
-    Auth::logout();
-})->name('logout');
-
-$router->get('/test',function($request){
-    $user=User::find(1);
-    return response()->json($user);
+$router->get('/test',function(Request $request){
+    return "soy un test";
 })->name('test-get');
 
-$router->post('/test',function($request){
-    dd($request->name);
+$router->post('/test',function(Request $request){
+    return $request->name;
 })->name('test-post');
 
 ?>

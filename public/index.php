@@ -11,7 +11,11 @@ spl_autoload_register(function($clase){
 	$cache=Config::filesystem('cache');
 	$cache_folder=$cache['path'];
 	$cache_file=$cache_folder."/".$cache['file'];
-	$json=(array)json_decode(file_get_contents($cache_file));
+	if(file_exists($cache_file)){
+		$json=(array)json_decode(file_get_contents($cache_file));
+	}else{
+		$json=[];
+	}
 	$slug=slug($path);
 	if(!isset($json[$slug])){
 		$path=explode("/",$path);
