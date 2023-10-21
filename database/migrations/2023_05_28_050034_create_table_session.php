@@ -10,12 +10,12 @@ return new class extends Migration{
 	 */
 	public function up(): void{
 		$this->table('session',function($table){
-			$table->add('id','varchar',40)->primary();
+			$table->string('id',40)->primary();
 			$table->idForeign('id_user')->foreign('user','id')->nullable();
-			$table->add('ip_address','varchar',45);
-			$table->add('user_agent','varchar',255);
-			$table->add('payload','text');
-			$table->add('last_activity','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
+			$table->string('ip_address');
+			$table->string('user_agent');
+			$table->text('payload');
+			$table->timestamp('last_activity')->default(DB::flat('CURRENT_TIMESTAMP'));
 		});
 	}
 		

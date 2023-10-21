@@ -85,6 +85,10 @@ class Schema{
         return $column;
     }
 
+    public function string($name,$size=null){
+        return $this->add($name,"varchar",$size);
+    }
+
     // Funcionalidades
 
     public function id($name_column='id'){
@@ -101,9 +105,14 @@ class Schema{
         return $this->add($name_table,'bigint');
     }
 
-    public function timestamps(){
-        $this->add('created_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->index();
-        $this->add('updated_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->nullable()->index();
+    public function timestamps($batch=1){
+        if($batch===1){
+            $this->add('created_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->nullable()->index();
+            $this->add('updated_at','timestamp')->nullable()->index();
+        }else
+        if($batch===0){
+            $this->add('created_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'))->nullable()->index();
+        }
     }
 
     /**

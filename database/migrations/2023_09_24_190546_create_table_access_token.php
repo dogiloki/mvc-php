@@ -11,15 +11,15 @@ return new class extends Migration{
 	public function up(): void{
 		$this->table('access_token',function($table){
 			$table->id();
-			$table->add('id_tokenable','bigint');
-			$table->add('type_tokenable','varchar');
-			$table->add('name','varchar');
-			$table->add('token','varchar')->unique();
-			$table->add('abilities','text');
-			$table->add('ip_address','varchar');
-			$table->add('user_agent','varchar');
-			$table->add('last_activity','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
-			$table->add('expire_at','timestamp')->default(DB::flat('CURRENT_TIMESTAMP'));
+			$table->bigint('id_tokenable');
+			$table->string('type_tokenable');
+			$table->string('name');
+			$table->string('token')->unique();
+			$table->text('abilities');
+			$table->string('ip_address');
+			$table->string('user_agent');
+			$table->timestamp('last_activity')->default(DB::flat('CURRENT_TIMESTAMP'));
+			$table->timestamp('expire_at')->default(DB::flat('CURRENT_TIMESTAMP'));
 			$table->timestamps();
 		});
 	}

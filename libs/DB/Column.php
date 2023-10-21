@@ -79,7 +79,9 @@ class Column{
     
     public function sql(){
         $sql=DB::sqlQuote($this->name)." ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
-        if(!$this->null){
+        if($this->null){
+            $sql.=" NULL";
+        }else{
             $sql.=" NOT NULL";
         }
         if($this->default){

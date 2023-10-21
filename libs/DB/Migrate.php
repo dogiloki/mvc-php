@@ -42,7 +42,7 @@ class Migrate{
     }
 
     private function getNextBatch(){
-        $last_batch=DB::table($this->getNameTable())->select()->orderBy('batch','ASC')->row();
+        $last_batch=DB::table($this->getNameTable())->select()->orderBy('batch','DESC')->row();
         return ($last_batch['batch']??0)+1;
     }
 
