@@ -9,6 +9,8 @@ use ScssPhp\ScssPhp\Compiler;
 
 Env::singleton("config.env");
 
+env('APP_BASE_PATH',dirname(__DIR__));
+
 function config(): Config{
     return new Config();
 }
@@ -25,8 +27,7 @@ function dd($obj){
 }
 
 function base_path($path=""){
-    $folder=explode("/",explode(".",$_SERVER['PHP_SELF'])[0]??"/");
-    return join("/",array_slice($folder,0,count($folder)-1))."/".$path;
+    return env('APP_BASE_PATH')."/".$path;
 }
 
 function url($text=""){

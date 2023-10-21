@@ -1,5 +1,7 @@
 <?php
 
+chdir("../");
+
 require_once "libs/Config.php";
 use libs\Config;
 
@@ -78,7 +80,7 @@ $kernel=new Kernel();
 
 // Zona horaria
 date_default_timezone_set(env('TIMEZONE',Config::app('timezone')??date_default_timezone_get()));
-
+// Rutas predeterminadas
 $router->post('/component/{name}',function($request){
 	ob_start();
 	$name=ucfirst($request->input('name'));
@@ -93,11 +95,6 @@ $router->post('/component/{name}',function($request){
 		"direct"=>$done?null:$instance->direct()
 	]);
 })->middleware('session','csrf');
-/* Rutas predeterminadas
-$router->get('/storage1/{disk}',function($request){
-	return \libs\Middle\Storage::get($request->input('file'),$request->input('disk'));
-});
-*/
 foreach($directory as $file){
 	if($file=='.' || $file=='..'){
 		continue;

@@ -17,7 +17,6 @@ class Env{
 	private static $instance=null;
 
 	private function __construct($file=null){
-		$_ENV=[];
 		$this->positions=[];
 		$this->file=$file;
 		if($file==null){
@@ -26,6 +25,7 @@ class Env{
 		if(!file_exists($file)){
 			return;
 		}
+		$_ENV=[];
 		$fp=fopen($file,"r");
 		$count=0;
 		while(!feof($fp)){

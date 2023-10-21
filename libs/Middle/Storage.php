@@ -52,10 +52,6 @@ class Storage{
         $image->save($path,self::$compress_image_level);
     }
 
-    public static function url($file,$disk){
-        return url("storage1/".$disk."/?file=".$file);
-    }
-
     public static function get($file,$disk){
         $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
