@@ -94,8 +94,7 @@ Manager::command("seeder",function($console){
 
 Manager::command("server {port?}",function($console,$port){
 	$port??=8000;
-	//exec('php -S 127.0.0.1:'.$port.' -t public');v
-	exec('php -S 127.0.0.1:'.$port." ".Config::filesystem('public.path')."/index.php");
+	exec('php -S 127.0.0.1:'.$port." -t ".Config::filesystem('public.path'));
 });
 
 Manager::call($argv);
