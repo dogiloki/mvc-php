@@ -9,6 +9,7 @@ $router->get('/user',function($request){
 
 $router->get('/',function($request){
     Auth::user();
+    Auth::token();
     $user=Auth::user();
     return json(Auth::user());
 })->middleware('auth_api')->name('api-auth');

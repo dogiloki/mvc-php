@@ -41,12 +41,9 @@ class Auth{
         if($user==null){
             return;
         }
-        if(!Session::isStarted() || $access_token!==null){
-            echo "paso por aquí";
-            $this->user=$user;
-            if($access_token!==null){
-                $this->token=$access_token;
-            }
+        $this->user=$user;
+        $this->token=$access_token;
+        if(!Session::isStarted()){
             return;
         }
         Session::put($this->name_session,$user->{$user->primary_key});
