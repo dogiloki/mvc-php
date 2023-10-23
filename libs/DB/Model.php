@@ -102,8 +102,8 @@ class Model{
 		}
 	}
 
-	protected function hasOne($table,$id_table){
-		return $this->getReference("HasOne",[$table,$id_table],$this->{$this->primary_key});
+	protected function hasOne($table,$id_table,$id_table_secundary=null){
+		return $this->getReference("HasOne",[$table,$id_table,$id_table_secundary],$this->{$this->primary_key});
 	}
 
 	protected function hasMany($table,$id_table_secundary,$id_table=null){
@@ -139,7 +139,7 @@ class Model{
 		if($relation=="HasOne"){
 			$column=$reference[1];
 			$rs=$model::select($model->getTable().".*")
-			->join($this->getTable())->onColumn($this->getTable().".".$column,$model->getTable().".".$model->primary_key);
+			->join($this->getTable())->onColumn($this->getTable().".".$column,$model->getTable().".".($reference[2]??$model->primary_key));
 		}else
 		if($relation=="HasMany"){
 			$column=$reference[1];
