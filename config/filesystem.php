@@ -91,24 +91,15 @@ return [
     ],
 
     'create'=>[
+        /*
         'folders'=>[
-            'storage',
-            'storage/app',
-            'storage/app/public',
-            'storage/logs',
-            'storage/framework',
-            'storage/framework/cache',
-            'storage/framework/sessions',
-            'storage/framework/views'
+            'example-folder'
         ],
+        */
         'files'=>[
             [
                 'path'=>'config.env',
                 'content'=>file_get_contents('config.env.example')
-            ],
-            [
-                'path'=>'storage/framework/cache/files.json',
-                'content'=>''
             ]
         ]
     ]
