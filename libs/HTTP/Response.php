@@ -34,6 +34,7 @@ class Response{
     }
 
     public function abort($code,$message=null){
+        header("Content-type: application/html");
         http_response_code($code);
         if($message==null){
             $message=match($code){
@@ -92,13 +93,14 @@ class Response{
 
     public function exception($ex){
         if(config()->app('debug')){
-            echo "Message: ".$ex->getMessage()."<br>";
-            echo "File: ".$ex->getFile()."<br>";
-            echo "Line: ".$ex->getLine();
+            abort(500,
+                "<br>Message: ".$ex->getMessage()."<br>".
+                "File: ".$ex->getFile()."<br>".
+                "Line: ".$ex->getLine()
+            );
         }else{
             abort(500);
         }
-        exit;
     }
 
     public function error(...$params){
