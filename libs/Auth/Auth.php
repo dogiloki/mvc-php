@@ -54,20 +54,7 @@ class Auth{
             ])->where('id',Session::id())->execute();
         }
     }
-
-    public function _attempt($credentials,$password){
-        $user=$this->model_user::find(function($find)use($credentials){
-            $find->where($credentials);
-        });
-        if($user){
-            if(Secure::verifyPassword($password,$user->password)){
-                Auth::login($user);
-                return true;
-            }
-        }
-        return false;
-    }
-
+    
     public function _check(){
         return ($this->user===null?Session::has($this->name_session):$this->user)!==null;
     }

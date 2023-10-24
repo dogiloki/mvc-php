@@ -88,17 +88,12 @@ class Model{
 			return;
 		}
 		foreach($row as $column=>$value){
+			$this->$column=$value;
 			if(!$ignore_protected){
-				if(count($this->visible)>0 && !in_array($column,$this->visible)){
+				if(in_array($column,$this->hidden) && !in_array($column,$this->visible)){
 					unset($this->$column);
-					continue;
-				}
-				if(in_array($column,$this->hidden)){
-					unset($this->$column);
-					continue;
 				}
 			}
-			$this->$column=$value;
 		}
 	}
 
