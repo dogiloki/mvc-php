@@ -37,7 +37,7 @@ class Storage{
                 if(self::$compress_image && explode("/",$type)[0]=="image"){
                     self::compressImage($folder);
                 }
-                return ["path"=>$file_name,"mime"=>$type];
+                return ["path"=>$folder,"name"=>$file_name,"mime"=>$type];
             }else{
                 return null;
             }
