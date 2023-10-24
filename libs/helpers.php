@@ -130,8 +130,8 @@ function messageFormat($text,$args=[]){
 
 // Functions from Response::class
 
-function response(): Response{
-    return new Response();
+function response($code=200): Response{
+    return new Response($code);
 }
 function json(...$params){
     return response()->json(...$params);

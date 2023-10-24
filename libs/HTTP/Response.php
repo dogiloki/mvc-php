@@ -7,12 +7,20 @@ use libs\Router\Router;
 
 class Response{
 
-    public function __construct(){
-        
+    public function __construct($code=200){
+        http_response_code($code);
     }
 
-    public function json($array){
+    public function message($message){
+        echo $message;
+        exit;
+    }
+
+    public function json($array,$code=null){
         header("Content-type: application/json");
+        if($code!=null){
+            http_response_code($code);
+        }
         return json_encode($array);
     }
 
@@ -35,7 +43,9 @@ class Response{
 
     public function abort($code,$message=null){
         header("Content-type: application/html");
-        http_response_code($code);
+        if($code!=null){
+            http_response_code($code);
+        }
         if($message==null){
             $message=match($code){
                 404=>"Not found",
@@ -93,6 +103,7 @@ class Response{
 
     public function exception($ex){
         if(config()->app('debug')){
+            throw new \Exception($ex);
             abort(500,
                 "<br>Message: ".$ex->getMessage()."<br>".
                 "File: ".$ex->getFile()."<br>".
