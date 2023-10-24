@@ -13,7 +13,7 @@ class VerifyEmail extends Middleware{
         if($user==null){
             return abort(401,"Not email verified");
         }
-        return $user->verify_email_at==null?abort(401,"Not email verified"):$next($request);
+        return $user->verified_email_at==null?abort(401,"Not email verified"):$next($request);
     }
 
 }

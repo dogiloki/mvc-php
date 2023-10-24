@@ -12,7 +12,7 @@ return new class extends Migration{
 			$table->id();
 			$table->string('name');
 			$table->string('email');
-			$table->datetime('verify_email_at')->nullable();
+			$table->datetime('verified_email_at')->nullable();
 			$table->string('password');
 			$table->timestamps();
 		});
