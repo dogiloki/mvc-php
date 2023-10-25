@@ -21,7 +21,12 @@ class AuthenticateApi extends Middleware{
             }
             $access_token->last_activity=date('Y-m-d H:i:s');
             $access_token->save();
-            Auth::login($access_token->tokenable(),$access_token);
+            $model=$access_token->tokenable();
+            if($model==null){
+                $access_token->delete();
+                return abort(401);   
+            }
+            Auth::login($model,$access_token);
             return $next($request);
         }
         return abort(401);

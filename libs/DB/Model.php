@@ -32,6 +32,7 @@ class Model{
 
 	protected $table=null;
 	protected $primary_key="id";
+	protected $fillable=[];
 	protected $hidden=[];
 	protected $visible=[];
 
@@ -245,7 +246,7 @@ class Model{
 		$model=$this;
 		try{
 			$model->setValues($row,$ignore_protected);
-			$model->save();
+			$model->save($row);
 			return $model;
 		}catch(\Exception $ex){
 			exception($ex);
@@ -267,7 +268,7 @@ class Model{
 	public function save($row=null){
 		try{
 			$primary_key=$this->primary_key;
-			$id=$this->$primary_key ;
+			$id=$this->$primary_key;
 			$params=[];
 			foreach(get_object_vars($this) as $property=>$value){
 				try{
@@ -283,21 +284,29 @@ class Model{
 				}else
 				if(!is_array($value)){
 					$params[$property]=$value;
-				}	
+					if($row!==null){
+						if(!in_array($property,$this->fillable)){
+							unset($params[$property]);
+							unset($row[$property]);
+						}
+					}
+				}
 			}
 			if($id===null || $this::find($id)==null){
 				$params['created_at']=date('Y-m-d H:i:s');
 				$params['updated_at']=null;
-				DB::table($this->table)
-				->insert($params);
+				$rs_insert=DB::table($this->table);
+				$rs_insert->insert($params);
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
-				DB::table($this->table)
-				->where($primary_key,$id)
-				->update($row??$params)->execute();
+				$row['updated_at']=$params['updated_at'];
+				$rs_update=DB::table($this->table);
+				$rs_update->where($primary_key,$id);
+				$rs_update->update($row??$params)->execute();
 			}
-			$row=DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->row();
-			$this->setValues($row);
+			$this->setValues(
+				DB::table($this->table)->select()->where($primary_key,$id??DB::getConnection()->lastInsertId())->row()
+			);
 			return true;
 		}catch(\Exception $ex){
 			exception($ex);
