@@ -11,6 +11,12 @@ class User extends Model{
 
 	protected $table="user";
 	protected $hidden=["password"];
+	protected $fillable=[
+		"name",
+		"email",
+		"verified_email_at",
+		"password"
+	];
 
 }
 

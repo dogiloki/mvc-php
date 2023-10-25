@@ -2,7 +2,9 @@
 
 namespace {space};
 
-class {name}{
+use app\Controllers\Controller;
+
+class {name} extendes Controller{
     
 }
 
