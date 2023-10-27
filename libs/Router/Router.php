@@ -4,17 +4,19 @@ namespace libs\Router;
 
 use libs\HTTP\Request;
 use libs\Config;
+use libs\Middleware\Middleware;
 
 class Router{
 
 	private static $instance=null;
 	private $routes=[];
-	private $prev_route=null;
+	private $route=null;
+	private $global_route=null;
+	private $assign_globally=true;
 
 	private function __construct(){
-		/*foreach(glob('controllers/*.php') as $file){
-			require_once $file;
-		}*/
+		$this->route=new Route();
+		$this->global_route=new Route();
 	}
 	
 	public static function singleton(){
@@ -47,33 +49,60 @@ class Router{
 		return $this->add('DELETE',$uri,$action,$private);
 	}
 
+	private function applyParams(){
+		$this->route->group=$this->global_route->group;
+		$this->route->name=$this->global_route->name;
+		$this->route->middlewares=array_merge($this->route->middlewares,$this->global_route->middlewares);
+	}
+
 	private function add($method,$uri,$action=null,$private=false){
-		$name_file=explode(".",basename(debug_backtrace()[1]['file']))[0];
-		if($name_file=="api"){
-			$uri="api/".$uri;
-		}
 		$route=new Route($method,$uri,$action);
-		$route->name_file=$name_file;
-		$this->prev_route=$route;
+		$this->route=$route;
+		$this->applyParams();
 		$this->routes[]=$route;
 		return $this;
 	}
 
+	// Configurar route
+
+	public function group($action){
+		if($action instanceof \Closure){
+			$this->assign_globally=false;
+			$action();
+			$this->global_route=new Route();
+			$this->assign_globally=true;
+		}else{
+			$this->route->group=$action;
+			if($this->assign_globally){
+				$this->global_route->group=$action;
+			}
+			return $this;
+		}
+	}
+
 	public function name(string $name){
-		$this->prev_route->name=$name;
+		$this->route->name=$name;
+		if($this->assign_globally){
+			$this->global_route->name=$name;
+		}
 		return $this;
 	}
 
 	public function middleware(...$action){
-		$this->prev_route->middlewares=$action;
+		$this->route->middlewares=array_merge($this->route->middlewares,$action);
+		if($this->assign_globally){
+			$this->global_route->middlewares=array_merge($this->global_route->middlewares,$action);
+		}
 		return $this;
 	}
+
+	// Iniciar enrutamiento
 
 	public function controller(){
 		$base_uri=explode("/",Route::formatUri($_SERVER['REQUEST_URI']));
 		$params=[];
 		$request=Request::singleton();
-		foreach($this->routes as $route_index=>$route){
+		foreach($this->routes as $route){
 			if($route->method!=$_SERVER['REQUEST_METHOD']){
 				continue;
 			}
@@ -107,7 +136,7 @@ class Router{
 				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
 				$request->{$key_request}=$value_request;
 			}
-			$route->middlewares=array_merge((array)Config::middleware('routers.'.$route->name_file)??[],$route->middlewares);
+			$route->middlewares=array_merge(Middleware::middleware(),$route->middlewares);
 			$route->call($request);
 			return;
 		}

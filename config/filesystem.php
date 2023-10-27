@@ -6,6 +6,7 @@ return [
         'path'=>'storage',
         'app'=>'storage/app',
         'public'=>'storage/app/public',
+        'files'=>'storage/app/files'
     ],
 
     'public'=>[
@@ -33,6 +34,10 @@ return [
 
     'middlewares'=>[
         'path'=>'app/Middlewares'
+    ],
+
+    'services'=>[
+        'path'=>'app/Services'  
     ],
 
     'components'=>[

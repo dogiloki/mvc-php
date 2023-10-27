@@ -4,29 +4,41 @@ namespace libs\Router;
 
 use libs\Config;
 use libs\HTTP\Request;
+use libs\Router\Router;
+use libs\Router\Route;
+use libs\Middleware\Middleware;
 
 class Route{
 
-    public static function formatUri(string $uri){
+    public static function __callStatic($method,$arguments){
+        $instance=Router::singleton();
+        if(method_exists($instance,$method)){
+            return call_user_func_array([$instance,$method],$arguments);
+        }
+    }
+
+    public static function formatUri($uri){
         $uri=explode("/?",$uri)[0];
         $uri=trim(preg_replace('#(/)+#','/',$uri),"/");
         return $uri;
     }
 
-    public $name_file;
     public $method;
     public $path;
     public $action;
     public $params;
     public $name;
     public $middlewares=[];
+    public $group;
 
-    public function __construct(string $method=null,string $path=null,$action=null){
+    public function __construct($method=null,$path=null,$action=null){
         $this->method=$method;
         $this->path=Route::formatUri($path??"");
         $this->action=$action;
         $this->params=[];
+        $this->name=null;
         $this->middlewares=[];
+        $this->group=null;
         $this->generateParams();
     }
 
@@ -55,7 +67,7 @@ class Route{
         if(class_exists($middleware)){
             $middleware=new $middleware();
         }else{
-            $middleware=new (Config::middleware("alias.".$middleware))();
+            $middleware=new (Middleware::alias($middleware))();
         }
         if($middleware===null){
             return $this->call($request,$index_middlewares+1,$do_call);

@@ -1,8 +1,9 @@
 <?php
 
+use libs\Router\Route;
 use libs\HTTP\Request;
 
-$router->get('/',function(Request $request){
+Route::get('/',function(Request $request){
     return view('index');
 })->name('home');
 

@@ -1,0 +1,23 @@
+<?php
+
+namespace {space};
+
+use libs\Service\Contract\ServiceImpl;
+
+class {name} implements ServiceImpl{
+
+	public function handle(){
+
+	}
+
+	public function terminate(){
+		
+	}
+
+	public function report($ex){
+		exception($ex);
+	}
+
+}
+
+?>

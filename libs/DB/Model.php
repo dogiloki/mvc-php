@@ -13,11 +13,11 @@ class Model{
 	public static function __callStatic($method,$params){
 		$method_query=$method;
 		$method='_'.$method;
-		$instace=new static;
-		if(method_exists($instace,$method)){
-			return call_user_func_array([$instace,$method],$params);
+		$instance=new static;
+		if(method_exists($instance,$method)){
+			return call_user_func_array([$instance,$method],$params);
 		}else{
-			return DB::table($instace->table)->model($instace)->$method_query(...$params);
+			return DB::table($instance->table)->model($instance)->$method_query(...$params);
 		}
 	}
 
@@ -44,9 +44,9 @@ class Model{
 	}
 
 	public function __get($attrib){
-		$instace=$this;
-		if(method_exists($instace,$attrib)){
-			$reference=call_user_func([$instace,$attrib]);
+		$instance=$this;
+		if(method_exists($instance,$attrib)){
+			$reference=call_user_func([$instance,$attrib]);
 			if($reference->relation=="ManyToMany" || $reference->relation=="HasMany"){
 				return $reference->query->get();
 			}else{
@@ -59,11 +59,11 @@ class Model{
 	public function __call($method,$params){
 		$method_query=$method;
 		$method='_'.$method;
-		$instace=$this;
-		if(method_exists($instace,$method)){
-			return call_user_func_array([$instace,$method],$params);
+		$instance=$this;
+		if(method_exists($instance,$method)){
+			return call_user_func_array([$instance,$method],$params);
 		}else{
-			return DB::table($instace->table)->model($instace)->$method_query(...$params);
+			return DB::table($instance->table)->model($instance)->$method_query(...$params);
 		}
 	}
 

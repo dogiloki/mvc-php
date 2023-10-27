@@ -1,12 +1,13 @@
 <?php
 
+use libs\Router\Route;
 use libs\HTTP\Request;
 
-$router->get('/test',function(Request $request){
-    return "soy un test";
+Route::get('/test',function(Request $request){
+    return json(app\Models\User::with('roles')->all());
 })->name('test-get');
 
-$router->post('/test',function(Request $request){
+Route::post('/test',function(Request $request){
     return $request->name;
 })->name('test-post');
 

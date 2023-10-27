@@ -2,7 +2,7 @@
 
 namespace libs\Middle;
 
-USE libs\HTTP\Request;
+use libs\HTTP\Request;
 
 abstract class Middleware{
 

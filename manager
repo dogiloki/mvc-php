@@ -33,6 +33,11 @@ Manager::command("new {type} {name}",function($console,$type,$name){
 			"filesystem"=>"middlewares.path",
 			"message"=>"Middleware",
 			"template"=>"Middleware.txt"
+		],
+		"service"=>[
+			"filesystem"=>"services.path",
+			"message"=>"Service",
+			"template"=>"Service.txt"
 		]
 	];
 	if(!isset($types[$type])){

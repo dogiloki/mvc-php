@@ -26,5 +26,13 @@
         "intervention/image": "^2.7",
         "fakerphp/faker": "^1.21",
         "scssphp/scssphp": "^1.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Libs\\": "libs/",
+            "app\\": "app/",
+            "libs\\": "libs/"
+        }
     }
 }

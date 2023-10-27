@@ -42,7 +42,6 @@ class Response{
     }
 
     public function abort($code,$message=null){
-        header("Content-type: application/html");
         if($code!=null){
             http_response_code($code);
         }
@@ -103,7 +102,6 @@ class Response{
 
     public function exception($ex){
         if(config()->app('debug')){
-            throw new \Exception($ex);
             abort(500,
                 "<br>Message: ".$ex->getMessage()."<br>".
                 "File: ".$ex->getFile()."<br>".

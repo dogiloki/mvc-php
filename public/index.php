@@ -2,33 +2,10 @@
 
 chdir("../");
 
-require_once "libs/Config.php";
-use libs\Config;
-
-spl_autoload_register(function($clase){
-	$path=str_replace("\\","/",$clase).".php";
-	//echo $path."<br>";
-	$cache=Config::filesystem('cache');
-	$cache_folder=$cache['path'];
-	$cache_file=$cache_folder."/".$cache['file'];
-	if(file_exists($cache_file)){
-		$json=(array)json_decode(file_get_contents($cache_file));
-	}else{
-		$json=[];
-	}
-	$slug=slug($path);
-	if(!isset($json[$slug])){
-		$path=explode("/",$path);
-		$json=array_merge($json,listDirectory(join("/",array_slice($path,0,count($path)-1))));
-		file_put_contents($cache_file,json_encode($json));
-	}
-	if(file_exists($json[$slug]??"")){
-		require_once $json[$slug];
-	}
-});
-
-require "vendor/autoload.php";
+require_once "vendor/autoload.php";
 require_once "libs/helpers.php";
+
+use libs\Config;
 
 function listDirectory($path){
 	if(!is_dir($path) || !file_exists($path) || !is_readable($path) || $path==""){
@@ -48,13 +25,6 @@ function listDirectory($path){
 	return $json;
 }
 
-// Activar mostrar errores
-if(config()->app('debug')){
-	error_reporting(E_ALL);
-	ini_set('display_errors',1);
-}
-set_exception_handler("exception");
-set_error_handler("error");
 //$env->set('APP_URL',str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".$_SERVER["HTTP_HOST"]).\dirname($_SERVER['PHP_SELF'])."/");
 // Verificar archivos publicos
 $uri=$_SERVER['REQUEST_URI'];
@@ -75,40 +45,17 @@ if(file_exists(Config::filesystem("public.path").$uri) && !is_dir(Config::filesy
 	exit;
 }
 unset($uri);
-// Enrutadores
-use libs\Router\Router;
-use app\Kernel;
-$directory=scandir(Config::filesystem("routes.path"));
-$router=Router::singleton();
-$kernel=new Kernel();
 
 // Zona horaria
 date_default_timezone_set(env('TIMEZONE',Config::app('timezone')??date_default_timezone_get()));
-// Rutas predeterminadas
-$router->post('/component/{name}',function($request){
-	ob_start();
-	$name=ucfirst($request->input('name'));
-	$instance=new ("\\".str_replace("/","\\",Config::filesystem("components.path"))."\\".$name)();
-	$done=$instance->syncRequest($request);
-	$instance->render();
-	$html=ob_get_clean();
-	$data=$instance->getData();
-	return json([
-		"html"=>$done?$html:"",
-		"data"=>$data,
-		"direct"=>$done?null:$instance->direct()
-	]);
-})->middleware('session','csrf');
-foreach($directory as $file){
-	if($file=='.' || $file=='..'){
-		continue;
-	}
-	$ext=explode(".",$file)[1];
-	if($ext!="php"){
-		continue;
-	}
-	require_once(Config::filesystem("routes.path")."/".$file);
-}
-$router->controller();
+
+// Llamdo del Kernel
+use app\Kernel;
+$kernel=new Kernel();
+
+// Llamado del enrutamiento
+use libs\Router\Route;
+Route::controller();
+
 
 ?>

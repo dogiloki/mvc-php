@@ -2,11 +2,16 @@
 
 namespace app;
 
-class Kernel{
+use libs\KernelApp;
 
-    public function __construct(){
-        
-    }
+class Kernel extends KernelApp{
+
+    protected $services=[
+        \app\Services\ReportService::class,
+        \app\Services\MiddlewareService::class,
+        \libs\Service\RoutingService::class,
+        \app\Services\RouteService::class,
+    ];
 
 }
 
