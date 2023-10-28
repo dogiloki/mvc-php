@@ -37,7 +37,7 @@ function url($text=""){
 }
 
 function slug($text){
-	return strtolower(preg_replace("/[^a-zA-Z0-9]+/","-",$text));
+    return strtolower(preg_replace("/[^a-zA-Z0-9]+/","-",$text));
 }
 
 function vars(){
@@ -98,14 +98,17 @@ function locale($locale=null){
     return $locale==null?Config::app('locale')??Session::get('locale'):Session::set('locale',$locale);
 }
 
-function __($key, $params=[]){
+function __($key,$params=[]){
+    $keys=explode(".",$key);
     $locale=locale();
-    $file=Config::filesystem('lang.path')."/".$locale.".php";
+    $file=Config::filesystem('lang.path')."/".$locale."/".$keys[0].".php";
     if(file_exists($file)){
         $lang=include($file);
-        $keys=explode(".",$key);
         $value=$lang;
-        foreach($keys as $key){
+        foreach($keys as $index=>$key){
+            if($index==0){
+                continue;
+            }
             $value=$value[$key]??$key;
         }
         if(is_array($value)){
@@ -118,7 +121,7 @@ function __($key, $params=[]){
         }
         return $value;
     }
-    return null;
+    return $keys[count($keys)-1]??null;
 }
 
 function messageFormat($text,$args=[]){

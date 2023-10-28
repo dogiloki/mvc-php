@@ -4,21 +4,26 @@ namespace libs\Middle;
 
 class Singleton{
 
-	protected static $instance=null;
+	protected static $instances=[];
 
 	public static function __callStatic($method,$arguments){
 		$method="_".$method;
-        $instance=static::singleton();
+        $instance=Singleton::$instances[get_called_class()]??null;
+        if($instance==null){
+        	$instance=get_called_class()::singleton();
+        }
         if(method_exists($instance,$method)){
             return call_user_func_array([$instance,$method],$arguments);
         }
     }
 
 	public static function singleton(){
-		if(static::$instance===null){
-			static::$instance=new static();
+		$instance=Singleton::$instances[get_called_class()]??null;
+		if($instance===null){
+			$instance=new static;
+			Singleton::$instances[get_called_class()]=$instance;
 		}
-		return static::$instance;
+		return $instance;
 	}
 
 	protected function __construct(){
