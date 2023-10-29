@@ -2,31 +2,19 @@
 
 namespace libs\Validator;
 
+use libs\Middle\Singleton;
+use libs\Validator\Rule;
 
-class Validation{
+class Validator extends Singleton{
 
-	private $errors;
-	private $values;
+	private $rules=[];
 
-	public function __construct($values,$errors){
-		$this->values=$values;
-		$this->errors=$errors;
+	public function _make($key,$action){
+		$this->rules[$key]=new Rule($key,$action);
 	}
 
-	public function values(){
-		return $this->values;
-	}
-
-	public function errors(){
-		return $this->errors;
-	}
-
-	public function fails(){
-		return count($this->errors)==0;
-	}
-
-	public function has($key){
-		return isset($this->errors[$key]);
+	public function _rules(){
+		return $this->rules;
 	}
 
 }

@@ -124,11 +124,19 @@ function __($key,$params=[]){
     return $keys[count($keys)-1]??null;
 }
 
-function messageFormat($text,$args=[]){
-    return preg_replace_callback('/\{(\w+)\}/',function($matches)use($args){
-        $name=$matches[1];
-        return isset($args[$name])?$args[$name]:$matches[0];
-    },$text);
+function messageFormat($text,$args=[],$separator="{}"){
+    if($separator==="{}"){
+        return preg_replace_callback('/\{(\w+)\}/',function($matches)use($args){
+            $name=$matches[1];
+            return isset($args[$name])?$args[$name]:$matches[0];
+        },$text);
+    }else
+    if($separator===":"){
+        foreach($args as $key=>$arg){
+            $text=str_replace(":".$key,$arg,$text);
+        }
+        return $text;
+    }
 }
 
 // Functions from Response::class

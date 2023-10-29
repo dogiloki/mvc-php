@@ -2,9 +2,14 @@
 
 use libs\Router\Route;
 use libs\HTTP\Request;
+use libs\Validator\Validate;
 
 Route::get('/test',function(Request $request){
-    return json(app\Models\User::with('roles')->all());
+    $validation=Validate::make(
+        ["name"=>"Julio","surname"=>"Vilalnueva","edad"=>25,"email"=>"julio@gmail.com"],
+        ["name"=>"required|string","surname"=>"required|string","edad"=>"between:11,25","email"=>"email"]
+    );
+    dd($validation->errors());
 })->name('test-get');
 
 Route::post('/test',function(Request $request){
