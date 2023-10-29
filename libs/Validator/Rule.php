@@ -4,11 +4,11 @@ namespace libs\Validator;
 
 class Rule{
 
-	private $key;
-	private $action;
+	protected $key=null;
+	protected $action=null;
 
 	public function __construct($key=null,$action=null){
-		$this->key=$key??strtolower(get_class($this));
+		$this->key??=$key??strtolower(get_class($this));
 		$this->action=$action;
 	}
 
