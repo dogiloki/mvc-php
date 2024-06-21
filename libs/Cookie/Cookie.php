@@ -41,7 +41,7 @@ class Cookie{
         $secure??=Config::session('cookie.secure');
         $httponly??=Config::session('cookie.httponly');
         $samesite??=Config::session('cookie.samesite');
-        if(setcookie($name,$value,compact('expires','path','domain','secure','httponly','samesite'))){
+        if(setcookie($name,$value??"",compact('expires','path','domain','secure','httponly','samesite'))){
             $_COOKIE[$name]=$value;
             return true;
         }
