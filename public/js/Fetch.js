@@ -1,4 +1,4 @@
-class Fetch{
+export default class Fetch{
 
     static host=document.location.protocol+"//"+window.location.host;
 
