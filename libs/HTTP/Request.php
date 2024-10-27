@@ -105,7 +105,7 @@ class Request{
 	}
 
 	public function all(){
-		return array_merge($this->get,$this->post,$this->put);
+		return array_keys($_REQUEST);
 	}
 
 	public function bearerToken(){

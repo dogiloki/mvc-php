@@ -1,10 +1,11 @@
 import Fetch from './Fetch.js';
 
-class XHR{
+export default class XHR{
 
     static request({
         method="GET",
-        url="",
+        url:url=null,
+        uri="",
         load=()=>{},
         error=()=>{},
         abort=()=>{},
@@ -13,14 +14,16 @@ class XHR{
         files={},
         resert=false
     }){
-        array.method=method;
+        url??=Fetch.host+"/"+uri;
+        console.log(url);
+        data.method=method;
         let xhr=new XMLHttpRequest();
         let form_data=new FormData();
         for(let index1 in data){
-            form_data.append(index1,data[index]);
+            form_data.append(index1,data[index1]);
         }
         for(let index2 in files){
-            form_data.append(index2,files[index]);
+            form_data.append(index2,files[index2]);
         }
         xhr.addEventListener('load',function(){
             load(xhr.responseText);
@@ -30,11 +33,13 @@ class XHR{
                 setTimeout(()=>{
                     XHR.request({
                         method:method,
-                        url:url,
+                        url:rul,
+                        uri:uri,
                         load:load,
                         error:error,
                         abort:abort,
-                        array:array,
+                        data:data,
+                        files:files,
                         resert:resert
                     });
                 },5000);
@@ -45,10 +50,10 @@ class XHR{
             abort(xhr.responseText);
         });
         xhr.upload.addEventListener('progress',function(evt){
-            progress(evt);
+            progress(evt,(evt.loaded/evt.total)*100);
         });
 
-        xhr.open(method,Fetch.host+"/"+url);
+        xhr.open(method,url);
         xhr.send(form_data);
     }
 
