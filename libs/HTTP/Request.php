@@ -108,6 +108,11 @@ class Request{
 		return array_keys($_REQUEST);
 	}
 
+	public function only($class){
+		$model=new $class();
+		return array_intersect_key($this->all(),$model->getFillable());
+	}
+
 	public function bearerToken(){
 		$authorization=$this->header('Authorization');
 		if($authorization){

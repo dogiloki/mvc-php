@@ -7,7 +7,7 @@ class Faker{
     public $faker;
 
     public function __construct(){
-        $this->faker=\Faker\Factory::create();
+        $this->faker=\Faker\Factory::create(config()->app('faker_locale'));
     }
 
     public function __get($name){

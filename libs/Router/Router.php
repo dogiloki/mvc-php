@@ -99,7 +99,7 @@ class Router{
 	// Iniciar enrutamiento
 
 	public function controller(){
-		$base_uri=explode("/",Route::formatUri($_SERVER['REQUEST_URI']));
+		$base_uri=explode("/",explode("?",Route::formatUri($_SERVER['REQUEST_URI']))[0]);
 		$params=[];
 		$request=Request::singleton();
 		foreach($this->routes as $route){

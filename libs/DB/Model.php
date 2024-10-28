@@ -7,6 +7,7 @@ use libs\Annotation;
 use libs\DB\DB;
 use libs\Config;
 use libs\DB\Relation;
+use libs\DB\Paginator;
 
 class Model{
 
@@ -21,7 +22,6 @@ class Model{
 		}
 	}
 
-	
 	//private $params;
 	//private $annotation_attributes;
 	//private $calls=[];
@@ -78,6 +78,10 @@ class Model{
 
 	public function _getTable(){
 		return $this->table;
+	}
+
+	public function getFillable(){
+		return $this->fillable;
 	}
 
 	public function _getPrimaryKey(){
@@ -252,6 +256,18 @@ class Model{
 			exception($ex);
 		}
 		return null;
+	}
+
+	public function _paginate($max,$pag){
+		$paginator=new Paginator();
+		$data=$this->pagination($max,$pag)->get();
+		$paginator->data=$data;
+		$paginator->per_page=$max;
+		$paginator->current_page=$pag;
+		$paginator->total=$this->select(DB::flat('COUNT(*) as total'))->first()->total;
+		$paginator->to=ceil($this->total/$max);
+		$paginator->links();
+		return $paginator;
 	}
 
 	public function update($row){

@@ -1,0 +1,16 @@
+@import './font/colors.scss';
+
+table{
+    width: 100%;
+    
+    td,th{
+        padding: 5px;
+        box-shadow: 0px 1px $table_shadow_color;
+    }
+    th{
+        text-align: left;
+        color: $table_th_color;
+        background-color: $primary_color;
+        cursor: pointer;
+    }
+}

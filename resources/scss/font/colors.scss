@@ -1,7 +1,28 @@
 // Variables for colors
-$primary: #0000FF; // Azul
-$secondary: #00FFFF; // Verde agua
-header{
-    background-color: $primary;
-    color: $secondary;
+$primary_color: #156082;
+$secondary_color: #f5f5f5;
+$gray: #353535;
+$white: #ffffff;
+
+$primary_btn_color: #1D86B5;
+
+$form_box_border_color: #c2c2c2;
+$form_box_color: $gray;
+$form_box_background: #ffffff;
+$form_background_color: #f5f5f5;
+
+$table_shadow_color: #c2c2c2;
+$table_th_color: #f5f5f5;
+
+*{
+    padding: 0px;
+    margin: 0px;
+    font-family: arial;
+    box-sizing: border-box;
+}
+.flex{
+    display: flex;
+}
+.block{
+    display: block;
 }

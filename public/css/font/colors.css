@@ -1,3 +1,9 @@
-header {
-  background-color: #00f;
-  color: #0ff; }
+* {
+  font-family: arial;
+}
+.flex {
+  display: flex;
+}
+.block {
+  display: block;
+}

@@ -340,10 +340,6 @@ class Table{
 		return $this;
 	}
 
-	public function paginate($max,$pag){
-		return $this->pagination($max,$pag);
-	}
-
 	public function pagination($max,$pag){
 		$index=$max*($pag-1);
 		$end=$max;
@@ -452,6 +448,10 @@ class Table{
 			}
 			case self::SELECT:{
 				foreach($this->values_select as $value){
+					if($value instanceof Flat){
+						$value=$value->value;
+						$columns.=$value.",";
+					}else
 					if(strpos($value,".")){
 						$columns.=$value.",";
 					}else{

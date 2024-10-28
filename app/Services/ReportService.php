@@ -7,10 +7,8 @@ use libs\Service\Contract\ServiceImpl;
 class ReportService implements ServiceImpl{
 
 	public function handle(){
-		if(config()->app('debug')){
-			error_reporting(E_ALL);
-			ini_set('display_errors',1);
-		}
+		error_reporting(E_ALL | E_DEPRECATED);
+		ini_set('display_errors',config()->app('debug')?1:0);
 		set_exception_handler("exception");
 		set_error_handler("error");
 	}
