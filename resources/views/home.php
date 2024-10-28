@@ -1,3 +1,3 @@
 @extends('layouts.header')
-Hola, {{user()->name}}
+Hola
 @extends('layouts.footer')

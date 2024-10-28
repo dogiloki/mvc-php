@@ -13,15 +13,10 @@ class User extends Model{
 	protected $hidden=["password"];
 	protected $fillable=[
 		"name",
-		"surname1",
-		"surname2",
-		"registration",
+		"email",
+		"verified_email_at",
 		"password"
 	];
-
-	public function fullName(){
-		return $this->name." ".$this->surname1." ".$this->surname2;
-	}
 
 }
 

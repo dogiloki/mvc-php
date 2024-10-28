@@ -11,9 +11,8 @@ return new class extends Migration{
 		$this->table('user',function($table){
 			$table->id();
 			$table->string('name');
-			$table->string('surname1');
-			$table->string('surname2');
-			$table->string('registration')->uniqued();
+			$table->string('email');
+			$table->string('verified_email_at')->nullable();
 			$table->string('password');
 			$table->timestamps();
 		});
