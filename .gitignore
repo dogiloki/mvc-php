@@ -1,6 +1,6 @@
 /node_modules
 /vendor
-/storage
+/storage/*.key
 *.env
 /.idea
 /.vscode
