@@ -14,6 +14,10 @@ class Validation{
 		$this->errors=$errors;
 	}
 
+	public function values(){
+		return $this->values;
+	}
+
 	public function errors(){
 		return $this->errors;
 	}
