@@ -6,7 +6,8 @@ return [
         'path'=>'storage',
         'app'=>'storage/app',
         'public'=>'storage/app/public',
-        'files'=>'storage/app/files'
+        'files'=>'storage/app/files',
+        'qr'=>'storage/app/qr'
     ],
 
     'public'=>[

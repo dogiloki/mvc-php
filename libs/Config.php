@@ -25,6 +25,10 @@ class Config{
             foreach($keys as $key){
                 $value=$value[$key]??null;
             }
+            $directory=$value;
+            if(!is_dir($directory) && $name=="filesystem" && trim($directory," ")!=""){
+                mkdir($directory,0755,true);
+            }
             return $value;
         }
         throw new \Exception("File not found: ".$filename);

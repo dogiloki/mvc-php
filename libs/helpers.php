@@ -27,7 +27,11 @@ function dd($obj){
 }
 
 function base_path($path=""){
-    return env('APP_BASE_PATH')."/".$path;
+    return env('APP_BASE_PATH')."\\".$path;
+}
+
+function public_path($path=""){
+    return env('APP_BASE_PATH')."\\public\\".$path;
 }
 
 function url($text=""){

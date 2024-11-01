@@ -23,7 +23,7 @@ class Secure{
 		$text??=uniqid(rand(),true);
 		return hash('sha256',$text);
 	}
-
+	
 	public static function encrypt($text,$key=null){
 		$key??=Config::app('key');
 		if($text==null || $key==null){
