@@ -42,7 +42,7 @@ class QRCode{
     }
 
     public function save($name="qr.png"){
-        file_put_contents(Config::filesystem('storage.qr')."/".$name,$this->qr_output);
+        return file_put_contents(Config::filesystem('storage.qr')."/".$name,$this->qr_output);
     }
 
     public function code(){
