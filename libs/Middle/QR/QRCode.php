@@ -19,6 +19,7 @@ class QRCode{
     public function __construct($qr_options=null){
         $this->qr_options=$qr_options??new QROptions([
             "version"=>QR::VERSION_AUTO,
+            'outputType'=>QR::OUTPUT_IMAGE_PNG,
             "eccLevel"=>EccLevel::H,
             "imageBase64"=>false,
             "addLogoSpace"=>true,
@@ -32,12 +33,17 @@ class QRCode{
         ]);
     }
 
-    public function render($data,$image){
+    public function render($data,$image=null){
         $qr=new QR($this->qr_options);
-        $qr->addByteSegment($data);
+        if($image==null){
+            $this->qr_options->addLogoSpace=false;
+            $this->qr_output=$qr->render($data);
+        }else{
+            $qr->addByteSegment($data);
+            $output=new QRImage($this->qr_options,$qr->getMatrix());
+            $this->qr_output=$output->dump(null,$image);
+        }
         $this->qr_code=$qr;
-        $output=new QRImage($this->qr_options,$this->qr_code->getMatrix());
-        $this->qr_output=$output->dump(null,$image);
         return $this;
     }
 
