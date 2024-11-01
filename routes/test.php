@@ -9,8 +9,8 @@ use libs\Middle\QR\QRCode;
 use libs\Middle\Email;
 use libs\Middle\Storage;
 
-Route::get('/test/{id?}',function(Request $request){
-    
+Route::get('/test/{name?}',function(Request $request){
+
 })->name('test-get');
 
 Route::post('/test',function(Request $request){

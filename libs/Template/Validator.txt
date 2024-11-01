@@ -1,0 +1,31 @@
+<?php
+
+namespace {space};
+
+use libs\Validator\Validate;
+use app\Models\{name2};
+
+class {name} extends {name2}{
+    
+    public function authorize($data,$rule){
+        $data=array_intersect_key($data,$this->getFillableArray());
+        return Validate::make($data,$this->rules()[$rule]);
+    }
+
+    public function rules(){
+        return [
+            'store'=>[
+
+            ],
+            'update'=>[
+
+            ],
+            'delete'=>[
+
+            ]
+        ];
+    }
+
+}
+
+?>

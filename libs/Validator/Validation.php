@@ -22,6 +22,10 @@ class Validation{
 		return $this->errors;
 	}
 
+	public function fails(){
+		return !empty($this->errors());
+	}
+
 }
 
 ?>

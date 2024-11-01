@@ -105,12 +105,12 @@ class Request{
 	}
 
 	public function all(){
-		return array_keys($_REQUEST);
+		return $_REQUEST;
 	}
 
 	public function only($class){
 		$model=new $class();
-		return array_intersect_key($this->all(),$model->getFillable());
+		return array_intersect_key($this->all(),$model->getFillableArray());
 	}
 
 	public function bearerToken(){

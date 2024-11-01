@@ -12,7 +12,7 @@ require_once("libs/helpers.php");
 use libs\Config;
 use libs\Console\Manager;
 
-Manager::command("new {type} {name}",function($console,$type,$name){
+Manager::command("new {type} {name} {name2?}",function($console,$type,$name,$name2){
 	$types=[
 		"controller"=>[
 			"filesystem"=>"controllers.path",
@@ -36,10 +36,16 @@ Manager::command("new {type} {name}",function($console,$type,$name){
 		],
 		"service"=>[
 			"filesystem"=>"services.path",
-			"message"=>"Service",
+			"message"=>"Servicio",
 			"template"=>"Service.txt"
+		],
+		"validator"=>[
+			"filesystem"=>"validators.path",
+			"message"=>"Validador",
+			"template"=>"Validator.txt"
 		]
 	];
+	$name2??"";
 	if(!isset($types[$type])){
 		$console->error("No existe el parámetro ".$type)->exit();
 	}
@@ -62,7 +68,7 @@ Manager::command("new {type} {name}",function($console,$type,$name){
 	if(!$file){
 		$console->error("No se tiene acceso al archivo ".$path)->exit();
 	}
-	fwrite($file,messageFormat(file_get_contents("libs/Template/".$types[$type]["template"]),compact("name","space")));
+	fwrite($file,messageFormat(file_get_contents("libs/Template/".$types[$type]["template"]),compact("name2","name","space")));
 	fclose($file);
 	$console->success($types[$type]["message"]." creado ".$path)->exit();
 })->describe("Crear un nuevo archivo en base a una plantilla, ubicada en libs/Template");

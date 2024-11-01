@@ -38,7 +38,11 @@ return [
     ],
 
     'services'=>[
-        'path'=>'app/Services'  
+        'path'=>'app/Services'
+    ],
+
+    'validators'=>[
+        'path'=>'app/Validators'
     ],
 
     'components'=>[

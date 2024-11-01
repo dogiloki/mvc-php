@@ -84,6 +84,10 @@ class Model{
 		return $this->fillable;
 	}
 
+	public function getFillableArray(){
+		return array_flip($this->getFillable());
+	}
+
 	public function _getPrimaryKey(){
 		return $this->primary_key;
 	}

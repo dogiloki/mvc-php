@@ -6,6 +6,11 @@ use libs\DB\Model;
 
 class {name} extends Model{
     
+    protected $table="{name2}";
+    protected $fillable=[
+        
+	];
+
 }
 
 ?>
