@@ -1,3 +1,3 @@
-@extends('layouts.header')
+@extends('layouts.head')
 Hola
 @extends('layouts.footer')
