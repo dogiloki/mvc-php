@@ -11,6 +11,7 @@ class Storage{
 
     public static $compress_image=false;
     public static $compress_image_level=70;
+    public static $encrypt=null;
 
     public static function upload($file,$disk){
         $dir=Config::filesystem('storage.'.$disk)."/";
@@ -20,7 +21,11 @@ class Storage{
         $name=$file['name'];
         $type=$file['type'];
         $size=$file['size'];
-        try{       
+        try{
+            if(self::$encrypt!=null){
+                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),self::$encrypt);
+                file_put_contents($file['tmp_name'],$content);
+            }
             $name_temp=$file['tmp_name'];
             $name_exp=explode('.',$name);
             $name_exp=$name_exp[sizeof($name_exp)-1];
@@ -67,19 +72,24 @@ class Storage{
         if($uploader_file==null){
             abort(404);
         }
-        self::get($uploader_file->name(),$uploader_file->disk,$uploader_file->download_name);
+        self::get($uploader_file->name(),$uploader_file->disk,$uploader_file->download_name,$uploader_file->mime);
     }
 
-    public static function get($file,$disk,$download_name=null){
+    public static function get($file,$disk,$download_name=null,$mime=null){
         $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
         if(file_exists($path)){
             ob_clean();
-            header("Content-type: ".mime_content_type($path));
+            header("Content-type: ".$mime??mime_content_type($path));
             header("Content-Disposition: filename=\"".$download_name."\"");
-            readfile($path);
+            if(self::$encrypt!=null){
+                $content=Secure::decryptNotBase64(file_get_contents($path),self::$encrypt);
+            }else{
+                $content=file_get_contents($path);
+            }
+            echo $content;
         }else{
             abort(404);
         }

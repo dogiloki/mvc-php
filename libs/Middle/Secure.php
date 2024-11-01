@@ -23,23 +23,35 @@ class Secure{
 		$text??=uniqid(rand(),true);
 		return hash('sha256',$text);
 	}
+
+	public static function encryptNotBase64($text,$key=null){
+		return self::encrypt($text,$key,false);
+	}
 	
-	public static function encrypt($text,$key=null){
+	public static function encrypt($text,$key=null,$base64=true){
 		$key??=Config::app('key');
 		if($text==null || $key==null){
 			return null;
 		}
 		$iv=openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-		return base64_encode($iv.openssl_encrypt($text,'aes-256-cbc',$key,0,$iv));
+		$code=$iv.openssl_encrypt($text,'aes-256-cbc',$key,0,$iv);
+		return $base64?base64_encode($code):$code;
 	}
 
-	public static function decrypt($text,$key=null){
+	public static function decryptNotBase64($text,$key=null){
+		return self::decrypt($text,$key,false);
+	}
+
+	public static function decrypt($text,$key=null,$base64=true){
 		$key??=Config::app('key');
 		if($text==null || $key==null){
 			return null;
 		}
-		$iv=substr(base64_decode($text),0,openssl_cipher_iv_length('aes-256-cbc'));
-		return openssl_decrypt(substr(base64_decode($text),openssl_cipher_iv_length('aes-256-cbc')),'aes-256-cbc',$key,0,$iv);
+		if($base64){
+			$text=base64_decode($text);
+		}
+		$iv=substr($text,0,openssl_cipher_iv_length('aes-256-cbc'));
+		return openssl_decrypt(substr($text,openssl_cipher_iv_length('aes-256-cbc')),'aes-256-cbc',$key,0,$iv);
 	}
 	
 }
