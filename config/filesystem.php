@@ -97,7 +97,7 @@ return [
 
     'cache'=>[
         'path'=>'storage/framework/cache',
-        'file'=>'files.json'
+        'file'=>'storage/framework/cache/files.json'
     ],
 
     'create'=>[
