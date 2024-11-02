@@ -74,8 +74,8 @@ Manager::command("new {type} {name} {name2?}",function($console,$type,$name,$nam
 })->describe("Crear un nuevo archivo en base a una plantilla, ubicada en libs/Template");
 
 Manager::command("create",function($console){
-	$folders=Config::filesystem('create.folders');
-	$files=Config::filesystem('create.files');
+	$folders=Config::filesystem('create.folders')??[];
+	$files=Config::filesystem('create.files')??[];
 	foreach($folders as $dir){
 		if(!file_exists($dir)){
 			mkdir($dir,0777,true);
