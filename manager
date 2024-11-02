@@ -108,6 +108,12 @@ Manager::command("server {port?}",function($console,$port){
 	exec('php -S 127.0.0.1:'.$port." -t ".Config::filesystem('public.path'));
 });
 
+Manager::command("scss",function($console){
+	$path_input=Config::filesystem('scss.path_input');
+    $path_output=Config::filesystem('scss.path_output');
+	exec('sass --watch '.$path_input.':'.$path_output);
+});
+
 Manager::call($argv);
 
 ?>

@@ -56,7 +56,7 @@ return [
     'scss'=>[
         'path_input'=>'resources/scss',
         'path_output'=>'public/css',
-        'path_public'=>'css'
+        'file_output'=>'css/{name}'
     ],
 
     'views'=>[

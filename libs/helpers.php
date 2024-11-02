@@ -94,7 +94,9 @@ function scss($path){
             exception($ex);
         }
     }
-    $path=Config::filesystem('scss.path_public')."/".str_replace(".scss",".css",$path);
+    $path=messageFormat(Config::filesystem('scss.file_output'),[
+        'name'=>str_replace(".scss",".css",$path)
+    ]);
     return url($path);
 }
 

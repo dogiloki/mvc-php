@@ -1,4 +1,4 @@
-@import 'font/colors.scss';
+@use './font/colors.scss' as *;
 
 // Normalizar
 *{
