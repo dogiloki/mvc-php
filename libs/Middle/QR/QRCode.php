@@ -23,10 +23,10 @@ class QRCode{
             "eccLevel"=>EccLevel::H,
             "imageBase64"=>false,
             "addLogoSpace"=>true,
-            "logoSpaceWidth"=>15,
-            "logoSpaceHeight"=>15,
-            "scale"=>7,
-            "imageTransparent"=>false,
+            "logoSpaceWidth"=>20,
+            "logoSpaceHeight"=>20,
+            "scale"=>4,
+            "imageTransparent"=>true,
             "drawCircularModules"=>false,
             "circleRadius"=>0.45,
             "keepAsSquare"=>[QRMatrix::M_FINDER,QRMatrix::M_FINDER_DOT]
@@ -36,7 +36,7 @@ class QRCode{
     public function render($data,$image=null){
         $qr=new QR($this->qr_options);
         if($image==null){
-            $this->qr_options->addLogoSpace=false;
+            $this->qr_options->addLogoSpace=true;
             $this->qr_output=$qr->render($data);
         }else{
             $qr->addByteSegment($data);

@@ -56,12 +56,16 @@ class Relation{
         if($this->relation=="ManyToMany"){
             $db=DB::singleton();
             try{
-                $db->beginTransaction();
+                if(!$db->inTransaction()){
+                    $db->beginTransaction();
+                }
                 $rs=DB::table($this->model_middle->getTable());
                 $rs->where($this->model_primary_column,$this->model_primary->{$this->model_primary->primary_key});
                 $rs->delete()->execute();
                 if($this->attach($ids)){
-                    $db->commit();
+                    if($db->inTransaction()){
+                        $db->commit();
+                    }
                     return true;
                 }
                 throw new \Exception();
@@ -69,6 +73,7 @@ class Relation{
                 if($db->inTransaction()){
                     $db->rollback();
                 }
+                dd($ex->getMessage());
             }
             return false;
         }

@@ -10,13 +10,13 @@ return new class extends Migration{
 	public function up(): void{
 		$this->table('uploader_file',function($table){
 			$table->id();
-			$table->text('disk');
-			$table->text('folder');
-			$table->text('hash')->unique();
-			$table->text('ext');
-			$table->text('mime');
-			$table->text('original_name');
-			$table->text('download_name');
+			$table->string('disk');
+			$table->string('folder');
+			$table->string('hash')->unique();
+			$table->string('ext');
+			$table->string('mime');
+			$table->string('original_name');
+			$table->string('download_name');
 			$table->timestamps();
 		});
 	}

@@ -12,6 +12,11 @@ class Storage{
     public static $compress_image=false;
     public static $compress_image_level=70;
     public static $encrypt=null;
+    public static $download=false;
+
+    public static function encrypt($key=null){
+        self::$encrypt=$key??Config::app('key');
+    }
 
     public static function upload($file,$disk){
         $dir=Config::filesystem('storage.'.$disk)."/";
@@ -44,6 +49,7 @@ class Storage{
                 if(self::$compress_image && explode("/",$type)[0]=="image"){
                     self::compressImage($folder);
                 }
+                self::$encrypt=null;
                 return UploaderFile::create([
                     "disk"=>$disk,
                     "folder"=>$folder_save,
@@ -54,11 +60,13 @@ class Storage{
                     "download_name"=>$name
                 ]);
             }else{
+                self::$encrypt=null;
                 return null;
             }
         }catch(\Exception $ex){
-            
+            return null;
         }
+        self::$encrypt=null;
         return null;
     }
 
@@ -75,6 +83,10 @@ class Storage{
         self::get($uploader_file->name(),$uploader_file->disk,$uploader_file->download_name,$uploader_file->mime);
     }
 
+    public static function download(){
+        self::$download=true;
+    }
+
     public static function get($file,$disk,$download_name=null,$mime=null){
         $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
@@ -82,7 +94,7 @@ class Storage{
         $path=$folder."/".$file;
         if(file_exists($path)){
             ob_clean();
-            header("Content-type: ".$mime??mime_content_type($path));
+            header("Content-type: ".(self::$download?"application/octet-stream":($mime??mime_content_type($path))));
             header("Content-Disposition: filename=\"".$download_name."\"");
             if(self::$encrypt!=null){
                 $content=Secure::decryptNotBase64(file_get_contents($path),self::$encrypt);
@@ -93,14 +105,18 @@ class Storage{
         }else{
             abort(404);
         }
+        self::$encrypt=null;
+        self::$download=false;
     }
 
     public static function deleteHash($text){
         $uploader_file=UploaderFile::where('hash',$text)->first();
         if($uploader_file==null){
+            self::$encrypt=null;
             return false;
         }
         $uploader_file->delete();
+        self::$encrypt=null;
         return self::delete($uploader_file->name(),$uploader_file->disk);
     }
     
@@ -113,8 +129,10 @@ class Storage{
             if(file_exists($path)){
                 unlink($path);
             }
+            self::$encrypt=null;
             return true;
         }else{
+            self::$encrypt=null;
             return false;
         }
     }

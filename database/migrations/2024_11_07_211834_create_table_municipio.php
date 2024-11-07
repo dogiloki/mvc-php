@@ -8,12 +8,9 @@ return new class extends Migration{
 	 * Run the migrations.
 	 */
 	public function up(): void{
-		$this->table('user',function($table){
+		$this->table('municipio',function($table){
 			$table->id();
-			$table->string('name');
-			$table->string('email')->unique();
-			$table->string('verified_email_at')->nullable();
-			$table->string('password');
+			$table->string('nombre')->unique();
 			$table->timestamps();
 		});
 	}
@@ -22,9 +19,9 @@ return new class extends Migration{
 	 * Reverse the migrations.
 	 */
 	public function down(): void{
-		$this->dropIfExists('user');
+		$this->dropIfExists('municipio');
 	}
 	
 };
-		
+
 ?>

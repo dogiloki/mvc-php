@@ -56,7 +56,7 @@ class Auth{
     }
     
     public function _check(){
-        return ($this->user===null?Session::has($this->name_session):$this->user)!==null;
+        return ($this->user===null)?(Session::has($this->name_session)):($this->user!==null);
     }
 
     public function _logout(){

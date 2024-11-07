@@ -10,7 +10,7 @@ return new class extends Migration{
 	public function up(): void{
 		$this->table('global_var',function($table){
 			$table->string('key')->primary();
-			$table->text('value');
+			$table->string('value');
 			$table->timestamps();
 		});
 	}
