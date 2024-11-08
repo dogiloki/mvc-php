@@ -29,6 +29,11 @@ Manager::command("new {type} {name} {name2?}",function($console,$type,$name,$nam
 			"message"=>"Migración",
 			"template"=>"Migration.txt"
 		],
+		"seeder"=>[
+			"filesystem"=>"database.seeders",
+			"message"=>"Semilla",
+			"template"=>"Seeder.txt"
+		],
 		"middleware"=>[
 			"filesystem"=>"middlewares.path",
 			"message"=>"Middleware",

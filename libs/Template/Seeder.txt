@@ -1,0 +1,18 @@
+<?php
+
+namespace {space};
+
+use libs\DB\Seeder;
+use app\Models\{name2};
+
+class {name} extends Seeder{
+
+	public function run(){
+		{name2}::create([
+			
+		]);
+	}
+
+}
+
+?>

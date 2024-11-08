@@ -18,7 +18,7 @@ return [
     'database'=>[
         'path'=>'database',
         'migrations'=>'database/migrations',
-        'seeds'=>'database/seeds',
+        'seeders'=>'database/seeders',
     ],
 
     'routes'=>[
