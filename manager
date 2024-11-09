@@ -11,6 +11,7 @@ require "vendor/autoload.php";
 require_once("libs/helpers.php");
 use libs\Config;
 use libs\Console\Manager;
+use libs\DB\DB;
 
 Manager::command("new {type} {name} {name2?}",function($console,$type,$name,$name2){
 	$types=[
@@ -107,6 +108,40 @@ Manager::command("seeder",function($console){
 	$seeder=new database\seeders\DatabaseSeeder();
 	$seeder->run();
 });
+
+Manager::command("db {type} {name?} {table?}",function($console,$type,$name,$table){
+	$name??="backup";
+	$folder=Config::filesystem('database.backups');
+	$file=$folder."/".$name.".sql";
+	$password=Config::database('password');
+	if($type=="export"){
+		$command="mysqldump --user=".Config::database('user')." ".($password==null?"":"--password=".$password)." --host=".Config::database('host')." --port=".Config::database('port')." ".Config::database('database').($table==null?"":(" ".$table))." > ".$file;
+		system($command,$output);
+		if($output){
+			$console->error("Error al exportar base de datos ".$file);
+		}else{
+			$console->success("Base de datos exportada ".$file);
+		}
+	}else
+	if($type=="import"){
+		$console->info("Importe el archivo ".$file." manualmente (automático pendiente)");
+	}else
+	if($type=="show"){
+		$files=scandir($folder);
+		foreach($files as $file){
+			if($file!=='.' && $file!=='..'){
+				$console->info($folder."/".$file);
+			}
+		}	
+	}else
+	if($type=="remove"){
+		if(unlink($file)){
+			$console->success("Respaldo de base de datos eliminado ".$file);
+		}else{
+			$console->error("Error al eliminar resplado base de datos ".$file);
+		}
+	}
+})->describe("Respaldos de base de datos base de datos en formato sql");
 
 Manager::command("server {port?}",function($console,$port){
 	$port??=8000;

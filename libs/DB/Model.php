@@ -107,11 +107,19 @@ class Model{
 	}
 
 	protected function hasOne($table,$id_table,$id_table_secundary=null){
-		return $this->getReference("HasOne",[$table,$id_table,$id_table_secundary],$this->{$this->primary_key});
+		return $this->getReference("HasOne",[
+			$table,
+			$id_table,
+			$id_table_secundary
+		],$this->{$this->primary_key});
 	}
 
 	protected function hasMany($table,$id_table_secundary,$id_table=null){
-		return $this->getReference("HasMany",[$table,$id_table_secundary,$id_table],$this->{$this->primary_key});
+		return $this->getReference("HasMany",[
+			$table,
+			$id_table_secundary,
+			$id_table
+		],$this->{$this->primary_key});
 	}
 
 	protected function manyToMany($table,$table_middle,$id_table,$id_table_middle){
@@ -143,12 +151,16 @@ class Model{
 		if($relation=="HasOne"){
 			$column=$reference[1];
 			$rs=$model::select($model->getTable().".*")
-			->join($this->getTable())->onColumn($this->getTable().".".$column,$model->getTable().".".($reference[2]??$model->primary_key));
+			->join($this->getTable())
+			->onColumn($this->getTable().".".$column,$model->getTable().".".($reference[2]??$model->primary_key))
+			->where($this->getTable().".".$this->primary_key,$value_id);
 		}else
 		if($relation=="HasMany"){
 			$column=$reference[1];
 			$rs=$model::select($model->getTable().".*")
-			->join($this->getTable())->onColumn($this->getTable().".".($reference[2]??$this->primary_key),$model->getTable().".".$column);
+			->join($this->getTable())
+			->onColumn($this->getTable().".".($reference[2]??$this->primary_key),$model->getTable().".".$column)
+			->where($this->getTable().".".$this->primary_key,$value_id);
 		}
 		if($relation=="ManyToMany"){
 			if(is_string($annotation)){

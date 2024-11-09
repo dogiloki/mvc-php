@@ -73,7 +73,6 @@ class Relation{
                 if($db->inTransaction()){
                     $db->rollback();
                 }
-                dd($ex->getMessage());
             }
             return false;
         }
@@ -94,6 +93,11 @@ class Relation{
             }
             return $rs->exists();
         }
+    }
+
+    public function query($action){
+        $action($this->query);
+        return $this;
     }
 
     public function associate($model){
