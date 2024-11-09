@@ -37,7 +37,8 @@ function public_path($path=""){
 function url($text=""){
     //\dirname($_SERVER['PHP_SELF'])
     $text=trim($text,"/");
-    return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
+    //return str_replace("\\","/",(isset($_SERVER['HTTPS'])?"https":"http")."://".($_SERVER["HTTP_HOST"]??''))."/".$text;
+    return str_replace("\\","/",env('APP_HOST')."/".$text);
 }
 
 function slug($text){
