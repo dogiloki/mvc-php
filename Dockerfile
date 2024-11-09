@@ -1,5 +1,21 @@
-# Usamos una imagen oficial de PHP como base
-FROM php:8.1-fpm
+# Dockerfile para deploy en railway, usando apache
+
+# Usar una imagen base de PHP con Apache
+FROM php:8.1-apache
+
+# Instalar dependencias necesarias para Composer y PHP
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Instalamos las dependencias necesarias
 RUN apt-get update && apt-get install -y \
@@ -12,23 +28,21 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
-# Instalamos Composer (gestor de dependencias de PHP)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Copiar todos los archivos del proyecto al directorio raíz de Apache
+COPY . /var/www/html/
 
-# Configuración del directorio de trabajo
-WORKDIR /var/www
+# Copy the custom Nginx config file into de continer
+COPY docker/apache/default.conf /etc/apache2/sites-available/000-default.conf
 
-# Copiamos los archivos de la aplicación al contenedor
-COPY . .
+# Set the global ServerName to suppress the warning
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Instalamos las dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+# Ejecutar Composer install para instalar las dependencias con más detalles
+WORKDIR /var/www/html
+RUN composer install --no-interaction --optimize-autoloader -vvv
 
-# Aseguramos que el directorio de almacenamiento tenga los permisos adecuados
-# RUN chown -R www-data:www-data /var/www/storage
+# Habilitar mod_rewrite (común en aplicaciones PHP como Laravel)
+RUN a2enmod rewrite
 
-# Exponemos el puerto 9000 para el servidor PHP-FPM
-EXPOSE 9000
-
-# Definimos el comando por defecto para ejecutar PHP-FPM
-CMD ["php-fpm"]
+# Exponer el puerto 80
+EXPOSE 80
