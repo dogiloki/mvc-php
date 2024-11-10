@@ -44,5 +44,12 @@ RUN composer install --no-interaction --optimize-autoloader -vvv
 # Habilitar mod_rewrite (común en aplicaciones PHP como Laravel)
 RUN a2enmod rewrite
 
+# Establecer los permisos adecuados para los archivos
+USER www-data
+COPY --chown=www-data:www-data . .
+RUN mkdir -p /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chmod -R 775 /var/www/html/storage
+
 # Exponer el puerto 80
 EXPOSE 80

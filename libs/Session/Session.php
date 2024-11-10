@@ -73,7 +73,7 @@ class Session{
             case 'file':{
                 $path=Config::session('file.path');
                 if(!is_dir($path)){
-                    mkdir($path,0777,true);
+                    mkdir($path,755,true);
                 }
                 $file=$path."/".$this->session_id;
                 file_put_contents($file,$this->payload());

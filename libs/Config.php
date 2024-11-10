@@ -27,7 +27,7 @@ class Config{
             }
             $directory=$value;
             if(!is_array($directory) && !is_dir($directory) && $name=="filesystem" && !str_contains($directory,"{") && !str_contains($directory,".") && trim($directory," ")!=""){
-                mkdir($directory,0755,true);
+                mkdir($directory,755,true);
             }
             return $value;
         }
