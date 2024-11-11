@@ -1,0 +1,77 @@
+@use './font/colors.scss' as *;
+
+.form-container{
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5px;
+}
+.form{
+
+    .form-title{
+        font-size: 2em;
+        font-weight: bold;
+        color: $black1;
+        margin-bottom: 20px;
+    }
+    .input-container{
+        width: 100%;
+        display: flex;
+        background-color: $primary_color;
+
+        .input-label{
+            width: 35%;
+            // white-space: nowrap;
+            font-size: 1.1em;
+            background: none;
+            font-weight: bold;
+            color: $white1;
+            border: 1px solid $white4;
+            align-content: center;
+            padding: 5px 10px 5px 10px;
+        }
+        .input-field{
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: $white1;
+            border: 1px solid $white4;
+            color: $black3;
+            outline: none;
+        }
+    }
+    .input-container:focus-within{
+        opacity: 0.9;
+    }
+    .button-container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+
+        .button{
+            padding: 10px;
+            font-size: 1em;
+            transition: all 0.2s ease;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button:hover{
+            background-color: $primary_color_hover;
+        }
+        .button-secondary{
+            background-color: $white1;
+            color: $black1;
+            border: 1px solid $primary_color
+        }
+        .button-secondary:hover{
+            color: $white1;
+        }
+        .button-primary{
+            background-color: $primary_color;
+            color: $white1;
+            border: none;
+        }
+    }
+}

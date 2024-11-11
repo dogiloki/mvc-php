@@ -103,6 +103,14 @@ function scss($path){
     return url($path);
 }
 
+function style($path){
+    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."\">";
+}
+
+function script($path){
+    return "<script type=\"module\" src=\"".url("js/".$path)."\"><script/>";
+}
+
 function locale($locale=null){
     return $locale==null?Config::app('locale')??Session::get('locale'):Session::set('locale',$locale);
 }

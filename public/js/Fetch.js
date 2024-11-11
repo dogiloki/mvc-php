@@ -1,3 +1,5 @@
+import Util from './Util.js';
+
 export default class Fetch{
 
     static host=document.location.protocol+"//"+window.location.host;

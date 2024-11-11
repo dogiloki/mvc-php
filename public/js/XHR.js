@@ -5,7 +5,7 @@ export default class XHR{
 
     static request({
         method="GET",
-        url:url=null,
+        url=null,
         uri="",
         headers={},
         load=()=>{},

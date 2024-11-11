@@ -57,10 +57,10 @@ class View{
         ',
         "/@scriptsSPA/"=>"
             <script>var _token=\"<?php echo csrfToken(); ?>\"</script>
-            <script src=\"<?php echo url('js/Fetch.js') ?>\"></script>
-            <script src=\"<?php echo url('js/components/Wire.js') ?>\"></script>
-            <script src=\"<?php echo url('js/components/Component.js') ?>\"></script>
-            <script src=\"<?php echo url('js/components/SPA.js') ?>\"></script>
+            <script type=\"module\" src=\"<?php echo url('js/Fetch.js') ?>\"></script>
+            <script type=\"module\" src=\"<?php echo url('js/components/Wire.js') ?>\"></script>
+            <script type=\"module\" src=\"<?php echo url('js/components/Component.js') ?>\"></script>
+            <script type=\"module\" src=\"<?php echo url('js/components/SPA.js') ?>\"></script>
         ",
         "/@csrf/"=>"
             <input type=\"hidden\" name=\"_token\" value=\"<?php echo csrfToken(); ?>\">

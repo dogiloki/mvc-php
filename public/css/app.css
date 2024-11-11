@@ -71,7 +71,7 @@
   z-index: 1;
 }
 .loader-container .loader, .loader-container .unloader {
-  border-top: 5px solid #156082;
+  border-top: 5px solid #007bff;
   border-radius: 100%;
   width: 25%;
   padding-bottom: 25%;

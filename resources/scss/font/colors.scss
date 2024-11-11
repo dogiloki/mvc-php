@@ -1,8 +1,18 @@
 // Colores principales
 $primary_color: #007bff;
 $secondary_color: #353535;
-$gray: #353535;
-$white: #ffffff;
+$primary_color_hover: #0072a7;
+$secondary_color_hover: #353535;
+$black1: #000000;
+$black2: #202020;
+$black3: #404040;
+$black4: #808080;
+$black: $black1;
+$white1: #ffffff;
+$white2: #f5f5f5;
+$white3: #e0e0e0;
+$white4: #bfbfbf;
+$white: $white1;
 
 // Colores de ventanas de mensajes
 $msg_text_error_color: #b94a48;
@@ -14,19 +24,14 @@ $msg_background_success_color: #dff0d8;
 $msg_background_warning_color: #fcf8e3;
 $msg_background_info_color: #dff0d8;
 
-// Colores de botones
-$primary_btn_color: #f5f5f5;
-$primary_btn_background: #444444;
-
-// Colores de formularios
-$form_box_border_color: #c2c2c2;
-$form_box_color: $gray;
-$form_box_background: #ffffff;
-$form_background_color: #f5f5f5;
-
-// Colores de tablas
-$table_shadow_color: #c2c2c2;
-$table_th_color: #f5f5f5;
+// Colores para botones
+$add_button_background: #006400;
+$add_button_background_hover: #004b00;
+$edit_button_background: #004080;
+$edit_button_background_hover: #003060;
+$delete_button_background: #8b0000;
+$delete_button_background_hover: #6b0000;
+$disabled_button_background: #dddddd;
 
 // Colores para carga
-$loader_background: #ffffff;
+$loader_background: $white;

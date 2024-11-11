@@ -1,0 +1,74 @@
+@use './font/colors.scss' as *;
+
+.table-container{
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px $white2;
+}
+
+.pagination-container{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px 20px 0px;
+    color: $black2;
+    font-size: 1.2em;
+
+    .pagination-buttons{
+        flex-wrap: wrap;
+
+        .button{
+            text-decoration: none;
+            padding: 5px;
+            border: 1px solid $white4;
+            background-color: $white1;
+            color: $primary_color;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .button-active{
+            color: $white1;
+            background-color: $primary_color;
+        }
+        .button:hover{
+            color: $white1;
+            background-color: $primary_color_hover;
+        }
+    }
+    .pagination-info{
+        display: flex;
+    }
+}
+
+.table{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    background-color: $white1;
+
+    thead{
+        background-color: $primary_color;
+        color: $white1;
+    }
+    th:hover{
+        background-color: $primary_color_hover;
+        cursor: pointer;
+    }
+    tbody{
+        tr:nth-child(odd){
+            background-color: $white2;
+        }
+        tr:nth-child(even){
+            background-color: $white1;
+        }
+    }
+    th,td{
+        padding: 15px;
+        font-size: 1.5em;
+        border: 1px solid $white4;
+    }
+    td{
+        font-size: 1.2em;
+    }
+}
