@@ -9,7 +9,9 @@ Route::get('/',function(){
 Route::post('/component/{name?}',function($request){
     $class_name="app\\Components\\".$request->name;
     $component=new $class_name();
-    $component->setProperties(json_decode($request->properties));
+    if($request->set_properties){
+        $component->setProperties(json_decode($request->properties));
+    }
     return json([
         'properties'=>$component->getProperties()
     ]);

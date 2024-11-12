@@ -41,7 +41,7 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 WORKDIR /var/www/html
 RUN composer install --no-interaction --optimize-autoloader -vvv
 
-# Habilitar mod_rewrite (común en aplicaciones PHP como Laravel)
+# Habilitar mod_rewrite en aplicaiones que usan .htaccess
 RUN a2enmod rewrite
 
 # Establecer los permisos adecuados para los archivos

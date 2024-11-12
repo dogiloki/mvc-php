@@ -13,7 +13,9 @@ export default class Component{
         this.properties={};
         this.wires=wires;
         this.loadWires();
-        this.render();
+        this.render({
+            set_properties:false
+        });
     }
 
     loadWires(){
@@ -45,11 +47,14 @@ export default class Component{
         
     }
 
-    render(){
+    render({
+        set_properties=true
+    }={}){
         XHR.request({
             method:"POST",
             uri:"component/"+this.name,
             data:{
+                set_properties:set_properties,
                 properties:JSON.stringify(this.properties)
             },
             action:(xhr)=>{

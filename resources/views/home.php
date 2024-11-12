@@ -2,6 +2,9 @@
 
 {{style('form.css')}}
 
+<input type="text" wire:name="User" wire:sync="nombre" value="">
+<div wire:name="User" wire:sync="nombre"></div>
+
 <div class="form-container">
     <form class="form">
 
@@ -87,5 +90,6 @@
     </table>
 
 </div>
+@scriptsSPA
 
 @extends('layouts.footer')

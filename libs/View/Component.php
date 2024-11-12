@@ -8,7 +8,6 @@ use libs\Router\Route;
 abstract class Component{
 
     protected $render="";
-    protected $params=[];
     protected $middleware=[];
 
     public function __construct(){
@@ -16,13 +15,14 @@ abstract class Component{
     }
 
     public function getProperties(){
+        $params=[];
         $reflection=new \ReflectionClass($this);
         $properties=$reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
         foreach($properties as $property){
             $name=$property->name;
-            $this->params[$name]=$this->$name;
+            $params[$name]=$this->$name;
         }
-        return $this->params;
+        return $params;
     }
 
     public function setProperties($values){
