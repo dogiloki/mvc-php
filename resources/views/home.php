@@ -2,9 +2,6 @@
 
 {{style('form.css')}}
 
-<input type="text" wire:name="User" wire:sync="nombre">
-<div wire:render="User"></div>
-
 <div class="form-container">
     <form class="form">
 
@@ -33,9 +30,9 @@
 
 {{style('table.css')}}
 
-<div class="table-container">
+<section is="data-table" class="table-container">
 
-    <div class="pagination-container">
+    <nav class="pagination-container">
         <div class="pagination-buttons">
             <a class="button" href=""><</a>
             <a class="button button-active" href="">1</a>
@@ -45,51 +42,19 @@
             <a class="button" href="">5</a>
             <a class="button" href="">></a>
         </div>
-        <div class="pagination-info">
-            <div class="current-page">1</div>/
-            <div class="total-pages">10 pág.</div>
-            <div class="total-results">100 resultado</div>
-        </div>
-    </div>
+        <div class="pagination-info"></div>
+    </nav>
 
-    <table class="table">
+    <table model-table="User" class="table">
         <thead>
             <tr>
-                <th>No. Documento</th>
-                <th>Referenicia</th>
-                <th>Remitente</th>
+                <th data-column="name">Nombre</th>
+                <th data-column="email">Email</th>
+                <th data-column="full()">Método</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>945</td>
-                <td>Parte de Novedades</td>
-                <td>6/o. BTN. GN.</td>
-            </tr>
-            <tr>
-                <td>945</td>
-                <td>Parte de Novedades</td>
-                <td>6/o. BTN. GN.</td>
-            </tr>
-            <tr>
-                <td>945</td>
-                <td>Parte de Novedades</td>
-                <td>6/o. BTN. GN.</td>
-            </tr>
-            <tr>
-                <td>945</td>
-                <td>Parte de Novedades</td>
-                <td>6/o. BTN. GN.</td>
-            </tr>
-            <tr>
-                <td>945</td>
-                <td>Parte de Novedades</td>
-                <td>6/o. BTN. GN.</td>
-            </tr>
-        </tbody>
     </table>
 
-</div>
-@scriptsSPA
+</section>
 
 @extends('layouts.footer')

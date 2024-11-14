@@ -117,7 +117,7 @@ export default class Wire{
                     this.setProperties(data.properties,data.content); 
                 }
             }
-        })
+        });
     }
 
 }

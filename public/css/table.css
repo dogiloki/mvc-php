@@ -58,12 +58,12 @@
   background-color: #ffffff;
 }
 .table th, .table td {
-  padding: 15px;
-  font-size: 1.5em;
+  padding: 10px;
+  font-size: 1em;
   border: 1px solid #bfbfbf;
 }
 .table td {
-  font-size: 1.2em;
+  font-size: 0.9em;
 }
 
 /*# sourceMappingURL=table.css.map */

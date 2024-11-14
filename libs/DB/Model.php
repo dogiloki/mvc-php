@@ -274,9 +274,18 @@ class Model{
 		return null;
 	}
 
-	public function _paginate($max,$pag){
+	public function _paginate($action,$max=10,$pag=1){
+		if(!($action instanceof \Closure)){
+			$pag=$max;
+			$max=$action;
+			$action==null;
+		}
 		$paginator=new Paginator();
-		$data=$this->pagination($max,$pag)->get();
+		$data=$this->pagination($max,$pag);
+		if($action!=null){
+			$action($data);
+		}
+		$data=$data->get();
 		$paginator->data=$data;
 		$paginator->per_page=$max;
 		$paginator->current_page=$pag;

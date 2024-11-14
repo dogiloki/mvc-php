@@ -3,6 +3,7 @@
 namespace libs\DB;
 
 use libs\DB\DB;
+use libs\DB\Paginator;
 
 class Table{
 
@@ -79,10 +80,13 @@ class Table{
 		if($this->sql==""){
 			$this->sql="SELECT ";
 		}
+		if(is_string($values_select)){
+			$values_select=explode(",",$values_select);
+		}
 		if($values_select instanceof \Closure){
 			$values_select($this);
 		}else{
-			$this->values_select=is_array($values_select)?$values_select:func_get_args();
+			$this->values_select=array_merge($this->values_select,is_array($values_select)?$values_select:func_get_args());
 		}
 		return $this;
 	}

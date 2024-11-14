@@ -18,6 +18,10 @@ class User extends Model{
 		"password"
 	];
 
+	public function full(){
+		return "Hola, ".$this->name;
+	}
+
 }
 
 ?>

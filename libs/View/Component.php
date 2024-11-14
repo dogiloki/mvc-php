@@ -7,7 +7,8 @@ use libs\Router\Route;
 
 abstract class Component{
 
-    protected $render="";
+    protected $model=null;
+    protected $view="";
     protected $middleware=[];
 
     public function __construct(){
@@ -44,9 +45,8 @@ abstract class Component{
 
     }
 
-
-    public function render(){
-        return view($this->render,$this->getProperties());
+    public function view(){
+        return view($this->view,$this->getProperties());
     }
 
 }
