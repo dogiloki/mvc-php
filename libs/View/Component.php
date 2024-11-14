@@ -46,7 +46,7 @@ abstract class Component{
 
 
     public function render(){
-        return view($this->render,$this->getData());
+        return view($this->render,$this->getProperties());
     }
 
 }

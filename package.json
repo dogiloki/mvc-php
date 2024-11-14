@@ -1,0 +1,12 @@
+{
+  "name": "mvc-php",
+  "version": "1.0.0",
+  "description": "Es un pequeño prototipo de un Framework que cuenta con enrutamiento, ORM (sencillo inspirado en Eloquent), Modelos, Controladores, Vistas y una configuración global en un archivo llamado \"config.env\".\r Tiene librerías para almacenar archivos en servidor, hacer peticiones HTTP, Servidor de Socket (sencillo inspirado en Socket.io) y envío de correo electrónico.\r Implementa un básico sistema de migración que consiste en ejecutar archivos ubicados en database/migrations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

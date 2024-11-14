@@ -12,7 +12,10 @@ Route::post('/component/{name?}',function($request){
     if($request->set_properties){
         $component->setProperties(json_decode($request->properties));
     }
+    $component->render();
+    $content=ob_get_clean();
     return json([
+        'content'=>$content,
         'properties'=>$component->getProperties()
     ]);
 })->name('component');

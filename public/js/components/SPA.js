@@ -3,33 +3,54 @@ import Component from './Component.js';
 
 export default class SPA{
 
+    static UUID(value=null){
+        let timestamp=new Date().getTime();
+        let random=Math.floor(Math.random()*1000);
+        value??=`${timestamp}${random}`;
+        return value;
+    }
+
     constructor(){
-        this.components=[];
-        let collection=document.querySelectorAll('[wire\\:name],[wire\\:render]');
+        this.components={};
+        let collection=document.querySelectorAll('[wire\\:'+Wire.WIRE_EVENTS.NAME.name+'],[wire\\:'+Wire.WIRE_EVENTS.RENDER.name+']');
         collection.forEach((element)=>{
-            let name;
             let wires=[];
+            let index=0;
             for(const [wire_event_key,wire_event_value] of Object.entries(Wire.WIRE_EVENTS)){
-                if(wire_event_value.name=="name"){
-                    name=element.getAttribute("wire:name");
+                let attrib=element.getAttribute("wire:"+wire_event_value.name);
+                if(attrib==null){
                     continue;
                 }
-                let value=element.getAttribute("wire:"+wire_event_value.name);
-                if(value==null){
-                    continue;
+                let renderable=false;
+                let attrib_split=attrib.split(".");
+                let model=attrib_split[0]??null;
+                let property=attrib_split[1]??null;
+                if(property==null){
+                    property=model;
+                    model=element.getAttribute("wire:"+Wire.WIRE_EVENTS.NAME.name);
                 }
-                wires.push(new Wire({
+                if(wire_event_value.name==Wire.WIRE_EVENTS.NAME.name){
+                    continue;
+                }else
+                if(wire_event_value.name==Wire.WIRE_EVENTS.RENDER.name){
+                    model=attrib;
+                    attrib=null;
+                    renderable=true;
+                }
+                let wire=new Wire({
                     element:element,
-                    value:value,
+                    model:model,
+                    property:property,
                     wire_event:wire_event_value.name,
-                    renderable:false,
-                }));
+                    renderable:renderable,
+                });
+                wires.push(wire);
+                this.components[model]??=[];
+                if(!this.components[model].some(item=>item==element)){
+                    this.components[model].push(wire);
+                }
             }
-            let component=new Component({
-                name:name,
-                wires:wires
-            });
-            this.components.push(component);
+            index++;
         });
         this.loadRenders();
     }

@@ -1,0 +1,1 @@
+<h1>Hola, {{$nombre}} soy un componente dinámico</h1>

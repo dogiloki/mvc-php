@@ -5,66 +5,11 @@ import Wire from './Wire.js';
 export default class Component{
 
     constructor({
-        name=null,
-        wires=[]
+        model=null,
+        elements=[]
     }){
-        this.name=name;
-        //this.active_events={};
-        this.properties={};
-        this.wires=wires;
-        this.loadWires();
-        this.render({
-            set_properties:false
-        });
-    }
-
-    loadWires(){
-        this.wires.forEach((wire)=>{
-            switch(wire.wire_event){
-                case Wire.WIRE_EVENTS.SYNC.name:{
-                    wire.element.addEventListener('keyup',(evt)=>{
-                        this.properties[wire.value]=wire.getElementValue();
-                        setTimeout(()=>{
-                            this.render();
-                        },wire.delay);
-                    });
-                    break;
-                }
-            }
-        });
-    }
-
-    setProperties(properties){
-        this.wires.forEach((wire)=>{
-            switch(wire.wire_event){
-                case Wire.WIRE_EVENTS.SYNC.name:{
-                    wire.setElementValue(properties[wire.value]);
-                    this.properties[wire.value]=properties[wire.value];
-                    break;
-                }
-            }
-        });
-        
-    }
-
-    render({
-        set_properties=true
-    }={}){
-        XHR.request({
-            method:"POST",
-            uri:"component/"+this.name,
-            data:{
-                set_properties:set_properties,
-                properties:JSON.stringify(this.properties)
-            },
-            action:(xhr)=>{
-                xhr.responseType="json";
-            },
-            load:(xhr)=>{
-                let data=xhr.response;
-                this.setProperties(data.properties);
-            }
-        })
+        this.model=model;
+        this.elements=elements;
     }
 
 }
