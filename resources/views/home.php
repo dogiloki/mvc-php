@@ -32,19 +32,7 @@
 
 <section is="data-table" class="table-container">
 
-    <nav class="pagination-container">
-        <div class="pagination-buttons">
-            <a class="button" href=""><</a>
-            <a class="button button-active" href="">1</a>
-            <a class="button" href="">2</a>
-            <a class="button" href="">3</a>
-            <a class="button" href="">4</a>
-            <a class="button" href="">5</a>
-            <a class="button" href="">></a>
-        </div>
-        <div class="pagination-info"></div>
-    </nav>
-
+    <div class="pagination-container"></div>
     <table model-table="User" class="table">
         <thead>
             <tr>
