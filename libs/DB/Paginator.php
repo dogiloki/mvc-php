@@ -6,10 +6,11 @@ class Paginator{
 
     public $data;
     public $links;
-    public $per_page=10;
+    public $results_per_page=10;
     public $current_page=1;
-    public $to;
-    public $total;
+    public $total_pages;
+    public $total_results;
+    public $info;
 
     public function __constructor(){
 
@@ -17,13 +18,19 @@ class Paginator{
 
     public function links(){
         $links=[];
-        for($index=0; $index<=$this->to+1; $index++){
+        for($index=0; $index<=$this->total_pages+1; $index++){
             $links[]=[
-                "label"=>$index==0?("&laquo;"):($index==$this->to+1?"&raquo;":$index),
+                "label"=>$index==0?__("pagination.prev"):($index==$this->total_pages+1?__("pagination.next"):$index),
                 "active"=>$index==$this->current_page
             ];
         }
         $this->links=$links;
+        $this->info=__("pagination.info",[
+            "results_per_page"=>$this->results_per_page,
+            "current_page"=>$this->current_page,
+            "total_pages"=>$this->total_pages,
+            "total_results"=>$this->total_results
+        ]);
         return $this;
     }
 

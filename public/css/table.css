@@ -9,6 +9,7 @@
 .pagination-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 10px 0px 20px 0px;
   color: #202020;
   font-size: 1.2em;

@@ -60,15 +60,62 @@ customElements.define('data-table',class DataTable extends HTMLElement{
 				continue;
 			}
 			if(column.includes("(")){
-				this.columns_method.push(column.replaceAll("()",""));
+				this.columns_method.push(column);
 			}else{
 				this.columns.push(column);
 			}
 		}
 	}
 
-	createRow(items){
+	loadPagination(paginate){
+		let pagination_container=this.getElementsByClassName("pagination-container")[0]??null;
+		if(pagination_container==null){
+			this.appendChild(Util.createElement("div",(element)=>{
+				element.classList.add("pagination-container");
+			}));
+		}
+		pagination_container.innerHTML="";
+		let pagination_buttons=Util.createElement("div",(buttons)=>{
+			buttons.classList.add("pagination-buttons");
+			for(let link of paginate.links){
+				buttons.appendChild(Util.createElement("button",(button)=>{
+					button.classList.add("button");
+					if(link.active){
+						button.classList.add("button-active");
+					}
+					button.innerHTML=link.label;
+				}));
+				buttons.appendChild(document.createTextNode(" "));
+			}
+		});
+		let pagination_info=Util.createElement("div",(info)=>{
+			info.classList.add("pagination-info");
+			info.innerHTML=paginate.info;
+		});
+		pagination_container.appendChild(pagination_buttons);
+		pagination_container.appendChild(pagination_info);
+	}
 
+	loadRows(paginate){
+		let body=this.container_table.getElementsByTagName("tbody")[0]??Util.createElement("tbody");
+		body.innerHTML="";
+        for(let data of paginate.data){
+			let tr=Util.createElement("tr");
+			for(let column of this.columns){
+				let td=Util.createElement("td",(td)=>{
+					td.innerHTML=data[column];
+				});
+				tr.appendChild(td);
+			}
+			for(let method of this.columns_method){
+				let td=Util.createElement("td",(td)=>{
+					td.innerHTML=data[method];
+				});
+				tr.appendChild(td);
+			}
+			body.appendChild(tr);
+		}
+		this.container_table.appendChild(body);
 	}
 
 	render(){
@@ -76,34 +123,20 @@ customElements.define('data-table',class DataTable extends HTMLElement{
             method:"POST",
             uri:"component-data-table",
 			data:{
-				name:this.model,
-				select_columns:JSON.stringify(this.columns),
-				with_methods:JSON.stringify(this.columns_method)
+				"name":this.model,
+				"columns":JSON.stringify({
+					"select":this.columns,
+					"methods":this.columns_method
+				}),
+				"paginate":{}
 			},
             action:(xhr)=>{
                 xhr.responseType="json";
             },
             load:(xhr)=>{
                 let paginate=xhr.response;
-				let body=this.container_table.getElementsByTagName("tbody")[0]??Util.createElement("tbody");
-				body.innerHTML="";
-                for(let data of paginate.data){
-					let tr=Util.createElement("tr");
-					for(let column of this.columns){
-						let td=Util.createElement("td",(td)=>{
-							td.innerHTML=data[column];
-						});
-						tr.appendChild(td);
-					}
-					for(let method of this.columns_method){
-						let td=Util.createElement("td",(td)=>{
-							td.innerHTML=data[method];
-						});
-						tr.appendChild(td);
-					}
-					body.appendChild(tr);
-				}
-				this.container_table.appendChild(body);
+				this.loadPagination(paginate);
+				this.loadRows(paginate);
             }
         });
 	}

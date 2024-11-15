@@ -287,10 +287,10 @@ class Model{
 		}
 		$data=$data->get();
 		$paginator->data=$data;
-		$paginator->per_page=$max;
+		$paginator->results_per_page=$max;
 		$paginator->current_page=$pag;
-		$paginator->total=$this->select(DB::flat('COUNT(*) as total'))->first()->total;
-		$paginator->to=ceil($this->total/$max);
+		$paginator->total_results=$this->select(DB::flat('COUNT(*) as total_results'))->first()->total_results;
+		$paginator->total_pages=ceil($this->total_results/$max);
 		$paginator->links();
 		return $paginator;
 	}
