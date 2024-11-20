@@ -43,8 +43,8 @@ class Storage extends Singleton{
             $folder_save=$dir.$folder."/".$sha1;
             $folder=$dir.$folder."/".$file_name;
             if(move_uploaded_file($name_temp,$folder)){
-                if(self::$compress_image && explode("/",$type)[0]=="image"){
-                    self::compressImage($folder);
+                if($this->compress_image && explode("/",$type)[0]=="image"){
+                    $this->compressImage($folder);
                 }
                 return UploaderFile::create([
                     "disk"=>$disk,
@@ -66,7 +66,7 @@ class Storage extends Singleton{
 
     public function _compressImage(string $path){
         $image=Image::make($path);
-        $image->save($path,self::$compress_image_level);
+        $image->save($path,$this->compress_image_level);
     }
 
     public function _getByHash(string $text){
@@ -84,9 +84,9 @@ class Storage extends Singleton{
         $path=$folder."/".$file;
         if(file_exists($path)){
             ob_clean();
-            header("Content-type: ".(self::$download?"application/octet-stream":($mime??mime_content_type($path))));
+            header("Content-type: ".($this->download?"application/octet-stream":($mime??mime_content_type($path))));
             header("Content-Disposition: filename=\"".$download_name."\"");
-            if(self::$encrypt!=null){
+            if($this->isEncrypt()!=null){
                 $content=Secure::decryptNotBase64(file_get_contents($path),self::$encrypt);
             }else{
                 $content=file_get_contents($path);
@@ -95,18 +95,14 @@ class Storage extends Singleton{
         }else{
             abort(404);
         }
-        self::$encrypt=null;
-        self::$download=false;
     }
 
     public static function deleteHash($text){
         $uploader_file=UploaderFile::where('hash',$text)->first();
         if($uploader_file==null){
-            self::$encrypt=null;
             return false;
         }
         $uploader_file->delete();
-        self::$encrypt=null;
         return self::delete($uploader_file->name(),$uploader_file->disk);
     }
     
@@ -125,8 +121,14 @@ class Storage extends Singleton{
         }
     }
 
+    public function compressImage($active,$level=null){
+        $this->compress_image=$active;
+        $this->compress_image_level=$level??$this->compress_image_level;
+        return $this;
+    }
+
     public function _download(){
-        $this->$download=true;
+        $this->download=true;
         return $this;
     }
 
