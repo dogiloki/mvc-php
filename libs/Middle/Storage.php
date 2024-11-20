@@ -4,21 +4,18 @@ namespace libs\Middle;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use libs\Middle\Secure;
+use libd\Middle\Singleton;
 use libs\Config;
 use libs\Middle\Models\UploaderFile;
 
-class Storage{
+class Storage extends Singleton{
 
-    public static $compress_image=false;
-    public static $compress_image_level=70;
-    public static $encrypt=null;
-    public static $download=false;
+    public $compress_image=false;
+    public $compress_image_level=70;
+    public $encrypt=null;
+    public $download=false;
 
-    public static function encrypt($key=null){
-        self::$encrypt=$key??Config::app('key');
-    }
-
-    public static function upload($file,$disk){
+    public function _upload($file,$disk){
         $dir=Config::filesystem('storage.'.$disk)."/";
         if($file==null){
             return null;
@@ -27,8 +24,8 @@ class Storage{
         $type=$file['type'];
         $size=$file['size'];
         try{
-            if(self::$encrypt!=null){
-                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),self::$encrypt);
+            if($this->_isEncrypt()){
+                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),$this->encrypt());
                 file_put_contents($file['tmp_name'],$content);
             }
             $name_temp=$file['tmp_name'];
@@ -49,7 +46,6 @@ class Storage{
                 if(self::$compress_image && explode("/",$type)[0]=="image"){
                     self::compressImage($folder);
                 }
-                self::$encrypt=null;
                 return UploaderFile::create([
                     "disk"=>$disk,
                     "folder"=>$folder_save,
@@ -60,34 +56,28 @@ class Storage{
                     "download_name"=>$name
                 ]);
             }else{
-                self::$encrypt=null;
                 return null;
             }
         }catch(\Exception $ex){
             return null;
         }
-        self::$encrypt=null;
         return null;
     }
 
-    public static function compressImage(string $path){
+    public function _compressImage(string $path){
         $image=Image::make($path);
         $image->save($path,self::$compress_image_level);
     }
 
-    public static function getHash($text){
+    public function _getByHash(string $text){
         $uploader_file=UploaderFile::where('hash',$text)->first();
         if($uploader_file==null){
             abort(404);
         }
-        self::get($uploader_file->name(),$uploader_file->disk,$uploader_file->download_name,$uploader_file->mime);
+        $this->get($uploader_file->name(),$uploader_file->disk,$uploader_file->download_name,$uploader_file->mime);
     }
 
-    public static function download(){
-        self::$download=true;
-    }
-
-    public static function get($file,$disk,$download_name=null,$mime=null){
+    public function _get($file,$disk,$download_name=null,$mime=null){
         $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
@@ -120,7 +110,7 @@ class Storage{
         return self::delete($uploader_file->name(),$uploader_file->disk);
     }
     
-    public static function delete($file,$disk){
+    public function _delete($file,$disk){
         $dir=Config::filesystem('storage.'.$disk)."/";
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
@@ -129,13 +119,26 @@ class Storage{
             if(file_exists($path)){
                 unlink($path);
             }
-            self::$encrypt=null;
             return true;
         }else{
-            self::$encrypt=null;
             return false;
         }
     }
+
+    public function _download(){
+        $this->$download=true;
+        return $this;
+    }
+
+    public function _encrypt($key=null){
+        $this->encrypt=$key??Config::app('key');
+        return $this;
+    }
+
+    public function _isEncrypt(){
+        return $this->encrypt!=null;
+    }
+
 
 }
 
