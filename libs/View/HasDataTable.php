@@ -4,10 +4,11 @@ namespace libs\View;
 
 use libs\DB\DB;
 
-trait HashDataTable{
+trait HasDataTable{
 
     private $select_columns=null;
     private $with_methods=[];
+    private $current_page=1;
 
     public function dataTable(){
         $with_methods=$this->withMethods();
@@ -17,7 +18,7 @@ trait HashDataTable{
             }
         })->paginate(function($query){
             $query->select($this->selectColumns());
-        },10,1);
+        },10,$this->current_page);
     }
 
     public function selectColumns(...$columns){
@@ -36,6 +37,10 @@ trait HashDataTable{
         $array=func_get_args();
         $methods=is_array($array[0])?$array[0]:func_get_arg();
         return $this->with_methods=$methods;
+    }
+
+    public function loadPaginate($paginate){
+        $this->current_page=$paginate->current_page;
     }
 
 }

@@ -47,8 +47,11 @@ customElements.define('data-table',class DataTable extends HTMLElement{
 		this.container_table=this.getElementsByTagName("table")[0];
 		this.model=this.container_table.getAttribute("model-table");
 		this.headers=this.container_table.querySelectorAll("th");
+		// Attributos para seleccionar columnas a mostrar en la tabla
 		this.columns=[];
 		this.columns_method=[];
+		// Attributos para getionar parámetros de la paginación
+		this.current_page=1;
 		this.initColumns();
 		this.render();
 	}
@@ -60,7 +63,8 @@ customElements.define('data-table',class DataTable extends HTMLElement{
 				continue;
 			}
 			if(column.includes("(")){
-				this.columns_method.push(column);
+				// No acepta parametros
+				this.columns_method.push(column.replaceAll("()",""));
 			}else{
 				this.columns.push(column);
 			}
@@ -83,7 +87,23 @@ customElements.define('data-table',class DataTable extends HTMLElement{
 					if(link.active){
 						button.classList.add("button-active");
 					}
+					button.value=link.value;
 					button.innerHTML=link.label;
+					button.addEventListener('click',()=>{
+						if(button.value==-1){
+							this.current_page--;
+						}else
+						if(button.value==0){
+							this.current_page++;
+						}else{
+							this.current_page=button.value;
+						}
+						if(Util.withinRange(this.current_page,1,paginate.total_pages)){
+							this.render();
+						}else{
+							this.current_page=this.current_page<1?1:paginate.total_pages;
+						}
+					});
 				}));
 				buttons.appendChild(document.createTextNode(" "));
 			}
@@ -128,7 +148,9 @@ customElements.define('data-table',class DataTable extends HTMLElement{
 					"select":this.columns,
 					"methods":this.columns_method
 				}),
-				"paginate":{}
+				"paginate":JSON.stringify({
+					"current_page":this.current_page
+				})
 			},
             action:(xhr)=>{
                 xhr.responseType="json";

@@ -21,6 +21,7 @@ class Paginator{
         for($index=0; $index<=$this->total_pages+1; $index++){
             $links[]=[
                 "label"=>$index==0?__("pagination.prev"):($index==$this->total_pages+1?__("pagination.next"):$index),
+                "value"=>$index==0?-1:($index==$this->total_pages+1?0:$index),
                 "active"=>$index==$this->current_page
             ];
         }

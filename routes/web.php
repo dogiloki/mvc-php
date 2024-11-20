@@ -23,8 +23,11 @@ Route::post('/component/{name?}',function($request){
 Route::post('/component-data-table',function($request){
     $class_name="app\\Components\\".$request->name;
     $component=new $class_name();
-    $component->selectColumns(json_decode($request->select_columns));
-    $component->withMethods(json_decode($request->with_methods));
+    $columns=json_decode($request->columns);
+    $paginate=json_decode($request->paginate);
+    $component->selectColumns($columns->select);
+    $component->withMethods($columns->methods);
+    $component->loadPaginate($paginate);
     return json($component->dataTable());
 })->name('component-data-table');
 

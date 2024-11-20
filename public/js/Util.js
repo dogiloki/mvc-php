@@ -85,6 +85,10 @@ export default class Util{
 		return Math.round(Math.random()*(max-min)+min);
 	}
 
+	static withinRange(value,min,max){
+		return value>=min && value<=max;
+	}
+
 	static messageById(id,message,type){
 		Util.message(document.getElementById(id),message,type);
 	}

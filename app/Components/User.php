@@ -3,10 +3,10 @@
 namespace app\Components;
 
 use libs\View\Component;
-use libs\View\HashDataTable;
+use libs\View\HasDataTable;
 
 class User extends Component{
-    use HashDataTable;
+    use HasDataTable;
 
     protected $view="user";
     protected $model=\app\Models\User::class;

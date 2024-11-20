@@ -22,17 +22,17 @@
   padding: 5px;
   border: 1px solid #bfbfbf;
   background-color: #ffffff;
-  color: #007bff;
+  color: #06c;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 .pagination-container .pagination-buttons .button-active {
   color: #ffffff;
-  background-color: #007bff;
+  background-color: #06c;
 }
 .pagination-container .pagination-buttons .button:hover {
   color: #ffffff;
-  background-color: #0072a7;
+  background-color: #007bff;
 }
 .pagination-container .pagination-info {
   display: flex;
@@ -45,11 +45,11 @@
   background-color: #ffffff;
 }
 .table thead {
-  background-color: #007bff;
+  background-color: #06c;
   color: #ffffff;
 }
 .table th:hover {
-  background-color: #0072a7;
+  background-color: #007bff;
   cursor: pointer;
 }
 .table tbody tr:nth-child(odd) {
