@@ -78,10 +78,6 @@ trait HasApiTokens{
         return false;
     }
 
-    public function tokenCant($name,$ability){
-        return !$this->tokenCan($name,$ability);
-    }
-
     public function tokenAbilities($name){
         $token=$this->token($name);
         if($token){
