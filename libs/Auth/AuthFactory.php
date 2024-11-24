@@ -1,16 +1,18 @@
 <?php
 
-namespace libs\Middle\Auth;
+namespace libs\Auth;
 
+use libs\Session\Session;
 use libs\Middle\Singleton;
+use libs\Config;
 
 abstract class AuthFactory extends Singleton{
 
-    protected $name_session;
-    protected $model_user;
-    protected $name_session_token;
-    protected $user;
-    protected $token;
+    public $name_session;
+    public $model_user;
+    public $name_session_token;
+    public $user;
+    public $token;
 
     public function __construct(){
         $this->name_session=Config::auth('session.id_user');
@@ -18,8 +20,8 @@ abstract class AuthFactory extends Singleton{
         $this->model_user=Config::auth('web.model');
     }
 
-    abstract public function _attemp();
-    abstract public function _login();
+    abstract public function _attempt($credentials);
+    abstract public function _login($user,$token=null);
     abstract public function _logout();
 
     public function _check(){

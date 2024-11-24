@@ -366,7 +366,7 @@ class Model{
 			return true;
 		}catch(\Exception $ex){
 			//echo $ex->getMessage();
-			throw new \Exception($ex);
+			exception($ex);
 			return false;
 		}
 	}

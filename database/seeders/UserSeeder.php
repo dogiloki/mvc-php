@@ -9,6 +9,11 @@ use app\Models\User;
 class UserSeeder extends Seeder{
 
 	public function run(){
+		User::create([
+			'name'=>'admin',
+			'email'=>'admin@gmail.com',
+			'password'=>Secure::encodePassword('123')
+		]);
 		for($index=0; $index<10; $index++){
 			User::create([
 				'name'=>$this->faker->name,

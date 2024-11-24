@@ -2,42 +2,36 @@
 
 namespace libs\Auth;
 
-use libs\Session\Session;
 use libs\Middle\Secure;
-use libs\Middle\Singleton;
 use libs\Auth\Models\AccessToken;
 use libs\Config;
 use libs\DB\DB;
+use libs\Auth\AuthDB;
+use libs\Auth\AuthPAM;
+use libs\Middle\Singleton;
 
 class Auth extends Singleton{
 
-    public function _login($user,$token=null){
-        if($user==null){
-            return;
+    public $extends=null;
+
+    public static function __callStatic($method,$arguments){
+		$method="_".$method;
+        $instance=Singleton::$instances[get_called_class()]??null;
+        if($instance==null){
+        	$instance=get_called_class()::singleton();
         }
-        $this->user=$user;
-        $this->token=$token;
-        if(!Session::isStarted()){
-            return;
-        }
-        Session::put($this->name_session,$user->{$user->primary_key});
-        if(Config::session('driver')=='database'){
-            $table=Config::session('database.table');
-            DB::table($table)->update([
-                'id_user'=>$user->{$user->primary_key},
-            ])->where('id',Session::id())->execute();
+        $instance=new ($instance->extends())();
+        if(method_exists($instance,$method)){
+            return call_user_func_array([$instance,$method],$arguments);
         }
     }
 
-    public function _logout(){
-        $this->user=null;
-        Session::forget($this->name_session);
-        if(Config::session('driver')=='database'){
-            $table=Config::session('database.table');
-            DB::table($table)->update([
-                'id_user'=>null,
-            ])->where('id',Session::id())->execute();
-        }
+    public function __construct(){
+        $this->extends=config()->auth('pam_auth')?AuthPAM::class:AuthDB::class;
+    }
+
+    public function extends(){
+        return $this->extends;
     }
 
 }
