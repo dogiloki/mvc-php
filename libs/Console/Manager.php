@@ -3,31 +3,23 @@
 namespace libs\Console;
 
 use libs\Console\Console;
+use libs\Middle\Singleton;
 
-class Manager{
+class Manager extends Singleton{
 
-    private static $instance=null;
+    private $commands=[];
 
-    public static function singleton(){
-        if(self::$instance==null){
-            self::$instance=new Manager();
-        }
-        return self::$instance;
-    }
-
-    public static function command($line,$action){
-        $manager=self::singleton();
+    public function _command($line,$action){
         $command=(new Command($line,$action));
-        $manager->commands[]=$command;
+        $this->commands[]=$command;
         return $command;
     }
 
-    public static function call($args){
-        $manager=self::singleton();
+    public function _call($args){
         $array_text=explode(" ",implode(" ",$args));
         array_splice($array_text,0,1);
         $args=[];
-        foreach($manager->commands as $command){
+        foreach($this->commands as $command){
             $array_command=explode(" ",$command->command);
             foreach($array_command as $key=>$text_command){
                 if(($array_text[$key]??null)!=$text_command){
@@ -43,13 +35,7 @@ class Manager{
             $command->run(...$args);
             return;
         }
-        (new Console())->error("No existe la instrucción");
-    }
-
-    private $commands=[];
-
-    private function __construct(){
-        
+        Console::error("No existe la instrucción");
     }
 
 }

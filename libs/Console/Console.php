@@ -2,45 +2,40 @@
 
 namespace libs\Console;
 
-class Console{
+use libs\Middle\Singleton;
 
-    public static function __callStatic($name,$arguments){
-        $instace=new Console();
-        if(method_exists($instace,$name)){
-			return call_user_func_array([$instace,$name],$arguments);
-		}
-    }
+class Console extends Singleton{
 
-    public function ask($text){
+    public function _ask($text){
         return readline($text);
     }
 
-    public function error($text){
+    public function _error($text){
         print("\033[31m".$text."\033[0m")."\n";
         return $this;
     }
 
-    public function warning($text){
+    public function _warning($text){
         print("\033[33m".$text."\033[0m")."\n";
         return $this;
     }
 
-    public function success($text){
+    public function _success($text){
         print("\033[32m".$text."\033[0m")."\n";
         return $this;
     }
 
-    public function info($text){
+    public function _info($text){
         print($text."\n");
         return $this;
     }
 
-    public function dd($text){
+    public function _dd($text){
         print_r($text."\n");
         return $this;
     }
 
-    public function exit($code=null){
+    public function _exit($code=null){
         exit($code);
     }
 

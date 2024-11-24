@@ -7,6 +7,7 @@ use libs\DB\Table;
 use libs\DB\Flat;
 use libs\Config;
 use libs\Middle\Log;
+use libs\Console\Console;
 
 class DB extends \PDO{
 
@@ -57,11 +58,28 @@ class DB extends \PDO{
 	public static function singleton(){
 		if(self::$instance==null){
 			try{
-				$connection="mysql:host=".Config::database('host').(self::$create_db?"":";port=".Config::database('port').";dbname=".Config::database('database'));
+				$database=Config::database('database');
+				$connection="mysql:host=".Config::database('host').(self::$create_db?"":";port=".Config::database('port'));
 				self::$instance=new \PDO($connection,Config::database('user'),Config::database('password'));
 				self::$instance->query('SET NAMES '.Config::database('charset'));
+				self::$instance->query('USE '.$database);
 			}catch(\PDOException $ex){
-				exception($ex);
+				if($ex->getCode()==42000){
+					Console::warning("La base de datos ".$database." no existe");
+					$create=Console::ask("Desea crearla (y/n): ");
+					if($create=="y"){
+						try{
+							self::$instance->query('CREATE DATABASE '.$database);
+							self::$instance->query('USE '.$database);
+							Console::success("Base de datos ".$database." creada con éxito");
+						}catch(\PDOException $ex){
+							Console::error("Error al crear base de datos ".$database);
+							exception($ex);
+						}
+					}
+				}else{
+					exception($ex);
+				}
 			}
 		}
 		return self::$instance;

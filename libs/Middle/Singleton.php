@@ -30,10 +30,6 @@ class Singleton{
 		return call_user_func_array([$this,"_".$method],$arguments);
 	}
 
-	protected function __construct(){
-			
-	}
-
 }
 
 ?>
