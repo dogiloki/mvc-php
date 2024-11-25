@@ -58,6 +58,18 @@ class AuthDB extends AuthFactory{
         }
     }
 
+    public function _user(){
+        if($this->user!==null){
+            return $this->user;
+        }
+        $id=Session::get($this->name_session);
+        return $this->model_user::find($id);
+    }
+
+    public function _id(){
+        return $this->user===null?Session::get($this->name_session):$this->user->{$this->user->primary_key};
+    }
+
 }
 
 ?>

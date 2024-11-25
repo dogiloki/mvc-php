@@ -7,6 +7,7 @@ use libs\Middle\Secure;
 use libs\Config;
 use libs\Middle\QR\QRCode;
 use libs\Middle\Email;
+use libs\Session\Session;
 use libs\Middle\Storage;
 use libs\System\Process;
 use app\Models\User;
@@ -17,7 +18,6 @@ Route::get('/test/{name?}',function(Request $request){
         'user'=>'usuario',
         'password'=>'123456'
     ]);
-    dd(Auth::user());
     Auth::logout();
 })->name('test-get');
 

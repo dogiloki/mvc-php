@@ -17,7 +17,7 @@ return [
         'remember_token'=>'token'
     ],
 
-    'pam_auth'=>true
+    'pam_auth'=>false
 
 ];
 

@@ -31,6 +31,17 @@ class AuthPAM extends AuthFactory{
         Session::forget($this->name_session);
     }
 
+    public function _user(){
+        if($this->user!==null){
+            return $this->user;
+        }
+        return Session::get($this->name_session);
+    }
+
+    public function _id(){
+        return $this->user();
+    }
+
 }
 
 ?>
