@@ -15,9 +15,10 @@ use libs\Auth\Auth;
 
 Route::get('/test/{name?}',function(Request $request){
     Auth::attempt([
-        'user'=>'usuario',
-        'password'=>'123456'
+        'name'=>'admin',
+        'password'=>'123'
     ]);
+    dd(Auth::user());
     Auth::logout();
 })->name('test-get');
 

@@ -12,19 +12,11 @@ use libs\Middle\Singleton;
 
 class Auth extends Singleton{
 
-    public $extends=null;
+    public static function instance(){
+	    return new ((new self())->extends())();
+	}
 
-    public static function __callStatic($method,$arguments){
-		$method="_".$method;
-        $instance=Singleton::$instances[get_called_class()]??null;
-        if($instance==null){
-        	$instance=get_called_class()::singleton();
-        }
-        $instance=new ($instance->extends())();
-        if(method_exists($instance,$method)){
-            return call_user_func_array([$instance,$method],$arguments);
-        }
-    }
+    public $extends=null;
 
     public function __construct(){
         $this->extends=config()->auth('pam_auth')?AuthPAM::class:AuthDB::class;

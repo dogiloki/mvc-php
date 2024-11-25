@@ -6,9 +6,13 @@ class Singleton{
 
 	protected static $instances=[];
 
+	public static function instance(){
+		return self::$instances[get_called_class()]??null;
+	}
+
 	public static function __callStatic($method,$arguments){
 		$method="_".$method;
-        $instance=Singleton::$instances[get_called_class()]??null;
+        $instance=static::instance();
         if($instance==null){
         	$instance=get_called_class()::singleton();
         }

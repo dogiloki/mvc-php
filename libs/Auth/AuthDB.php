@@ -13,9 +13,11 @@ class AuthDB extends AuthFactory{
         $user=$this->model_user::visible('id','password')->find(function($find)use($credentials){
             foreach($credentials as $key=>$value){
                 if($key=="password"){
-                    $find->select(['id',$key]);
+                    $find->select('id');
+                    $find->select($key);
                     continue;
                 }
+                $find->select($key);
                 $find->where($key,$value);
             }
         });
@@ -23,7 +25,7 @@ class AuthDB extends AuthFactory{
             return false;
         }
         if(Secure::verifyPassword($credentials['password'],$user->password)){
-            Auth::login($this->model_user::find($user->id));
+            Auth::login($user);
             return true;
         }
         return false;
