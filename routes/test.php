@@ -14,12 +14,7 @@ use app\Models\User;
 use libs\Auth\Auth;
 
 Route::get('/test/{name?}',function(Request $request){
-    Auth::attempt([
-        'name'=>'admin',
-        'password'=>'123'
-    ]);
-    dd(Auth::user());
-    Auth::logout();
+    
 })->name('test-get');
 
 Route::post('/test',function(Request $request){
