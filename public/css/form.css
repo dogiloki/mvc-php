@@ -5,18 +5,18 @@
   border-radius: 5px;
 }
 
-.form .form-title {
+.form1 .form-title, .form .form-title {
   font-size: 2em;
   font-weight: bold;
   color: #000000;
   margin-bottom: 20px;
 }
-.form .input-container {
+.form1 .input-container, .form .input-container {
   width: 100%;
   display: flex;
   background-color: #06c;
 }
-.form .input-container .input-label {
+.form1 .input-container .input-label, .form .input-container .input-label {
   width: 35%;
   font-size: 1.1em;
   background: none;
@@ -26,7 +26,7 @@
   align-content: center;
   padding: 5px 10px 5px 10px;
 }
-.form .input-container .input-field {
+.form1 .input-container .input-field, .form .input-container .input-field {
   width: 100%;
   padding: 10px;
   font-size: 1.2em;
@@ -35,16 +35,17 @@
   color: #404040;
   outline: none;
 }
-.form .input-container:focus-within {
+.form1 .input-container:focus-within, .form .input-container:focus-within {
   opacity: 0.9;
 }
-.form .button-container {
+
+.button-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
 }
-.form .button-container .button {
+.button-container .button {
   padding: 10px;
   font-size: 1em;
   transition: all 0.2s ease;
@@ -52,21 +53,58 @@
   text-decoration: none;
   cursor: pointer;
 }
-.form .button-container .button:hover {
+.button-container .button:hover {
   background-color: #007bff;
 }
-.form .button-container .button-secondary {
+.button-container .button-secondary {
   background-color: #ffffff;
   color: #000000;
   border: 1px solid #06c;
 }
-.form .button-container .button-secondary:hover {
+.button-container .button-secondary:hover {
   color: #ffffff;
 }
-.form .button-container .button-primary {
+.button-container .button-primary {
   background-color: #06c;
   color: #ffffff;
   border: none;
+}
+
+/*
+* Para surga efecto el input-field debe tener el atributo placeholder
+* El input-field debe ir primero y debajo del input-label
+*/
+.form2 .input-container {
+  width: 100%;
+  position: relative;
+  margin-top: 10px;
+}
+.form2 .input-container .input-field {
+  width: 100%;
+  padding: 0.9rem;
+  border: 1px solid #bfbfbf;
+  font-size: 1rem;
+  background-color: #ffffff;
+  color: #202020;
+  outline: none;
+}
+.form2 .input-container .input-field:focus ~ .input-label,
+.form2 .input-container .input-field:not(:placeholder-shown) ~ .input-label {
+  top: 0rem;
+  left: 0rem;
+  font-size: 0.8rem;
+  color: #06c;
+}
+.form2 .input-container .input-label {
+  position: absolute;
+  top: 40%;
+  left: 0.8rem;
+  color: #000000;
+  font-size: 1rem;
+  pointer-events: none;
+  transform: translateY(-40%);
+  transition: 0.3s ease all;
+  background-color: #ffffff;
 }
 
 /*# sourceMappingURL=form.css.map */

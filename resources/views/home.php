@@ -3,21 +3,21 @@
 {{style('form.css')}}
 
 <div class="form-container">
-    <form class="form">
+    <form class="form2">
 
         <div class="form-title">REGISTRO DE MENSAJE</div>
 
         <div class="input-container">
+            <input class="input-field" type="text" placeholder="">
             <label class="input-label">No. Documento</label>
-            <input class="input-field" type="text">
         </div>
         <div class="input-container">
+            <input class="input-field" type="text" placeholder="">
             <label class="input-label">Referencia</label>
-            <input class="input-field" type="text">
         </div>
         <div class="input-container">
+            <input class="input-field" type="text" placeholder="">
             <label class="input-label">Remitente</label>
-            <input class="input-field" type="text">
         </div>
 
         <div class="button-container">
