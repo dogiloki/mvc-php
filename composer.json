@@ -26,7 +26,8 @@
         "intervention/image": "^2.7",
         "fakerphp/faker": "^1.21",
         "scssphp/scssphp": "^1.11",
-        "chillerlan/php-qrcode": "^5.0"
+        "chillerlan/php-qrcode": "^5.0",
+        "firebase/php-jwt": "^6.10"
     },
     "autoload": {
         "psr-4": {

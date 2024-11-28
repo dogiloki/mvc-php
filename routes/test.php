@@ -11,10 +11,11 @@ use libs\Session\Session;
 use libs\Middle\Storage;
 use libs\System\Process;
 use app\Models\User;
+use libs\Permission\Models\Role;
 use libs\Auth\Auth;
 
 Route::get('/test/{name?}',function(Request $request){
-    
+    $user=Auth::user();
 })->name('test-get');
 
 Route::post('/test',function(Request $request){
