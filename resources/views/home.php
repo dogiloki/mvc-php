@@ -8,15 +8,15 @@
         <div class="form-title">REGISTRO DE MENSAJE</div>
 
         <div class="input-container">
-            <input class="input-field" type="text" placeholder="">
+            <input class="input-field" type="text" placeholder="" required>
             <label class="input-label">No. Documento</label>
         </div>
         <div class="input-container">
-            <input class="input-field" type="text" placeholder="">
+            <input class="input-field" type="text" placeholder="" required>
             <label class="input-label">Referencia</label>
         </div>
         <div class="input-container">
-            <input class="input-field" type="text" placeholder="">
+            <input class="input-field" type="text" placeholder="" required>
             <label class="input-label">Remitente</label>
         </div>
 
@@ -29,6 +29,8 @@
 </div>
 
 {{style('table.css')}}
+
+<!--
 
 <section is="data-table" class="table-container">
 
@@ -44,5 +46,7 @@
     </table>
 
 </section>
+
+-->
 
 @extends('layouts.footer')

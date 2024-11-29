@@ -6,7 +6,7 @@
 }
 
 .form1 .form-title, .form .form-title {
-  font-size: 2em;
+  font-size: 1.8em;
   font-weight: bold;
   color: #000000;
   margin-bottom: 20px;
@@ -74,6 +74,12 @@
 * Para surga efecto el input-field debe tener el atributo placeholder
 * El input-field debe ir primero y debajo del input-label
 */
+.form2 .form-title {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 20px;
+}
 .form2 .input-container {
   width: 100%;
   position: relative;
@@ -91,9 +97,14 @@
 .form2 .input-container .input-field:focus ~ .input-label,
 .form2 .input-container .input-field:not(:placeholder-shown) ~ .input-label {
   top: 0rem;
-  left: 0rem;
-  font-size: 0.8rem;
-  color: #06c;
+  left: 0.5rem;
+  font-size: 0.9rem;
+}
+.form2 .input-container .input-field:valid ~ .input-label {
+  color: #008000;
+}
+.form2 .input-container .input-field:invalid ~ .input-label {
+  color: #FF0000;
 }
 .form2 .input-container .input-label {
   position: absolute;

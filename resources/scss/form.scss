@@ -9,7 +9,7 @@
 
 .form1,.form{
     .form-title{
-        font-size: 2em;
+        font-size: 1.8em;
         font-weight: bold;
         color: $black1;
         margin-bottom: 20px;
@@ -81,7 +81,12 @@
 * El input-field debe ir primero y debajo del input-label
 */
 .form2{
-
+    .form-title{
+        font-size: 1.8em;
+        font-weight: bold;
+        color: $black1;
+        margin-bottom: 20px;
+    }
     .input-container{
         width: 100%;
         position: relative;
@@ -99,9 +104,14 @@
         .input-field:focus ~ .input-label,
         .input-field:not(:placeholder-shown) ~ .input-label{
             top: 0rem;
-            left: 0rem;
-            font-size: 0.8rem;
-            color: $primary_color;
+            left: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .input-field:valid ~ .input-label{
+            color: $valid_color;
+        }
+        .input-field:invalid ~ .input-label{
+            color: $invalid_color;
         }
         .input-label{
             position: absolute;
