@@ -4,7 +4,7 @@ namespace libs\Middle;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use libs\Middle\Secure;
-use libd\Middle\Singleton;
+use libs\Middle\Singleton;
 use libs\Config;
 use libs\Middle\Models\UploaderFile;
 
@@ -25,7 +25,7 @@ class Storage extends Singleton{
         $size=$file['size'];
         try{
             if($this->_isEncrypt()){
-                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),$this->encrypt());
+                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),$this->encrypt);
                 file_put_contents($file['tmp_name'],$content);
             }
             $name_temp=$file['tmp_name'];
@@ -86,8 +86,8 @@ class Storage extends Singleton{
             ob_clean();
             header("Content-type: ".($this->download?"application/octet-stream":($mime??mime_content_type($path))));
             header("Content-Disposition: filename=\"".$download_name."\"");
-            if($this->isEncrypt()!=null){
-                $content=Secure::decryptNotBase64(file_get_contents($path),self::$encrypt);
+            if($this->isEncrypt()){
+                $content=Secure::decryptNotBase64(file_get_contents($path),$this->encrypt);
             }else{
                 $content=file_get_contents($path);
             }
