@@ -1,8 +1,8 @@
 import Util from './Util.js';
 import XHR from './XHR.js';
 
-let collapse_containers=document.querySelectorAll(".collapse-container");
-let loader_containers=document.querySelectorAll(".loader-container");
+const collapse_containers=document.querySelectorAll(".collapse-container");
+const loader_containers=document.querySelectorAll(".loader-container");
 window.global_loader=document.querySelector("#global-loader");
 
 document.addEventListener('DOMContentLoaded',(evt)=>{
@@ -19,6 +19,13 @@ document.addEventListener('DOMContentLoaded',(evt)=>{
 	});
 });
 
+// Modal
+const modal_overlay=document.getElementsByClassName('modal-overlay')[0];
+document.getElementById('modal-close-btn').addEventListener('click',(evt)=>{
+	Util.modal(modal_overlay,false);
+});
+
+// Fomulario con carga
 customElements.define('form-loader',class FormLoader extends HTMLFormElement{
 
 	constructor(){

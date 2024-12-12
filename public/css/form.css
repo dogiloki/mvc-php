@@ -1,10 +1,10 @@
 .form-container {
   width: 100%;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 5px;
 }
 
+.form1, .form {
+  width: 100%;
+}
 .form1 .form-title, .form .form-title {
   font-size: 1.8em;
   font-weight: bold;
@@ -74,6 +74,9 @@
 * Para surga efecto el input-field debe tener el atributo placeholder
 * El input-field debe ir primero y debajo del input-label
 */
+.form2 {
+  width: 100%;
+}
 .form2 .form-title {
   font-size: 1.8em;
   font-weight: bold;
