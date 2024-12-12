@@ -106,7 +106,7 @@ function scss($path){
 */
 
 function style($path){
-    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."?v=1.0.1\">";
+    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."\">";
 }
 
 function script($path){
