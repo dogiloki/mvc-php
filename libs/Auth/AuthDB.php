@@ -5,6 +5,7 @@ namespace libs\Auth;
 use libs\Session\Session;
 use libs\Middle\Secure;
 use libs\Auth\AuthFactory;
+use libs\DB\DB;
 use libs\Config;
 
 class AuthDB extends AuthFactory{

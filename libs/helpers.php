@@ -78,6 +78,7 @@ function storagePath($text=""){
     return Config::filesystem('storage.path')."/".$text;
 }
 
+/*
 function scss($path){
     $path_input=Config::filesystem('scss.path_input');
     $path_output=Config::filesystem('scss.path_output');
@@ -102,9 +103,10 @@ function scss($path){
     ]);
     return url($path);
 }
+*/
 
 function style($path){
-    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."\">";
+    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."?v=1.0.1\">";
 }
 
 function script($path){
