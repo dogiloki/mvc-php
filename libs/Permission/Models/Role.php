@@ -11,11 +11,6 @@ use libs\Permission\Models\UserRole;
 **/
 class Role extends Model{
 
-    protected $fillable=[
-        "name",
-        "description"
-    ];
-
     public function users(){
         return $this->manyToMany(User::class,UserRole::class,'id_role','id_user');
     }

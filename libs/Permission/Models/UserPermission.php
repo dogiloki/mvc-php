@@ -11,11 +11,6 @@ use libs\Permission\Models\Permission;
 **/
 class UserPermission extends Model{
 
-    protected $fillable=[
-        "id_user",
-        "id_permission"
-    ];
-
     public function user(){
         return $this->hasOne(User::class,'id_user');
     }

@@ -10,12 +10,7 @@ class User extends Component{
 
     protected $view="user";
     protected $model=\app\Models\User::class;
-
-    public $nombre="Julio";
-
-    public function __construct(){
-
-    }
+    protected $middlewares=["auth"];
 
 }
 

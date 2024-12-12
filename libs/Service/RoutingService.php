@@ -48,6 +48,9 @@ class RoutingService implements ServiceImpl{
 		Route::post('/component/{name?}',function($request){
 			$class_name="app\\Components\\".$request->name;
 			$component=new $class_name();
+			if(!$component->call($request)){
+				return abort(404);
+			}
 			if($request->set_properties){
 				$component->setProperties(json_decode($request->properties));
 			}
@@ -62,6 +65,9 @@ class RoutingService implements ServiceImpl{
 		Route::post('/component-data-table',function($request){
 			$class_name="app\\Components\\".$request->name;
 			$component=new $class_name();
+			if(!$component->call($request)){
+				return abort(404);
+			}
 			$columns=json_decode($request->columns);
 			$paginate=json_decode($request->paginate);
 			$component->selectColumns($columns->select);

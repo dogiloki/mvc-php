@@ -11,11 +11,6 @@ use libs\Permission\Models\UserPermission;
 **/
 class Permission extends Model{
 
-    protected $fillable=[
-        "name",
-        "description"
-    ];
-
     public function users(){
         return $this->manyToMany(User::class,UserPermission::class,'id_permission','id_user');
     }

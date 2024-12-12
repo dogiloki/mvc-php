@@ -83,7 +83,9 @@ class Storage extends Singleton{
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
         if(file_exists($path)){
-            ob_clean();
+            if(ob_get_level()>0 && ob_get_length()>0){
+                ob_clean();
+            }
             header("Content-type: ".($this->download?"application/octet-stream":($mime??mime_content_type($path))));
             header("Content-Disposition: filename=\"".$download_name."\"");
             if($this->isEncrypt()){

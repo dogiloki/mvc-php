@@ -4,15 +4,42 @@ namespace libs\View;
 
 use libs\HTTP\Request;
 use libs\Router\Route;
+use libs\Middleware\Middleware;
 
 abstract class Component{
 
     protected $model=null;
     protected $view="";
-    protected $middleware=[];
+    protected $middlewares=[];
 
     public function __construct(){
         $this->getProperties();
+    }
+
+    public function call(Request $request,$index_middlewares=0){
+        $middleware=$this->middlewares[$index_middlewares]??null;
+        if($middleware==null){
+            return true;
+        }
+        if(class_exists($middleware)){
+            $middleware=new $middleware();
+        }else{
+            $middleware=new (Middleware::alias($middleware))();
+        }
+        if($middleware===null){
+            return $this->call($request,$index_middlewares+1);
+        }
+        try{
+            return $middleware->handle($request,function($request)use($index_middlewares){
+                return $this->call($request,$index_middlewares+1);
+            });
+            return $middleware->terminate($request,function($request)use($index_middlewares){
+                return $this->call($request,$index_middlewares+1);
+            });
+        }catch(\Exception $ex){
+            return $middleware->report($ex);
+        }
+        return false;
     }
 
     public function getProperties(){

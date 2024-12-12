@@ -106,11 +106,11 @@ function scss($path){
 */
 
 function style($path){
-    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."\">";
+    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."?v=1.0.2\">";
 }
 
 function script($path){
-    return "<script type=\"module\" src=\"".url("js/".$path)."\"><script/>";
+    return "<script type=\"module\" src=\"".url("js/".$path)."?v=1.0.1\"><script/>";
 }
 
 function locale($locale=null){
