@@ -11,6 +11,7 @@ return new class extends Migration{
 		$this->table('global_var',function($table){
 			$table->string('key')->primary();
 			$table->string('value');
+			$table->string('lote')->nullable();
 			$table->timestamps();
 		});
 	}

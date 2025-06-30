@@ -2,7 +2,7 @@
 
 return [
 
-    'driver'=>env('SESSION_DRIVER','file'),
+    'driver'=>env('SESSION_DRIVER','database'),
     'encrypt'=>env('SESSION_ENCRYPT',false),
 
     'file'=>[

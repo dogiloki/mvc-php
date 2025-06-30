@@ -104,9 +104,9 @@ Manager::command("migrate {type?}",function($console,$type){
 	$migrate->migrate($type);
 });
 
-Manager::command("seeder",function($console){
+Manager::command("seeder {name?}",function($console,$name){
 	$seeder=new database\seeders\DatabaseSeeder();
-	$seeder->run();
+	$seeder->run($name);
 });
 
 Manager::command("db {type} {name?} {table?}",function($console,$type,$name,$table){

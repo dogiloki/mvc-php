@@ -7,6 +7,7 @@ return [
         'app'=>'storage/app',
         'public'=>'storage/app/public',
         'files'=>'storage/app/files',
+        'nagios-cfg'=>'storage/app/nagios/cfg',
         'qr'=>'storage/app/qr'
     ],
 

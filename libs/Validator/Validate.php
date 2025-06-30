@@ -22,6 +22,14 @@ class Validate{
 					$action=Validator::rules()[$rule]??null;
 				}
 				$params=isset($rule_split[1])?explode(",",$rule_split[1]):[];
+				if($rule=="nullable"){
+					if($action->passes($key,$value,$values,$params)){
+						$values[$key]=null;
+						continue 2;
+					}else{
+						continue 1;
+					}
+				}
 				if($action===null){
 					continue;
 				}

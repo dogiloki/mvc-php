@@ -328,6 +328,11 @@ class Table{
 		return $this;
 	}
 
+	public function orderByRaw($sql){
+		$this->orders[]=$sql;
+		return $this;
+	}
+
 	public function orderAsc($column){
 		$this->orders[]=DB::sqlQuote($column)." ASC ";
 		return $this;
@@ -386,7 +391,7 @@ class Table{
 		return $class;
 	}
 
-	public function first(){
+	public function first($call_extra=true){
 		$this->limit['index']=0;
 		$this->limit['end']=1;
 		$row=$this->row();
@@ -398,7 +403,9 @@ class Table{
 		}
 		$model=$this->model;
 		$model->setValues($row);
-		$model=$model->callExtras($model);
+		if($call_extra){
+			$model=$model->callExtras($model);
+		}
 		return $model;
 	}
 

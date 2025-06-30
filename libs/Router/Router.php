@@ -103,7 +103,8 @@ class Router{
 		$params=[];
 		$request=Request::singleton();
 		foreach($this->routes as $route){
-			if($route->method!=$_SERVER['REQUEST_METHOD']){
+			$request_method=$_REQUEST['_method']??$_SERVER['REQUEST_METHOD'];
+			if($route->method!=$request_method){
 				continue;
 			}
 			$params=[];
@@ -129,11 +130,11 @@ class Router{
 				continue;
 			}
 			foreach($_REQUEST as $key_request=>$value_request){
-				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
+				$request->add($request_method,$key_request,$value_request);
 				$request->{$key_request}=$value_request;
 			}
 			foreach(json_decode(file_get_contents('php://input')??null,true)??[] as $key_request=>$value_request){
-				$request->add($_SERVER['REQUEST_METHOD'],$key_request,$value_request);
+				$request->add($request_method,$key_request,$value_request);
 				$request->{$key_request}=$value_request;
 			}
 			$route->middlewares=array_merge(Middleware::middleware(),$route->middlewares);

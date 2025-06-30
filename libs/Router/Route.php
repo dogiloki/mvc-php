@@ -5,7 +5,6 @@ namespace libs\Router;
 use libs\Config;
 use libs\HTTP\Request;
 use libs\Router\Router;
-use libs\Router\Route;
 use libs\Middleware\Middleware;
 
 class Route{
@@ -87,6 +86,10 @@ class Route{
     
     private function callAction(Request $request){
         $action=$this->action;
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, X-XSRF-TOKEN");
+        header("Access-Control-Allow-Credentials: true");
         if($action instanceof \Closure){
             echo $action($request);
         }else{

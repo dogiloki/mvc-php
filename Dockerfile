@@ -39,17 +39,16 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Ejecutar Composer install para instalar las dependencias con más detalles
 WORKDIR /var/www/html
-RUN composer install --no-interaction --optimize-autoloader -vvv
+RUN composer install --no-interaction --optimize-autoloader
 
-# Habilitar mod_rewrite en aplicaiones que usan .htaccess
+# Habilitar mod_rewrite (común en aplicaciones PHP como Laravel)
 RUN a2enmod rewrite
 
 # Establecer los permisos adecuados para los archivos
-USER www-data
-COPY --chown=www-data:www-data . .
-RUN mkdir -p /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chmod -R 775 /var/www/html/storage
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html
+RUN ls -l
+USER root
 
 # Exponer el puerto 80
 EXPOSE 80

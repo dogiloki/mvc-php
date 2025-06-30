@@ -23,7 +23,7 @@ class View{
     static $patterns=[
         "/@php/"=>"<?php",
         "/@endphp/"=>"?>",
-        "/{{(.*?)}}/"=>"<?php echo $1; ?>",
+        "/{{(.*?)}}/"=>"<?php echo htmlspecialchars($1); ?>",
         "/@else/"=>"<?php }else{ ?>",
         "/@default/"=>"<?php default: ?>",
         "/@break/"=>"<?php break; ?>",
@@ -31,7 +31,7 @@ class View{
         "/@end(.*?)\s/m"=>"<?php } ?>",
         "/@extends\((.*?)\)\s/m"=>"<?php
             \$_=[
-                'value'=><<<'EOD'
+                'value'=><<<EOD
                     $1
                 EOD
             ];

@@ -19,15 +19,16 @@ class Relation{
         
     }
 
-    public function attach($ids){
-        $ids=is_array($ids)?$ids:func_get_args();
+    public function attach($ids,$pivots=[]){
+        $ids=is_array($ids)?$ids:[$ids];
         $data=[];
         if($this->relation=="ManyToMany"){
             foreach($ids as $id){
-                $data[]=[
+                $id=($id instanceof Model)?$id->{$id->primary_key}:$id;
+                $data[]=array_merge($pivots,[
                     $this->model_primary_column=>$this->model_primary->{$this->model_primary->primary_key},
                     $this->model_secondary_column=>$id
-                ];
+                ]);
             }
             return DB::table($this->model_middle->getTable())
             ->insert($data);
@@ -35,10 +36,11 @@ class Relation{
     }
 
     public function detach($ids){
-        $ids=is_array($ids)?$ids:func_get_args();
+        $ids=is_array($ids)?$ids:[$ids];
         if($this->relation=="ManyToMany"){
             $rs=DB::table($this->model_middle->getTable())->delete();
             foreach($ids as $index=>$id){
+                $id=($id instanceof Model)?$id->{$id->primary_key}:$id;
                 $rs->where(function($rs_where)use($id){
                     $rs_where->where($this->model_primary_column,$this->model_primary->{$this->model_primary->primary_key})->and()
                     ->where($this->model_secondary_column,$id);
@@ -52,7 +54,7 @@ class Relation{
     }
 
     public function sync($ids){
-        $ids=is_array($ids)?$ids:func_get_args();
+        $ids=is_array($ids)?$ids:[$ids];
         if($this->relation=="ManyToMany"){
             $db=DB::singleton();
             try{
@@ -109,6 +111,13 @@ class Relation{
         $this->model_primary->{$this->model_secondary_column}=null;
     }
 
+    public function withPivot($columns){
+        $columns=is_array($columns)?$columns:func_get_args();
+        foreach($columns as $index=>$column){
+            $this->query->select($this->model_middle->getTable().'.'.$column);
+        }
+        return $this;
+    }
 }
 
 ?>

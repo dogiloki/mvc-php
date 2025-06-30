@@ -15,6 +15,10 @@ function config(): Config{
     return new Config();
 }
 
+function filesystem($arg){
+    return Config::filesystem($arg);
+}
+
 function dd($obj){
     $trace=debug_backtrace();
     $file=$trace[0]['file'];
@@ -106,11 +110,11 @@ function scss($path){
 */
 
 function style($path){
-    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."?v=1.0.2\">";
+    return "<link rel=\"stylesheet\" href=\"".url("css/".$path)."?v=1.0.4\">";
 }
 
 function script($path){
-    return "<script type=\"module\" src=\"".url("js/".$path)."?v=1.0.1\"><script/>";
+    return "<script type=\"module\" src=\"".url("js/".$path)."?v=1.0.3\"></script>";
 }
 
 function locale($locale=null){

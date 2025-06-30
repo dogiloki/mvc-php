@@ -80,16 +80,17 @@ class Column{
     public function sql(){
         $sql=DB::sqlQuote($this->name)." ".strtoupper($this->type).($this->size?"(".$this->size.")":"");
         if($this->null){
-            $sql.=" NULL";
+            $sql.=" NULL ";
         }else{
             $sql.=" NOT NULL";
         }
         if($this->default){
             $sql.=" DEFAULT ".$this->default;
         }
-        $sql.=",";
         if($this->comment){
-            $sql.=" -- ".$this->comment;
+            $sql.=" COMMENT ".$this->comment.",";
+        }else{
+            $sql.=",";
         }
         if($this->auto_increment){
             $sql=substr($sql,0,strlen($sql)-1);

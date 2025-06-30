@@ -116,6 +116,17 @@ class Schema{
     }
 
     /**
+     * Agregar columna
+     * @param string $column Nombre de la columna
+     * @param string $type Tipo de dato
+     * @param int $size Tamaño del dato
+     */
+    public function append($name,$type,$size=null){
+        $this->type_query=self::ALTER['ADD'];
+        return $this->add($name,$type,$size);
+    }
+
+    /**
      * Eliminar columna
      * @param string $column Nombre de la columna
      */
@@ -178,6 +189,14 @@ class Schema{
                 $sql="ALTER TABLE ".$this->name_table." DROP COLUMN ";
                 foreach($this->columns as $column){
                     $column->nullable();
+                    $sql.=$column->sql();
+                }
+                $sql=substr($sql,0,strlen($sql)-1);
+                break;
+            }
+            case selft::ALTER['ADD']:{
+                $sql="ALTER TABLE ".$this->name_table." ADD COLUMN ";
+                foreach($this->columns as $column){
                     $sql.=$column->sql();
                 }
                 $sql=substr($sql,0,strlen($sql)-1);

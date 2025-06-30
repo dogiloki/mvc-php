@@ -1,0 +1,1 @@
+chown -R 33:33 /var/www/html && echo "✅ added permissions to mounted volume"

@@ -28,19 +28,23 @@ class Model{
 	private $annotation_class;
 	private $action_each=null;
 	private $with_attribs=[];
-	private $with_relations=[];
 
 	protected $table=null;
 	protected $primary_key="id";
 	protected $fillable=[];
+	protected $busable=null;
 	protected $hidden=[];
 	protected $visible=[];
+	protected $with_relations=[];
+	protected $with_methods=[];
 
 	public function __construct(){
 		$reflection=new \ReflectionClass($this);
 		$annotation=new Annotation($reflection->getDocComment());
+		$this->fillable[]=$this->primary_key;
 		$this->annotation_class=$annotation;
 		$this->table??=$annotation->get("Table");
+		$this->busable??=$this->fillable;
 	}
 
 	public function __get($attrib){
@@ -86,6 +90,10 @@ class Model{
 
 	public function getFillableArray(){
 		return array_flip($this->getFillable());
+	}
+
+	public function only($array){
+		return array_intersect_key($array,$this->getFillableArray());
 	}
 
 	public function _getPrimaryKey(){
@@ -185,6 +193,30 @@ class Model{
 		return $obj;
 	}
 
+	public function _random($count=1){
+		$model=$this;
+		if($count==null || $count<=0){
+			return $model;
+		}
+		$model=$model->orderByRaw("RAND()")->limit($count);
+		return $count==1?$model->first():$model->get();
+		
+	}
+
+	public function _search($text){
+		if($text==null || strlen($text)<=0){
+			return $this;
+		}
+		$model=$this;
+		foreach($this->busable as $key=>$value){
+			$model=$model->whereLike($value,"%".$text."%");
+			if($key+1<sizeof($this->busable)){
+				$model=$model->or();
+			}
+		}
+		return $model;
+	}
+
 	public function _each($action){
 		$this->action_each=$action;
 		return $this;
@@ -220,6 +252,9 @@ class Model{
 			foreach($attrib as $key=>$value){
 				$model->$key=$value;
 			}
+		}
+		foreach($this->with_methods as $method){
+			$model->$method=$model->$method();
 		}
 		foreach($this->with_relations as $attrib){
 			$attrib_split=explode(".",$attrib);
@@ -263,6 +298,11 @@ class Model{
 	}
 
 	public function _create($row,$ignore_protected=true){
+		if($row==null || sizeof($row)<=0){
+			return null;
+		}else{
+			$row=$this->only($row);
+		}
 		$model=$this;
 		try{
 			$model->setValues($row,$ignore_protected);
@@ -273,23 +313,26 @@ class Model{
 		}
 		return null;
 	}
-
-	public function _paginate($action,$max=10,$pag=1){
+	
+	public function _paginate($action=null,$max=10,$pag=1){
 		if(!($action instanceof \Closure)){
 			$pag=$max;
 			$max=$action;
-			$action==null;
+			$action=null;
 		}
+		$max??=10;
+		$pag??=1;
 		$paginator=new Paginator();
-		$data=$this->pagination($max,$pag);
+		$data=$this;
 		if($action!=null){
-			$action($data);
+			$data=$action($data);
 		}
+		$data=$data->pagination($max,$pag);
 		$data=$data->get();
 		$paginator->data=$data;
 		$paginator->results_per_page=$max;
 		$paginator->current_page=$pag;
-		$paginator->total_results=$this->select(DB::flat('COUNT(*) as total_results'))->first()->total_results;
+		$paginator->total_results=$this->select(DB::flat('COUNT(*) as total_results'))->first(false)->total_results;
 		$paginator->total_pages=ceil($this->total_results/$max);
 		$paginator->links();
 		return $paginator;
@@ -340,7 +383,9 @@ class Model{
 				$rs_insert->insert($params);
 			}else{
 				$params['updated_at']=date('Y-m-d H:i:s');
-				$row['updated_at']=$params['updated_at'];
+				if($row!=null){
+					$row['updated_at']=$params['updated_at'];
+				}
 				$rs_update=DB::table($this->table);
 				$rs_update->where($primary_key,$id);
 				$rs_update->update($row??$params)->execute();

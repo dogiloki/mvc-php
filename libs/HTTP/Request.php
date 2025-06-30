@@ -9,18 +9,21 @@ use libs\Middle\Secure;
 class Request{
 
 	private static $instance=null;
-	public $header;
-	public $get;
-	public $post;
-	public $put;
-	public $cookie;
-	public $session;
-	public $files;
+	private $header;
+	private $get;
+	private $post;
+	private $put;
+	private $input;
+	private $cookie;
+	private $session;
+	private $files;
 
 	private function __construct(){
 		$this->get=[];
 		$this->post=[];
 		$this->put=[];
+		$this->input=[];
+		$this->cookie=[];
 		$this->session=Session::singleton();
 		$this->files=$_FILES??[];
 		$this->header=getallheaders();
@@ -40,6 +43,7 @@ class Request{
 
 	public function add($type,$key,$value){
 		$this->$key=$value;
+		$this->input[$key]=$value;
 		switch($type){
 			case 'GET': $this->get[$key]=$value; break;
 			case 'POST': $this->post[$key]=$value; break;
@@ -100,12 +104,18 @@ class Request{
 		return $this->put[$key]=$value;
 	}
 
-	public function input($key){
-		return $this->$key??null;
+	public function input($key=null, $value=null){
+		if($key==null){
+			return $this->input;
+		}
+		if($value==null){
+			return $this->input[$key]??null;
+		}
+		return $this->input[$key]=$value;
 	}
 
 	public function all(){
-		return $_REQUEST;
+		return array_merge($_REQUEST,$this->input());
 	}
 
 	public function only($class){
@@ -124,6 +134,10 @@ class Request{
 			}
 		}
 		return null;
+	}
+
+	public function path(){
+		return $_SERVER['REQUEST_URI'];
 	}
 
 	public static function ip(){

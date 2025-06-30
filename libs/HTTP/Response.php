@@ -53,6 +53,11 @@ class Response{
                 500=>"Internal Server Error",
                 400=>"Bad Request",
                 419=>"Page Expired",
+                405=>"Method Not Allowed",
+                408=>"Request Timeout",
+                429=>"Too Many Requests",
+                503=>"Service Unavailable",
+                504=>"Gateway Timeout",
                 default=>"Error"
             };
         }

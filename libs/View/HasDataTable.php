@@ -12,16 +12,17 @@ trait HasDataTable{
 
     public function dataTable(){
         $with_methods=$this->withMethods();
-        return $this->model::each(function($each)use($with_methods){
-            foreach($with_methods as $with_method){
-                $each->$with_method=$each->$with_method();
-            }
-        })->paginate(function($query){
-            $query->select($this->selectColumns());
-        },10,$this->current_page);
+        return $this->model::paginate(function($model)use($with_methods){
+            return $model->each(function($table)use($with_methods){
+                foreach($with_methods as $with_method){
+                    $table->$with_method=$table->$with_method();
+                }
+            })->orderDesc("created_at");
+        },30,$this->current_page);
     }
 
     public function selectColumns(...$columns){
+        $columns['id']=DB::flat("id");
         $array=func_get_args();
         if(empty($array)){
             return $this->select_columns??DB::flat("*");

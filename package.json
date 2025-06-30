@@ -1,8 +1,30 @@
 {
-  "name": "mvc-php",
+  "devDependencies": {
+    "sass": "^1.86.1"
+  },
+  "name": "enlaces",
   "version": "1.0.0",
   "description": "Es un pequeño prototipo de un Framework que cuenta con enrutamiento, ORM (sencillo inspirado en Eloquent), Modelos, Controladores, Vistas y una configuración global en un archivo llamado \"config.env\".\r Tiene librerías para almacenar archivos en servidor, hacer peticiones HTTP, Servidor de Socket (sencillo inspirado en Socket.io) y envío de correo electrónico.\r Implementa un básico sistema de migración que consiste en ejecutar archivos ubicados en database/migrations",
   "main": "index.js",
+  "dependencies": {
+    "braces": "^3.0.3",
+    "chokidar": "^4.0.1",
+    "detect-libc": "^1.0.3",
+    "fill-range": "^7.1.1",
+    "immutable": "^5.0.3",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "micromatch": "^4.0.8",
+    "node-addon-api": "^7.1.1",
+    "picomatch": "^2.3.1",
+    "readdirp": "^4.0.2",
+    "saas": "^1.0.0",
+    "scss": "^0.2.4",
+    "source-map-js": "^1.2.1",
+    "to-regex-range": "^5.0.1",
+    "xlsx": "^0.18.5"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
