@@ -194,7 +194,7 @@ class Schema{
                 $sql=substr($sql,0,strlen($sql)-1);
                 break;
             }
-            case selft::ALTER['ADD']:{
+            case self::ALTER['ADD']:{
                 $sql="ALTER TABLE ".$this->name_table." ADD COLUMN ";
                 foreach($this->columns as $column){
                     $sql.=$column->sql();
