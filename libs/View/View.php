@@ -23,7 +23,7 @@ class View{
     static $patterns=[
         "/@php/"=>"<?php",
         "/@endphp/"=>"?>",
-        "/{{(.*?)}}/"=>"<?php echo htmlspecialchars($1); ?>",
+        "/{{(.*?)}}/"=>"<?php echo $1; ?>",
         "/@else/"=>"<?php }else{ ?>",
         "/@default/"=>"<?php default: ?>",
         "/@break/"=>"<?php break; ?>",
