@@ -12,6 +12,7 @@ class UploaderFile extends Model{
 		"folder",
 		"hash",
 		"ext",
+		"size",
 		"mime",
 		"original_name",
 		"download_name"

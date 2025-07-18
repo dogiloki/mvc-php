@@ -24,7 +24,7 @@ class File{
         $this->mode=$mode;
         $this->file=fopen($this->path,$this->mode);
         if(!$this->file){
-            throw new Exception("Error open file: ".$this->path);
+            throw new \Exception("Error open file: ".$this->path);
         }
         $this->stats=fstat($this->file);
     }

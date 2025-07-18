@@ -1,12 +1,13 @@
 <?php
 
-namespace libs\Middle;
+namespace Libs\Middle;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use libs\Middle\Secure;
 use libs\Middle\Singleton;
 use libs\Config;
 use libs\Middle\Models\UploaderFile;
+use libs\Middle\Log;
 
 class Storage extends Singleton{
 
@@ -24,44 +25,65 @@ class Storage extends Singleton{
         $type=$file['type'];
         $size=$file['size'];
         try{
-            if($this->_isEncrypt()){
-                $content=Secure::encryptNotBase64(file_get_contents($file['tmp_name']),$this->encrypt);
-                file_put_contents($file['tmp_name'],$content);
-            }
-            $name_temp=$file['tmp_name'];
-            $name_exp=explode('.',$name);
-            $name_exp=$name_exp[sizeof($name_exp)-1];
+            $name_ext=pathinfo($name,PATHINFO_EXTENSION);
             $sha1=Secure::hash();
             $folder=substr($sha1,0,2);
+
             if(!file_exists($dir)){
-                mkdir($dir);
+                mkdir($dir,0700,true);
             }
             if(!file_exists($dir.$folder)){
-                mkdir($dir.$folder);
+                mkdir($dir.$folder,0700,true);
             }
-            $file_name=$sha1.".".$name_exp;
+            
+            $file_name=$sha1.".".$name_ext;
             $folder_save=$dir.$folder."/".$sha1;
-            $folder=$dir.$folder."/".$file_name;
-            if(move_uploaded_file($name_temp,$folder)){
-                if($this->compress_image && explode("/",$type)[0]=="image"){
-                    $this->compressImage($folder);
+            $file_path=$dir.$folder."/".$file_name;
+
+            if($this->_isEncrypt()){
+                // Crear archivo temporal para encriptar
+                $temp_encrypt=tempnam(sys_get_temp_dir(),'encrypt_');
+                // Encriptar el archivo a partir del archivo temporal
+                $res=Secure::encryptFileStream($file['tmp_name'], $temp_encrypt, $this->encrypt);
+                
+                if(!$res){
+                    unlink($temp_encrypt);
+                    return null;
                 }
-                return UploaderFile::create([
-                    "disk"=>$disk,
-                    "folder"=>$folder_save,
-                    "hash"=>$sha1,
-                    "ext"=>$name_exp,
-                    "mime"=>$type,
-                    "original_name"=>$name,
-                    "download_name"=>$name
-                ]);
+
+                // Mover el archivo encriptado temporal a la carpeta de destino
+                if(!rename($temp_encrypt,$file_path)){
+                    unlink($temp_encrypt);
+                    return null;
+                }
+
+                // Borrar el archivo temporal original
+                unlink($file['tmp_name']);
+                Log::info("File uploaded con encriptación: ".$file_path);
             }else{
-                return null;
+                // Mover el archivo si no se encripta
+                if(!move_uploaded_file($file['tmp_name'], $file_path)){
+                    return null;
+                }
+                if($this->compress_image && explode("/",$type)[0]=="image"){
+                    $this->compressImage($file_path);
+                }
+                Log::info("File uploaded sin encriptar: ".$file_path);
             }
+
+            return UploaderFile::create([
+                "disk"=>$disk,
+                "folder"=>$folder_save,
+                "hash"=>$sha1,
+                "ext"=>$name_ext,
+                "mime"=>$type,
+                "size"=>$size,
+                "original_name"=>$name,
+                "download_name"=>$name
+            ]);
         }catch(\Exception $ex){
             return null;
         }
-        return null;
     }
 
     public function _compressImage(string $path){
@@ -82,18 +104,23 @@ class Storage extends Singleton{
         $sha1=substr($file,0,2);
         $folder=$dir.$sha1;
         $path=$folder."/".$file;
+
         if(file_exists($path)){
             if(ob_get_level()>0 && ob_get_length()>0){
                 ob_clean();
             }
+
             header("Content-type: ".($this->download?"application/octet-stream":($mime??mime_content_type($path))));
-            header("Content-Disposition: filename=\"".$download_name."\"");
+            header("Content-Disposition: attachment; filename=\"".$download_name."\"");
+            
             if($this->isEncrypt()){
-                $content=Secure::decryptNotBase64(file_get_contents($path),$this->encrypt);
+                Secure::decryptFileStream($path,'php://output',$this->encrypt);
+                Log::info("File downloaded con encriptación: ".$path);
             }else{
-                $content=file_get_contents($path);
+                readfile($path);
+                Log::info("File downloaded sin encriptación: ".$path);
             }
-            echo $content;
+            exit;
         }else{
             abort(404);
         }
