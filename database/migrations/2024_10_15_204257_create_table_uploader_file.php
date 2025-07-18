@@ -15,6 +15,7 @@ return new class extends Migration{
 			$table->string('hash')->unique();
 			$table->string('ext');
 			$table->string('mime');
+			$table->string('size')->default(0);
 			$table->string('original_name');
 			$table->string('download_name');
 			$table->timestamps();
