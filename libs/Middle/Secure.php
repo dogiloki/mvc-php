@@ -21,15 +21,23 @@ class Secure{
 		//return bin2hex(openssl_random_pseudo_bytes($size));
 	}
 
+	public static function randomBase64($size=32){
+		return base64_encode(self::random($size));
+	}
+
 	public static function hash($text=null,$binary=false){
 		$text??=uniqid(rand(),true);
 		return hash('sha256',$text,$binary);
 	}
 
+	public static function hashHmac($text=null,$binary=false){
+		$key=Config::app('key');
+		return hash_hmac('sha256',$text??"",$key,$binary);
+	}
+
 	public static function encryptFileStream($input_file,$output_file,$key=null){
 		try{
-			$key??=Config::app('key');
-			$key=Secure::hash($key,true);
+			$key=Secure::hashHmac($key,true);
 			$aes=new AES('ctr');
 			$aes->setKey($key);
 
@@ -59,8 +67,7 @@ class Secure{
 	
 	public static function decryptFileStream($input_file,$output_file,$key=null){
 		try{
-			$key??=Config::app('key');
-			$key=Secure::hash($key,true);
+			$key=Secure::hashHmac($key,true);
 			$aes=new AES('ctr');
 			$aes->setKey($key);
 
@@ -109,7 +116,7 @@ class Secure{
 	}
 	
 	public static function encrypt($text,$key=null,$base64=true){
-		$key??=Config::app('key');
+		$key=Secure::hashHmac($key,true);
 		if($text==null || $key==null){
 			return null;
 		}
@@ -123,7 +130,7 @@ class Secure{
 	}
 
 	public static function decrypt($text,$key=null,$base64=true){
-		$key??=Config::app('key');
+		$key=Secure::hashHmac($key,true);
 		if($text==null || $key==null){
 			return null;
 		}
