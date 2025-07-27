@@ -26,6 +26,7 @@ export default class XHR{
         .map(key=>encodeURIComponent(key)+"="+encodeURIComponent(query[key]))
         .join("&");
         form_data.append('_token',Util.getMeta('_token'));
+        form_data.append('_method',method);
         xhr.open(method,url+query_params);
         for(let index1 in data){
             form_data.append(index1,data[index1]);

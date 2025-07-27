@@ -29,6 +29,19 @@ export default class Util{
 		content.style.display=(visible==-1)?
 							((content.style.display=="none")?"":"none"):
 							(visible)?"":"none";
+		if(visible==-1){
+			content.classList.toggle("hidden");
+		}else{
+			if(visible){
+				content.classList.remove("hidden");
+			}else{
+				content.classList.add("hidden");
+			}
+		}
+	}
+
+	static modalById(text,visible){
+		Util.modal(document.getElementById(text),visible);
 	}
 
 	static formatMoney(text,add_decimal=false){
@@ -49,6 +62,16 @@ export default class Util{
 			array[index]??="00";
 		}
 		return array.slice(0,quantity).join(":")+(str?"hrs":"");
+	}
+
+	static formatSize(value){
+		let units=['B','KB','MB','GB','TB','PT','EB','ZB','YB'];
+		let index=0;
+		while(value>1024){
+			value/=1024;
+			index++;
+		}
+		return Number(value).toFixed(2)+" "+units[index];
 	}
 
 	static changeNumberSign(num){
@@ -89,6 +112,12 @@ export default class Util{
 		return value>=min && value<=max;
 	}
 
+	static where(conditional,action){
+        if(conditional){
+            action();
+        }
+    }
+
 	static messageById(id,message,type){
 		Util.message(document.getElementById(id),message,type);
 	}
@@ -103,7 +132,7 @@ export default class Util{
 			Util.modal(content,false);
 		}else{
 			type=(typeof type==='string')?type:type.class;
-			content.setAttribute('class',"message "+type);
+			content.setAttribute('class',"message message-"+type);
 			Util.modal(content,true);
 		}
 	}

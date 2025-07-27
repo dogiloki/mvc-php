@@ -21,8 +21,14 @@ export default class Fetch{
     }
 
     static #request(method,url,action,array={},resert=false){
-        array.method=method;
-        fetch(Fetch.host+"/"+url,array)
+        array.method=method=="PUT"?"POST":method;
+        array.method=method=="DELETE"?"POST":method;
+        array._method=method;
+        array._token=Util.getMeta("_token");
+        fetch(url.includes("http")?url:Fetch.host+"/"+url,{
+            method: method,
+            body: JSON.stringify(array),
+        })
         .then(response=>response.text())
         .then(data=>{
             action(data);
