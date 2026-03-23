@@ -15,7 +15,7 @@ return [
     
     'cookie'=>[
         'name'=>env('SESSION_COOKIE_NAME','SESSION_PHP'),
-        'lifetime'=>env('SESSION_COOKIE_LIFETIME',120),
+        'lifetime'=>env('SESSION_COOKIE_LIFETIME',365*24*60),
         'path'=>env('SESSION_COOKIE_PATH','/'),
         'domain'=>env('SESSION_COOKIE_DOMAIN',null),
         'secure'=>env('SESSION_COOKIE_SECURE',false),

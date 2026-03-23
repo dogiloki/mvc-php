@@ -26,7 +26,15 @@ class Config{
                 $value=$value[$key]??null;
             }
             $directory=$value;
-            if(!is_array($directory) && !is_dir($directory) && $name=="filesystem" && !str_contains($directory,"{") && !str_contains($directory,".") && trim($directory," ")!=""){
+            if(
+                is_string($directory) &&
+                !is_array($directory) &&
+                !is_dir($directory) &&
+                $name=="filesystem" &&
+                !str_contains($directory,"{") &&
+                !str_contains($directory,".") &&
+                trim($directory," ")!=""
+            ){
                 mkdir($directory,755,true);
             }
             return $value;

@@ -3,7 +3,6 @@
 namespace libs\Router;
 
 use libs\HTTP\Request;
-use libs\Config;
 use libs\Middleware\Middleware;
 
 class Router{

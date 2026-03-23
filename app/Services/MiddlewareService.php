@@ -22,7 +22,8 @@ class MiddlewareService implements ServiceImpl{
 			'guest'=>\app\Middlewares\Guest::class,
 			'verify_email'=>\app\Middlewares\VerifyEmail::class,
 			'csrf'=>\app\Middlewares\VerifyCsrfToken::class,
-			'session'=>\libs\Session\Middleware\StartSession::class
+			'session'=>\libs\Session\Middleware\StartSession::class,
+			'verify_code'=>\app\Middlewares\VerifyToken::class
 		]);
 	}
 

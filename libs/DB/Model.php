@@ -247,6 +247,17 @@ class Model{
 		return $this;
 	}
 
+	public function _withMethods(...$attribs){
+		foreach($attribs as $key=>$attrib){
+			if(is_array($attrib)){
+				$this->with_methods[]=$attrib;
+			}else{
+				$this->with_methods[]=$attrib;
+			}
+		}
+		return $this;
+	}
+
 	public function callExtras($model){
 		foreach($this->with_attribs as $attrib){
 			foreach($attrib as $key=>$value){
@@ -254,7 +265,13 @@ class Model{
 			}
 		}
 		foreach($this->with_methods as $method){
-			$model->$method=$model->$method();
+			if(is_array($method)){
+				foreach($method as $attrib=>$value){
+					$model->$attrib=$model->$value();
+				}
+			}else{
+				$model->$method=$model->$method();
+			}
 		}
 		foreach($this->with_relations as $attrib){
 			$attrib_split=explode(".",$attrib);

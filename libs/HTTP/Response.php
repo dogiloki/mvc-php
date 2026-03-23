@@ -4,8 +4,26 @@ namespace libs\HTTP;
 
 use libs\View\View;
 use libs\Router\Router;
+use libs\HTTP\Request;
 
 class Response{
+
+    public static function statusText($code){
+        return match($code){
+                404=>"Not found",
+                403=>"Forbidden",
+                401=>"Unauthorized",
+                500=>"Internal Server Error",
+                400=>"Bad Request",
+                419=>"Page Expired",
+                405=>"Method Not Allowed",
+                408=>"Request Timeout",
+                429=>"Too Many Requests",
+                503=>"Service Unavailable",
+                504=>"Gateway Timeout",
+                default=>"Error"
+            };
+    }
 
     public function __construct($code=200){
         http_response_code($code);
@@ -17,9 +35,11 @@ class Response{
     }
 
     public function json($array,$code=null){
-        header("Content-type: application/json");
-        if($code!=null){
-            http_response_code($code);
+        if(session()->isStarted()){
+            header("Content-type: application/json");
+            if($code!=null){
+                http_response_code($code);
+            }
         }
         return json_encode($array);
     }
@@ -46,20 +66,7 @@ class Response{
             http_response_code($code);
         }
         if($message==null){
-            $message=match($code){
-                404=>"Not found",
-                403=>"Forbidden",
-                401=>"Unauthorized",
-                500=>"Internal Server Error",
-                400=>"Bad Request",
-                419=>"Page Expired",
-                405=>"Method Not Allowed",
-                408=>"Request Timeout",
-                429=>"Too Many Requests",
-                503=>"Service Unavailable",
-                504=>"Gateway Timeout",
-                default=>"Error"
-            };
+            $message=self::statusText($code);
         }
         echo "<h1>".$code." - ".$message."</h1>";
         exit;

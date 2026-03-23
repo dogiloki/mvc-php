@@ -2,11 +2,17 @@
 
 return [
 
+    'socket'=>[
+        'port'=>6001,
+        'path'=>'app/Services/SocketServer.php'
+    ],
+
     'storage'=>[
         'path'=>'storage',
         'app'=>'storage/app',
         'public'=>'storage/app/public',
         'files'=>'storage/app/files',
+        'explorer'=>'storage/app/explorer',
         'nagios-cfg'=>'storage/app/nagios/cfg',
         'qr'=>'storage/app/qr'
     ],

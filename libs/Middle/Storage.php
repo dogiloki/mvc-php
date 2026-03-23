@@ -37,7 +37,7 @@ class Storage extends Singleton{
             }
             
             $file_name=$sha1.".".$name_ext;
-            $folder_save=$dir.$folder."/".$sha1;
+            $folder_save=$dir.$folder;
             $file_path=$dir.$folder."/".$file_name;
 
             if($this->_isEncrypt()){

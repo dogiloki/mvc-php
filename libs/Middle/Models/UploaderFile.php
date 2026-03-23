@@ -17,9 +17,14 @@ class UploaderFile extends Model{
 		"original_name",
 		"download_name"
 	];
+	protected $with_methods=['path'];
 
 	public function name(){
 		return $this->hash.".".$this->ext;
+	}
+
+	public function path(){
+		return $this->folder."/".$this->name();
 	}
     
 }
